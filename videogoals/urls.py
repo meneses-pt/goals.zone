@@ -11,8 +11,8 @@ urlpatterns = [
     path('matches/', include('matches.urls'))
 ]
 
-if not Task.objects.filter(verbose_name="fetch_new_matches").exists():
-    fetch_new_matches(repeat=60 * 60, repeat_until=None, verbose_name="fetch_new_matches")
-
-if not Task.objects.filter(verbose_name="fetch_videogoals").exists():
-    fetch_videogoals(repeat=1, repeat_until=None, verbose_name="fetch_videogoals")
+# if not Task.objects.filter(verbose_name="fetch_new_matches").exists():
+#     fetch_new_matches(repeat=60 * 60, repeat_until=None, verbose_name="fetch_new_matches")
+#
+# if not Task.objects.filter(verbose_name="fetch_videogoals").exists():
+#     fetch_videogoals(repeat=1, repeat_until=None, verbose_name="fetch_videogoals")

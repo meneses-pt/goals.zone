@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="" />
+    <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/videogoals/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/settings.py" afterDir="false" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,7 +132,7 @@
       <option name="presentableId" value="Default" />
       <updated>1571936181121</updated>
       <workItem from="1571936182278" duration="2739000" />
-      <workItem from="1571990718047" duration="17513000" />
+      <workItem from="1571990718047" duration="17764000" />
     </task>
     <servers />
   </component>
