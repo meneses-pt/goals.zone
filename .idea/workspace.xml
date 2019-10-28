@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Procfile" beforeDir="false" afterPath="$PROJECT_DIR$/Procfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/goals_populator.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/goals_populator.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/videogoals/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/settings.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/videogoals/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/urls.py" afterDir="false" />
@@ -133,7 +134,7 @@
       <option name="presentableId" value="Default" />
       <updated>1571936181121</updated>
       <workItem from="1571936182278" duration="2739000" />
-      <workItem from="1571990718047" duration="18569000" />
+      <workItem from="1571990718047" duration="19093000" />
     </task>
     <servers />
   </component>

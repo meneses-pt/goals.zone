@@ -8,7 +8,7 @@ import re
 from matches.models import Match, VideoGoal
 
 
-@background(schedule=1)
+@background(schedule=60)
 def fetch_videogoals():
     print('Fetching new goals')
     i = 0
