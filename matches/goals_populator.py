@@ -23,8 +23,9 @@ def fetch_videogoals():
         print(f'{results} posts fetched...')
         for post in data['data']['children']:
             post = post['data']
-            flair = post['link_flair_richtext']
-            if len(flair) > 0 and flair[0]['e'] == 'text' and flair[0]['t'] == 'Media' and post['url'] is not None:
+            # flair = post['link_flair_richtext']
+            # if len(flair) > 0 and flair[0]['e'] == 'text' and flair[0]['t'] == 'Media' and post['url'] is not None:
+            if post['url'] is not None:
                 title = post['title']
                 home = re.findall('\[?\]?\s?((\w|\s|-)+)((\d|\[\d\])(-| - | -|- ))((\d|\[\d\]))', title)
                 away = re.findall('(\d|\[\d\])(-| - | -|- )(\d|\[\d\])\s?((\w|\s)+)(\:|\s?\||-)?', title)
