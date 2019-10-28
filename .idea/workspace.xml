@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/matches/templates/matches/match_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/matches/templates/matches/match_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/goals_populator.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/goals_populator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/views.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -130,7 +132,7 @@
       <updated>1571936181121</updated>
       <workItem from="1571936182278" duration="2739000" />
       <workItem from="1571990718047" duration="19742000" />
-      <workItem from="1572270612609" duration="252000" />
+      <workItem from="1572270612609" duration="1391000" />
     </task>
     <servers />
   </component>

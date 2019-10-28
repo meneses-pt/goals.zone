@@ -26,7 +26,7 @@ def fetch_videogoals():
             flair = post['link_flair_richtext']
             if len(flair) > 0 and flair[0]['e'] == 'text' and flair[0]['t'] == 'Media' and post['url'] is not None:
                 title = post['title']
-                home = re.findall('^((\w|\s)+)((\d|\[\d\])(-| -))', title)
+                home = re.findall('\[?\]?\s?((\w|\s|-)+)((\d|\[\d\])(-| - | -|- ))((\d|\[\d\]))', title)
                 away = re.findall('(\d|\[\d\])(-| - | -|- )(\d|\[\d\])\s?((\w|\s)+)(\:|\s?\||-)?', title)
                 minute = re.findall('(\S*\d+\S*)', title)
                 if len(home) > 0:
@@ -64,6 +64,7 @@ def fetch_videogoals():
                     print('Failed home and away: ' + title)
         after = data['data']['after']
         i += 1
+    print('Finished fetching goals')
 
 
 def _fetch_data_from_api(after):

@@ -15,7 +15,8 @@ class MatchesListView(generic.ListView):
         except Exception as e:
             query_date_obj = date.today()
         return Match.objects.order_by('datetime').filter(datetime__gte=query_date_obj,
-                                                         datetime__lte=query_date_obj + timedelta(days=1))
+                                                         datetime__lte=query_date_obj + timedelta(days=1),
+                                                         videogoal__isnull=False).distinct()
 
     def get_context_data(self, **kwargs):
         context = super(MatchesListView, self).get_context_data(**kwargs)
