@@ -1,0 +1,14 @@
+{% if match_list %}
+    <ul>
+        {% for match in match_list %}
+            <li>
+                <a href="{% url 'match-detail' pk=match.id %}">
+                    {{ match }}
+                </a>
+                at {{ match.datetime }}
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No matches today.</p>
+{% endif %}

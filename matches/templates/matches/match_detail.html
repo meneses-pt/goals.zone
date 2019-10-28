@@ -1,0 +1,13 @@
+{% if match.videogoal_set.count > 0 %}
+    <ul>
+        {% for match in match_list %}
+            <li>
+                <a href="{{ match.url }}">
+                    {{ match.title }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No goals for this match.</p>
+{% endif %}
