@@ -28,7 +28,7 @@ def fetch_videogoals():
                 title = post['title']
                 home = re.findall('^((\w|\s)+)((\d|\[\d\])(-| -))', title)
                 away = re.findall('(\d|\[\d\])(-| - | -|- )(\d|\[\d\])\s?((\w|\s)+)(\:|\s?\||-)?', title)
-                minute = re.findall('\S*\d+\S*', title)
+                minute = re.findall('(\S*\d+\S*)', title)
                 if len(home) > 0:
                     home_team = home[0][0].strip()
                     if len(away) > 0:
@@ -43,7 +43,7 @@ def fetch_videogoals():
                                                        datetime__gte=date.today() - timedelta(days=2))
                         if matches.exists():
                             match = matches.first()
-                            print(f'Match {match} found for: {title}')
+                            # print(f'Match {match} found for: {title}')
                             try:
                                 videogoal = VideoGoal.objects.get(permalink__exact=post['permalink'])
                             except VideoGoal.DoesNotExist:
@@ -54,9 +54,10 @@ def fetch_videogoals():
                             videogoal.title = post['title']
                             videogoal.minute = minute_str
                             videogoal.save()
-                            print('Saved: ' + title)
+                            # print('Saved: ' + title)
                         else:
-                            print(f'No match found in database [{home_team}]-[{away_team}] for: {title}')
+                            # print(f'No match found in database [{home_team}]-[{away_team}] for: {title}')
+                            pass
                     else:
                         print('Failed away: ' + title)
                 else:
