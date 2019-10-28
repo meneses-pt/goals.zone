@@ -27,7 +27,7 @@ def fetch_videogoals():
             if len(flair) > 0 and flair[0]['e'] == 'text' and flair[0]['t'] == 'Media' and post['url'] is not None:
                 title = post['title']
                 home = re.findall('^((\w|\s)+)((\d|\[\d\])(-| -))', title)
-                away = re.findall('(\d|\[\d\])(-| - | -|- )(\d|\[\d\])\s?((\w|\s)+)(\s?\||-)', title)
+                away = re.findall('(\d|\[\d\])(-| - | -|- )(\d|\[\d\])\s?((\w|\s)+)(\:|\s?\||-)?', title)
                 minute = re.findall('\S*\d+\S*', title)
                 if len(home) > 0:
                     home_team = home[0][0].strip()
