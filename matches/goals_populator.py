@@ -41,9 +41,6 @@ def fetch_videogoals():
                         matches = Match.objects.filter(home_team__unaccent__trigram_similar=home_team,
                                                        away_team__unaccent__trigram_similar=away_team,
                                                        datetime__gte=date.today() - timedelta(days=2))
-                        # matches = Match.objects.filter(home_team__icontains=home_team,
-                        #                                away_team__icontains=away_team,
-                        #                                datetime__gte=date.today() - timedelta(days=2))
                         if matches.exists():
                             match = matches.first()
                             print(f'Match {match} found for: {title}')
