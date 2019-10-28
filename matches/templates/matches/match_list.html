@@ -1,3 +1,7 @@
+<h1>{{ date|date }}</h1>
+
+<p><a href="{% url 'index' %}?date={{ date_prev|date:"Y-m-d" }}">{{ date_prev|date }}</a> | <a href="{% url 'index' %}?date={{ date_next|date:"Y-m-d" }}">{{ date_next|date }}</a></p>
+
 {% if match_list %}
     <ul>
         {% for match in match_list %}
@@ -10,5 +14,5 @@
         {% endfor %}
     </ul>
 {% else %}
-    <p>No matches today.</p>
+    <p>No matches found.</p>
 {% endif %}

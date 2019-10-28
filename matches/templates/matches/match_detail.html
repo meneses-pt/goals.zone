@@ -1,9 +1,9 @@
-{% if match.videogoal_set.count > 0 %}
+{% if object.videogoal_set.all.count > 0 %}
     <ul>
-        {% for match in match_list %}
+        {% for goal in object.videogoal_set.all %}
             <li>
-                <a href="{{ match.url }}">
-                    {{ match.title }}
+                <a href="{{ goal.url }}">
+                    {{ goal.title }}
                 </a>
             </li>
         {% endfor %}
