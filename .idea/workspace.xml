@@ -6,6 +6,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/videogoals/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/videogoals/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/urls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -132,7 +133,7 @@
       <option name="presentableId" value="Default" />
       <updated>1571936181121</updated>
       <workItem from="1571936182278" duration="2739000" />
-      <workItem from="1571990718047" duration="17764000" />
+      <workItem from="1571990718047" duration="18120000" />
     </task>
     <servers />
   </component>

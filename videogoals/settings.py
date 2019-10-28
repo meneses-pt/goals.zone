@@ -91,6 +91,8 @@ DATABASES = {
     }
 }
 
+DATABASE_URL="postgres://vsprunmp:YMVYv1F8F7VLuOik1MJIN1tOE8_TZjGC@manny.db.elephantsql.com:5432/vsprunmp"
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
