@@ -56,7 +56,7 @@ def fetch_videogoals():
                             videogoal.save()
                             # print('Saved: ' + title)
                         else:
-                            # print(f'No match found in database [{home_team}]-[{away_team}] for: {title}')
+                            print(f'No match found in database [{home_team}]-[{away_team}] for: {title}')
                             pass
                     else:
                         print('Failed away: ' + title)
