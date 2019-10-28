@@ -1,13 +1,19 @@
-{% if object.videogoal_set.all.count > 0 %}
-    <ul>
-        {% for goal in object.videogoal_set.all|dictsort:"minute" %}
-            <li>
-                <a href="{{ goal.url }}">
+{% extends "base.html" %}
+
+{% block head_title %}{{ object }} || {{ block.super }}{% endblock head_title %}
+
+{% block content %}
+    <h2>{{ object }} <small>on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small></h2>
+
+    {% if object.videogoal_set.all.count > 0 %}
+        <ul class="list-group">
+            {% for goal in object.videogoal_set.all|dictsort:"minute" %}
+                <a class="list-group-item list-group-item-action" href="{{ goal.url }}">
                     {{ goal.title }}
                 </a>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No goals for this match.</p>
-{% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No goals for this match.</p>
+    {% endif %}
+{% endblock content %}

@@ -17,3 +17,6 @@ class VideoGoal(models.Model):
     url = models.CharField(max_length=256, null=True)
     title = models.CharField(max_length=200, null=True)
     minute = models.CharField(max_length=10, null=True)
+
+    def __str__(self):
+        return self.title

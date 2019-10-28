@@ -2,10 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/snippets/css.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/snippets/js.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/templates/snippets/nav.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matches/goals_populator.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/goals_populator.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/templates/matches/match_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/matches/templates/matches/match_detail.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matches/templates/matches/match_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/matches/templates/matches/match_list.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/videogoals/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/urls.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -117,7 +123,7 @@
       <option name="port" value="8000" />
       <option name="host" value="" />
       <option name="additionalOptions" value="" />
-      <option name="browserUrl" value="http://127.0.0.1:8000/matches" />
+      <option name="browserUrl" value="http://127.0.0.1:8000" />
       <option name="runTestServer" value="false" />
       <option name="runNoReload" value="false" />
       <option name="useCustomRunCommand" value="false" />
@@ -142,7 +148,7 @@
       <workItem from="1571936182278" duration="2739000" />
       <workItem from="1571990718047" duration="19742000" />
       <workItem from="1572270612609" duration="2964000" />
-      <workItem from="1572273648797" duration="271000" />
+      <workItem from="1572273648797" duration="4060000" />
     </task>
     <servers />
   </component>

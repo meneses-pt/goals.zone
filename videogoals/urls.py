@@ -8,7 +8,7 @@ from matches.matches_populator import fetch_new_matches
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('matches/', include('matches.urls'))
+    path('', include('matches.urls'))
 ]
 
 if not Task.objects.filter(verbose_name="fetch_new_matches").exists():

@@ -1,18 +1,22 @@
-<h1>{{ date|date }}</h1>
+{% extends "base.html" %}
 
-<p><a href="{% url 'index' %}?date={{ date_prev|date:"Y-m-d" }}">{{ date_prev|date }}</a> | <a href="{% url 'index' %}?date={{ date_next|date:"Y-m-d" }}">{{ date_next|date }}</a></p>
+{% block head_title %}{{ date|date:"Y-m-d" }} || {{ block.super }}{% endblock head_title %}
 
-{% if match_list %}
-    <ul>
-        {% for match in match_list %}
-            <li>
-                <a href="{% url 'match-detail' pk=match.id %}">
-                    {{ match }}
+{% block content %}
+    <h2>{{ date|date:"l, d F Y" }}</h2>
+
+    {% include "snippets/nav.html" %}
+
+    {% if match_list %}
+        <ul class="list-group">
+            {% for match in match_list %}
+                <a class="list-group-item list-group-item-action" href="{% url 'match-detail' pk=match.id %}">
+                    <b>{{ match }}</b>
+                    at {{ match.datetime|date:"H:i" }}
                 </a>
-                at {{ match.datetime }}
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No matches found.</p>
-{% endif %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No matches found.</p>
+    {% endif %}
+{% endblock content %}
