@@ -2,6 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/matches/goals_populator.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/goals_populator.py" afterDir="false" />
     </list>
@@ -18,9 +20,17 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
   </component>
+  <component name="IgnoredFileRootStore">
+    <option name="generatedRoots">
+      <set>
+        <option value="D:\projects\videogoals\.idea" />
+      </set>
+    </option>
+  </component>
   <component name="ProjectId" id="1Seu3LfzcuVLdUkDVEQYOvKDFIu" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="C:/Program Files/Git/bin/git.exe" />
     <property name="node.js.detected.package.eslint" value="true" />
@@ -131,7 +141,8 @@
       <updated>1571936181121</updated>
       <workItem from="1571936182278" duration="2739000" />
       <workItem from="1571990718047" duration="19742000" />
-      <workItem from="1572270612609" duration="2653000" />
+      <workItem from="1572270612609" duration="2964000" />
+      <workItem from="1572273648797" duration="271000" />
     </task>
     <servers />
   </component>
