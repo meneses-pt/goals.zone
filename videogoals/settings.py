@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+
 import django_heroku
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -20,10 +21,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '4&h7em$riknyt&y!@9!w@j%d&3s+0gz&xq%p01jw@3g#8p_ixr'
+SECRET_KEY = os.environ.get('SECRET_KEY', '4&h7em$riknyt&y!@9!w@j%d&3s+0gz&xq%p01jw@3g#8p_ixr')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -76,22 +77,14 @@ WSGI_APPLICATION = 'videogoals.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'HOST': 'manny.db.elephantsql.com',
-        'PORT': '5432',
-        'NAME': 'vsprunmp',
-        'USER': 'vsprunmp',
-        'PASSWORD': 'YMVYv1F8F7VLuOik1MJIN1tOE8_TZjGC',
-        # 'ENGINE': 'django.db.backends.mysql',
-        # 'HOST': 'hosting75.serverhs.org',
-        # 'PORT': '3306',
-        # 'OPTIONS': {
-        #   'read_default_file': os.path.join(BASE_DIR, 'conf/mysql.cnf'),
-        # }
+        'ENGINE': os.environ.get('DB_ENGINE'),
+        'HOST': os.environ.get('DB_HOST'),
+        'PORT': os.environ.get('DB_PORT'),
+        'NAME': os.environ.get('DB_NAME'),
+        'USER': os.environ.get('DB_USER'),
+        'PASSWORD': os.environ.get('DB_PASSWORD')
     }
 }
-
-DATABASE_URL="postgres://vsprunmp:YMVYv1F8F7VLuOik1MJIN1tOE8_TZjGC@manny.db.elephantsql.com:5432/vsprunmp"
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

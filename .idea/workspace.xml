@@ -2,16 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51a90538-1428-45ce-8bff-9f3aea350540" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/templates/base.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/snippets/css.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/snippets/js.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/snippets/nav.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matches/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matches/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/matches/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matches/templates/matches/match_detail.html" beforeDir="false" afterPath="$PROJECT_DIR$/matches/templates/matches/match_detail.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/matches/templates/matches/match_list.html" beforeDir="false" afterPath="$PROJECT_DIR$/matches/templates/matches/match_list.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/videogoals/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/videogoals/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/videogoals/settings.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -149,6 +141,8 @@
       <workItem from="1571990718047" duration="19742000" />
       <workItem from="1572270612609" duration="2964000" />
       <workItem from="1572273648797" duration="4060000" />
+      <workItem from="1572359986965" duration="325000" />
+      <workItem from="1572532548020" duration="2684000" />
     </task>
     <servers />
   </component>
