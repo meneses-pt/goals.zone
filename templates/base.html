@@ -1,23 +1,28 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="en">
-
 <head>
+    {% include "snippets/favicon.html" %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title>{% block head_title %}VideoGoals{% endblock %}</title>
     {% include "snippets/css.html" %}
 </head>
 
 <body>
 <div class="container-fluid">
-<div class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
-<div class="container">
-<h1 class="bd-title">VideoGoals</h1>
-</div>
-<div class="container">
-    {% block content %}
-    {% endblock content %}
-</div>
-{% include "snippets/js.html" %}
-</div>
+    <div class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content">
+        <div class="container">
+            <h1 class="bd-title"><a href="{% url 'index' %}">VideoGoals</a></h1>
+        </div>
+        <div class="container">
+            {% block content %}
+            {% endblock content %}
+        </div>
+        {% include "snippets/js.html" %}
+    </div>
 </div>
 </body>
 </html>
