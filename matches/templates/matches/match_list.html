@@ -10,7 +10,7 @@
             <div class="col-12">
                 <ul class="list-group">
                     {% for match in match_list %}
-                        <a class="list-group-item list-group-item-action" href="{% url 'match-detail' pk=match.id %}">
+                        <a class="list-group-item list-group-item-action" href="{% url 'match-detail' slug=match.slug %}">
                             <b>{{ match }}</b>
                             at {{ match.datetime|date:"H:i" }}
                         </a>
