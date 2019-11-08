@@ -24,9 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('SECRET_KEY', '4&h7em$riknyt&y!@9!w@j%d&3s+0gz&xq%p01jw@3g#8p_ixr')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if os.environ.get('SECRET_KEY') != '' else True
+DEBUG = False if os.environ.get('SECRET_KEY') is not None else True
 
-ALLOWED_HOSTS = ['videogoals.meneses.pt']
+ALLOWED_HOSTS = ['videogoals.meneses.pt', '127.0.0.1']
 
 # Application definition
 
