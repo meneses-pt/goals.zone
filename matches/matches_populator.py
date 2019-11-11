@@ -57,6 +57,9 @@ def _save_or_update_match(match):
                                    datetime__gte=match.datetime - timedelta(days=1),
                                    datetime__lte=match.datetime + timedelta(days=1))
     if matches.exists():
+        for match in matches:
+            if not match.slug:
+                match.slug = match.get_unique_slug()
         matches.update(datetime=match.datetime, score=match.score)
     else:
         match.save()
