@@ -62,6 +62,8 @@ def _save_or_update_match(match):
                 match.slug = match.get_unique_slug()
         matches.update(datetime=match.datetime, score=match.score)
     else:
+        if not match.slug:
+            match.slug = match.get_unique_slug()
         match.save()
 
 
