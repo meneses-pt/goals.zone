@@ -42,6 +42,11 @@ def _fetch_scorebat_goals():
                                                datetime__gte=date.today() - timedelta(days=2))
 
                 url = re.findall('src=\'([^\']*)\'', video['embed'])
+                if len(url) > 0:
+                    url = url[0]
+                else:
+                    print(f'No url found [{home}]-[{away}] for: {video_title}')
+                    continue
                 if matches.exists():
                     match = matches.first()
                     # print(f'Match {match} found for: {title}')
