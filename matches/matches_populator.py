@@ -10,8 +10,8 @@ import json
 @background(schedule=60 * 60)
 def fetch_new_matches():
     print('Fetching new matches...')
-    start_date = date.today() - timedelta(days=5)
-    for single_date in (start_date + timedelta(n) for n in range(6)):
+    start_date = date.today() - timedelta(days=2)
+    for single_date in (start_date + timedelta(n) for n in range(3)):
         response = _fetch_data_from_api(single_date)
         data = json.loads(response.content)
         results = data['api']['results']
@@ -57,13 +57,8 @@ def _save_or_update_match(match):
                                    datetime__gte=match.datetime - timedelta(days=1),
                                    datetime__lte=match.datetime + timedelta(days=1))
     if matches.exists():
-        for match in matches:
-            if not match.slug:
-                match.slug = match.get_unique_slug()
         matches.update(datetime=match.datetime, score=match.score)
     else:
-        if not match.slug:
-            match.slug = match.get_unique_slug()
         match.save()
 
 

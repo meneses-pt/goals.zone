@@ -17,7 +17,7 @@ class Match(models.Model):
     def get_absolute_url(self):
         return reverse('match-detail', kwargs={'slug': self.slug})
 
-    def get_unique_slug(self):
+    def _get_unique_slug(self):
         slug = slugify(f'{self.home_team}-{self.away_team}-{self.datetime.strftime("%Y%m%d")}')
         unique_slug = slug
         num = 1
@@ -28,7 +28,7 @@ class Match(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = self.get_unique_slug()
+            self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
 
 
