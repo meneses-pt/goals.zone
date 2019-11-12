@@ -37,8 +37,8 @@ def _fetch_scorebat_goals():
                 else:
                     minute_str = ''
                     print(f'Minute not found for: {video_title}')
-                matches = Match.objects.filter(home_team__unaccent__trigram_similar=home,
-                                               away_team__unaccent__trigram_similar=away,
+                matches = Match.objects.filter(home_team__name__unaccent__trigram_similar=home,
+                                               away_team__name__unaccent__trigram_similar=away,
                                                datetime__gte=date.today() - timedelta(days=2))
 
                 url = re.findall('src=\'([^\']*)\'', video['embed'])
