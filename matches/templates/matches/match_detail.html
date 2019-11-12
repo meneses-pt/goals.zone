@@ -3,7 +3,7 @@
 {% block head_title %}{{ object }} || {{ block.super }}{% endblock head_title %}
 
 {% block content %}
-    <h2>{{ object }} <small>on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small></h2>
+    <h2>{{ object }} <br/><small>on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small></h2>
 
     {% if object.videogoal_set.all.count > 0 %}
         <ul class="list-group">
