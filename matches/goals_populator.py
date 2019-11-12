@@ -102,8 +102,8 @@ def _fetch_reddit_goals():
                         else:
                             minute_str = ''
                             print(f'Minute not found for: {title}')
-                        matches = Match.objects.filter(home_team__unaccent__trigram_similar=home_team,
-                                                       away_team__unaccent__trigram_similar=away_team,
+                        matches = Match.objects.filter(home_team__name__unaccent__trigram_similar=home_team,
+                                                       away_team__name__unaccent__trigram_similar=away_team,
                                                        datetime__gte=date.today() - timedelta(days=2))
                         if matches.exists():
                             match = matches.first()

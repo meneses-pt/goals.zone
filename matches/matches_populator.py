@@ -5,7 +5,7 @@ from datetime import date, datetime, timedelta
 import requests
 from background_task import background
 
-from .models import Match
+from .models import Match, Team
 
 
 @background(schedule=60 * 60)
@@ -18,8 +18,8 @@ def fetch_new_matches():
         results = data['api']['results']
         print(f'{results} matches fetched...')
         for fixture in data['api']['fixtures']:
-            home_team = fixture['homeTeam']['team_name']
-            away_team = fixture['awayTeam']['team_name']
+            home_team = _get_or_create_home_team(fixture)
+            away_team = _get_or_create_away_team(fixture)
             home_goals = fixture['goalsHomeTeam']
             away_goals = fixture['goalsAwayTeam']
             score = None
@@ -39,6 +39,35 @@ def fetch_new_matches():
     pass
 
 
+def _delete_legacy_team(team):
+    legacy_teams = Team.objects.filter(name__exact=team.name, id__gte=9990000)
+    if legacy_teams.exists():
+        for legacy_team in legacy_teams:
+            matches_home = Match.objects.filter(home_team=legacy_team)
+            matches_home.update(home_team=team)
+            matches_away = Match.objects.filter(away_team=legacy_team)
+            matches_away.update(away_team=team)
+            legacy_team.delete()
+
+
+def _get_or_create_away_team(fixture):
+    away_team, away_team_created = Team.objects.get_or_create(id=fixture['awayTeam']['team_id'])
+    away_team.name = fixture['awayTeam']['team_name']
+    away_team.logo = fixture['awayTeam']['logo']
+    away_team.save()
+    _delete_legacy_team(away_team)
+    return away_team
+
+
+def _get_or_create_home_team(fixture):
+    home_team, home_team_created = Team.objects.get_or_create(id=fixture['homeTeam']['team_id'])
+    home_team.name = fixture['homeTeam']['team_name']
+    home_team.logo = fixture['homeTeam']['logo']
+    home_team.save()
+    _delete_legacy_team(home_team)
+    return home_team
+
+
 def _fetch_data_from_api(single_date):
     today_str = single_date.strftime("%Y-%m-%d")
     headers = {
@@ -53,8 +82,8 @@ def _fetch_data_from_api(single_date):
 
 
 def _save_or_update_match(match):
-    matches = Match.objects.filter(home_team__iexact=match.home_team,
-                                   away_team__iexact=match.away_team,
+    matches = Match.objects.filter(home_team=match.home_team,
+                                   away_team=match.away_team,
                                    datetime__gte=match.datetime - timedelta(days=1),
                                    datetime__lte=match.datetime + timedelta(days=1))
     if matches.exists():
