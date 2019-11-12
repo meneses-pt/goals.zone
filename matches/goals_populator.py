@@ -90,8 +90,8 @@ def _fetch_reddit_goals():
             post = post['data']
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
                 title = post['title']
-                home = re.findall('\[?\]?\s?((\w|\s|-)+)((\d|\[\d\])(-| - | -|- ))((\d|\[\d\]))', title)
-                away = re.findall('(\d|\[\d\])(-| - | -|- )(\d|\[\d\])\s?((\w|\s)+)(\:|\s?\||-)?', title)
+                home = re.findall('\[?\]?\s?((\w|\s|-)+)((\d|\[\d\])([-x]| [-x] | [-x]|[-x] ))((\d|\[\d\]))', title)
+                away = re.findall('(\d|\[\d\])([-x]| [-x] | [-x]|[-x] )(\d|\[\d\])\s?((\w|\s)+)(\:|\s?\||-)?', title)
                 minute = re.findall('(\S*\d+\S*)\'', title)
                 if len(home) > 0:
                     home_team = home[0][0].strip()

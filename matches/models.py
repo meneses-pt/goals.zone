@@ -1,12 +1,19 @@
 from django.db import models
-from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils.text import slugify
+
+
+class Team(models.Model):
+    id = models.IntegerField(unique=True, primary_key=True)
+    name = models.CharField(max_length=256)
+    logo = models.CharField(max_length=256)
 
 
 class Match(models.Model):
     home_team = models.CharField(max_length=200)
     away_team = models.CharField(max_length=200)
+    home_team_link = models.ForeignKey(Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
+    away_team_link = models.ForeignKey(Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
@@ -33,7 +40,7 @@ class Match(models.Model):
 
 
 class VideoGoal(models.Model):
-    permalink = models.CharField(max_length=255, unique=True)
+    permalink = models.CharField(max_length=256, unique=True)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     url = models.CharField(max_length=256, null=True)
     title = models.CharField(max_length=200, null=True)
