@@ -1,6 +1,5 @@
-from django.http import HttpResponse
 from datetime import date, timedelta, datetime
-from django.template import loader, context
+
 from django.views import generic
 
 from .models import Match
@@ -24,9 +23,10 @@ class MatchesListView(generic.ListView):
             query_date_str = self.request.GET.get('date')
             query_date_obj = datetime.strptime(query_date_str, '%Y-%m-%d')
         except Exception as e:
-            query_date_obj = date.today()
+            query_date_obj = datetime.today()
         context['date'] = query_date_obj
-        context['date_next'] = query_date_obj + timedelta(days=1)
+        if query_date_obj.date() < date.today():
+            context['date_next'] = query_date_obj + timedelta(days=1)
         context['date_prev'] = query_date_obj - timedelta(days=1)
         return context
 

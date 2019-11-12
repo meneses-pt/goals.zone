@@ -3,7 +3,17 @@
 {% block head_title %}{{ object }} || {{ block.super }}{% endblock head_title %}
 
 {% block content %}
-    <h2>{{ object }} <br/><small>on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small></h2>
+    <h2>
+        {% if match.home_team.logo %}
+            <img src="{{ match.home_team.logo }}" alt="{{ match.home_team.name }}" class="img-fluid detail-img-thumb"/>
+        {% endif %}
+        {{ object }}
+        {% if match.away_team.logo %}
+            <img src="{{ match.away_team.logo }}" alt="{{ match.away_team.name }}" class="img-fluid detail-img-thumb"/>
+        {% endif %}
+        <br/>
+        <small>&nbsp;on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small>
+    </h2>
 
     {% if object.videogoal_set.all.count > 0 %}
         <ul class="list-group">

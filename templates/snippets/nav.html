@@ -1,21 +1,23 @@
 <nav aria-label="Date Navigation">
     <ul class="pagination">
-        <li class="page-item"><a class="page-link"
-                                 href="{% url 'index' %}?date={{ date_prev|date:"Y-m-d" }}">
-            <span aria-hidden="true">&laquo;</span>
-            {{ date_prev|date:"Y-m-d" }}
-        </a>
+        <li class="page-item">
+            <a class="page-link" href="{% url 'index' %}?date={{ date_prev|date:"Y-m-d" }}">
+                <span aria-hidden="true">&laquo;</span>
+                {{ date_prev|date:"Y-m-d" }}
+            </a>
         </li>
         <li class="page-item disabled"><a class="page-link"
-                                 href="{% url 'index' %}?date={{ date|date:"Y-m-d" }}">
+                                          href="{% url 'index' %}?date={{ date|date:"Y-m-d" }}">
             {{ date|date:"Y-m-d" }}
         </a>
         </li>
-        <li class="page-item"><a class="page-link"
-                                 href="{% url 'index' %}?date={{ date_next|date:"Y-m-d" }}">
-            {{ date_next|date:"Y-m-d" }}
-            <span aria-hidden="true">&raquo;</span>
-        </a>
-        </li>
+        {% if date_next %}
+            <li class="page-item">
+                <a class="page-link" href="{% url 'index' %}?date={{ date_next|date:"Y-m-d" }}">
+                    {{ date_next|date:"Y-m-d" }}
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        {% endif %}
     </ul>
 </nav>

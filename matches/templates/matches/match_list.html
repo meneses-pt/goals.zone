@@ -10,8 +10,17 @@
             <div class="col-12">
                 <ul class="list-group">
                     {% for match in match_list %}
-                        <a class="list-group-item list-group-item-action" href="{% url 'match-detail' slug=match.slug %}">
+                        <a class="list-group-item list-group-item-action"
+                           href="{% url 'match-detail' slug=match.slug %}">
+                            {% if match.home_team.logo %}
+                                <img src="{{ match.home_team.logo }}" alt="{{ match.home_team.name }}"
+                                     class="img-fluid list-img-thumb"/>
+                            {% endif %}
                             <b>{{ match }}</b>
+                            {% if match.home_team.logo %}
+                                <img src="{{ match.away_team.logo }}" alt="{{ match.away_team.name }}"
+                                     class="img-fluid list-img-thumb"/>
+                            {% endif %}
                             at {{ match.datetime|date:"H:i" }}
                         </a>
                     {% endfor %}
