@@ -8,24 +8,25 @@ class Team(models.Model):
     name = models.CharField(max_length=256)
     logo = models.CharField(max_length=256)
 
+    def __str__(self):
+        return self.name
+
 
 class Match(models.Model):
-    home_team = models.CharField(max_length=200)
-    away_team = models.CharField(max_length=200)
-    home_team_link = models.ForeignKey(Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
-    away_team_link = models.ForeignKey(Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
+    home_team = models.ForeignKey(Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
+    away_team = models.ForeignKey(Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
 
     def __str__(self):
-        return self.home_team + ' ' + (self.score if self.score else ':') + ' ' + self.away_team
+        return self.home_team.name + ' ' + (self.score if self.score else ':') + ' ' + self.away_team.name
 
     def get_absolute_url(self):
         return reverse('match-detail', kwargs={'slug': self.slug})
 
     def _get_unique_slug(self):
-        slug = slugify(f'{self.home_team}-{self.away_team}-{self.datetime.strftime("%Y%m%d")}')
+        slug = slugify(f'{self.home_team.name}-{self.away_team.name}-{self.datetime.strftime("%Y%m%d")}')
         unique_slug = slug
         num = 1
         while Match.objects.filter(slug=unique_slug).exists():
