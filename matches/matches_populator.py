@@ -1,10 +1,11 @@
-from background_task import background
+import json
+import os
 from datetime import date, datetime, timedelta
 
-from .models import Match
-
 import requests
-import json
+from background_task import background
+
+from .models import Match
 
 
 @background(schedule=60 * 60)
@@ -42,7 +43,7 @@ def _fetch_data_from_api(single_date):
     today_str = single_date.strftime("%Y-%m-%d")
     headers = {
         "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
-        "X-RapidAPI-Key": "pcPW7okGUwmshMx1FkHBxaFEHfOYp1d7uahjsnjOy1uaG957NX"
+        "X-RapidAPI-Key": os.environ.get('RAPIDAPI_KEY')
     }
     response = requests.get(
         f'https://api-football-v1.p.rapidapi.com/v2/fixtures/date/{today_str}?timezone=Europe/London',
