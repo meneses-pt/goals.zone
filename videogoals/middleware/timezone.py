@@ -10,6 +10,10 @@ class TimezoneMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        if "HTTP_X_FORWARDED_FOR" in request.META:
+            request.META["HTTP_X_PROXY_REMOTE_ADDR"] = request.META["REMOTE_ADDR"]
+            parts = request.META["HTTP_X_FORWARDED_FOR"].split(",", 1)
+            request.META["REMOTE_ADDR"] = parts[0]
         ip = request.META["REMOTE_ADDR"]
         g = GeoIP2()
         try:
