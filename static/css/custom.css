@@ -1,5 +1,6 @@
 .list-img-thumb {
-    height: 30px;
+    max-height: 30px;
+    max-width: 30px;
     margin: 5px
 }
 
