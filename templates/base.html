@@ -2,6 +2,9 @@
 <!doctype html>
 <html lang="en">
 <head>
+    {% if not debug %}
+        {% include "snippets/analytics.html" %}
+    {% endif %}
     {% include "snippets/favicon.html" %}
     <!-- Required meta tags -->
     <meta charset="utf-8">
