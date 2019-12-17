@@ -10,18 +10,24 @@
 }
 
 .footer {
-    position: absolute;
+    position: fixed;
+    left: 0;
     bottom: 0;
     width: 100%;
-    height: 60px; /* Set the fixed height of the footer here */
+    height: 60px;
     line-height: 30px;
     background-color: #303030
 }
 
 .footer-content {
-    margin: 0;
-    position: absolute;
+    position: relative;
+    left: 0;
+    bottom: 0;
     top: 50%;
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
+}
+
+.bottom-margin {
+    margin-bottom: 75px;
 }
