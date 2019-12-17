@@ -31,3 +31,41 @@
 .bottom-margin {
     margin-bottom: 75px;
 }
+
+.list-group-img {
+    position: absolute;
+    width: 20px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    top: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    left: 50%;
+}
+
+.list-group-item-left-link {
+    color: #fff;
+    width: 90%;
+    float: left;
+    padding: 0.75rem 1.25rem;
+}
+
+.list-group-item-left-link:hover {
+    color: #ddd;
+    text-decoration: underline;
+}
+
+.list-group-small-link{
+    position: absolute;
+    width: 10%;
+    height: 100%;
+    padding: 0.75rem 0;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
+
+.list-group-item {
+    padding: 0 !important;
+}

@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block head_title %}{{ object }} || {{ block.super }}{% endblock head_title %}
 
@@ -18,9 +19,16 @@
     {% if object.videogoal_set.all.count > 0 %}
         <ul class="list-group">
             {% for goal in object.videogoal_set.all|dictsort:"minute_int" %}
-                <a class="list-group-item list-group-item-action" href="{{ goal.url }}">
-                    {{ goal.title }}
-                </a>
+                <div class="list-group-item list-group-item-action">
+                    <a class="list-group-item-left-link" style="" href="{{ goal.url }}">
+                        {{ goal.title }}
+                    </a>
+                    {% if goal.permalink %}
+                        <a href="http://reddit.com{{ goal.permalink }}" class="float-right list-group-small-link">
+                            <img src="{% static "img/reddit_logo.png" %}" class="list-group-img">
+                        </a>
+                    {% endif %}
+                </div>
             {% endfor %}
         </ul>
     {% else %}

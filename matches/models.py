@@ -49,7 +49,7 @@ class VideoGoal(models.Model):
 
     @property
     def minute_int(self):
-        int_value = float('int')
+        int_value = float('inf')
         try:
             int_value = int(self.minute)
         except ValueError:
