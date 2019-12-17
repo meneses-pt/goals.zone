@@ -17,7 +17,7 @@
 
     {% if object.videogoal_set.all.count > 0 %}
         <ul class="list-group">
-            {% for goal in object.videogoal_set.all|dictsort:"minute" %}
+            {% for goal in object.videogoal_set.all|dictsort:"minute_int" %}
                 <a class="list-group-item list-group-item-action" href="{{ goal.url }}">
                     {{ goal.title }}
                 </a>

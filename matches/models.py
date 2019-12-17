@@ -47,5 +47,14 @@ class VideoGoal(models.Model):
     title = models.CharField(max_length=200, null=True)
     minute = models.CharField(max_length=10, null=True)
 
+    @property
+    def minute_int(self):
+        int_value = float('int')
+        try:
+            int_value = int(self.minute)
+        except ValueError:
+            print('Not a valid minute')
+        return int_value
+
     def __str__(self):
         return self.title
