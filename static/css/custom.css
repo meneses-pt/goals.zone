@@ -69,3 +69,11 @@
 .list-group-item.no-padding {
     padding: 0;
 }
+
+.donate-form {
+    right: 0;
+    top: 0;
+    position: absolute;
+    height: auto;
+    margin: 10px;
+}

@@ -1,0 +1,71 @@
+<footer class="footer">
+    <div class="container-fluid footer-content">
+        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#aboutModal">
+            About
+        </button>
+        <button type="button" class="btn btn-link" data-toggle="modal" data-target="#disclaimerModal">
+            Disclaimer
+        </button>
+    </div>
+    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top" class="donate-form">
+        <input type="hidden" name="cmd" value="_donations"/>
+        <input type="hidden" name="business" value="BUUD7DZH6FZWS"/>
+        <input type="hidden" name="item_name" value="Maintain and update VideoGoals website."/>
+        <input type="hidden" name="currency_code" value="EUR"/>
+        <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit"
+               title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button"/>
+        <img alt="" border="0" src="https://www.paypal.com/en_PT/i/scr/pixel.gif" width="1" height="1"/>
+    </form>
+</footer>
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">About</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    VideoGoals automatically fetches latest posts from <a href="https://www.reddit.com/r/soccer">/r/soccer</a>
+                    subreddit that contain videos of goals and that correspond to a football match.
+                </p>
+                <p>
+                    This is an Open Source project, and the code is available on <a
+                        href="https://github.com/meneses-pt/videogoals">GitHub</a>
+                </p>
+                <p>
+                    You can reach me at <a href="mailto:andre@meneses.pt">andre@meneses.pt</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="disclaimerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Disclaimer</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>
+                    This website is not responsible for, and does not own any of the content of the links that are here
+                    published.
+                </p>
+                <p>
+                    VideoGoals was built with an academic purpose and with no intention of profiting over it.
+                </p>
+                <p>
+                    This is an open source project and the donate button exists with the sole purpose of helping the
+                    owner with the server and maintenance costs.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
