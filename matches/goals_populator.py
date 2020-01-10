@@ -40,7 +40,7 @@ def find_and_store_match(post, title):
     home_team, away_team, minute_str = extract_names_from_title(title)
     if home_team is None or away_team is None:
         return
-    matches_results = find_match(away_team, home_team, from_date=date.today())
+    matches_results = find_match(home_team, away_team, from_date=date.today())
     print(f'[{home_team}]-[{away_team}] Results: {matches_results}')
     if matches_results.exists():
         match = matches_results.first()
