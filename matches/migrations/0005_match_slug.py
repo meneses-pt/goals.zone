@@ -6,8 +6,10 @@ from matches.models import Match
 
 
 def migrate_data_forward(apps, schema_editor):
-    for instance in Match.objects.all():
-        instance.save()  # Will trigger slug update
+    # only applicable to one migration
+    # # for instance in Match.objects.all():
+    # #     instance.save()  # Will trigger slug update
+    pass
 
 
 def migrate_data_backward(apps, schema_editor):

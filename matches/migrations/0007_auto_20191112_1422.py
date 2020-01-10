@@ -7,25 +7,27 @@ from matches.models import Match, Team
 
 
 def link_teams(apps, schema_editor):
-    print(f'Starting to link teams')
-    teams = list()
-    for match in Match.objects.all():
-        teams.append(match.home_team)
-        teams.append(match.away_team)
-    teams = list(set(teams))
-    print(f'Teams in database: {len(teams)}')
-    i = 9990000
-    for team in teams:
-        print(f'Creating: {team}')
-        Team.objects.create(name=team, id=i)
-        i += 1
-    for match in Match.objects.all():
-        print(f'Linking match: {match.home_team} - {match.away_team}')
-        home_team = Team.objects.get(name=match.home_team)
-        away_team = Team.objects.get(name=match.away_team)
-        match.home_team_link = home_team
-        match.away_team_link = away_team
-        match.save()
+    # only applicable to one migration
+    # # print(f'Starting to link teams')
+    # # teams = list()
+    # # for match in Match.objects.all():
+    # #     teams.append(match.home_team)
+    # #     teams.append(match.away_team)
+    # # teams = list(set(teams))
+    # # print(f'Teams in database: {len(teams)}')
+    # # i = 9990000
+    # # for team in teams:
+    # #     print(f'Creating: {team}')
+    # #     Team.objects.create(name=team, id=i)
+    # #     i += 1
+    # # for match in Match.objects.all():
+    # #     print(f'Linking match: {match.home_team} - {match.away_team}')
+    # #     home_team = Team.objects.get(name=match.home_team)
+    # #     away_team = Team.objects.get(name=match.away_team)
+    # #     match.home_team_link = home_team
+    # #     match.away_team_link = away_team
+    # #     match.save()
+    pass
 
 
 class Migration(migrations.Migration):
