@@ -84,6 +84,7 @@ def extract_names_from_title(title):
 
 
 def find_match(home_team, away_team, from_date=date.today()):
+    print(f"find_match('{home_team}','{away_team}')")
     affiliate_home = re.findall(r'( W| U19| U20| U21| U23)$', home_team)
     affiliate_away = re.findall(r'( W| U19| U20| U21| U23)$', away_team)
     matches = Match.objects.filter(home_team__name__unaccent__trigram_similar=home_team,
