@@ -88,7 +88,9 @@ def find_match(home_team, away_team, from_date=date.today()):
     affiliate_away = re.findall(r'( W| U19| U20| U21| U23)$', away_team)
     matches = Match.objects.filter(home_team__name__unaccent__trigram_similar=home_team,
                                    away_team__name__unaccent__trigram_similar=away_team,
-                                   datetime__gte=from_date - timedelta(days=2))
+                                   datetime__gte=(from_date - timedelta(days=2)))
+    print(matches)
+    print(from_date - timedelta(days=2))
     if len(affiliate_home) > 0:
         matches = matches.filter(home_team__name__contains=affiliate_home[0])
     else:
