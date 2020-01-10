@@ -41,7 +41,6 @@ def find_and_store_match(post, title):
     if home_team is None or away_team is None:
         return
     matches_results = find_match(home_team, away_team, from_date=date.today())
-    print(f'[{home_team}]-[{away_team}] Results: {matches_results}')
     if matches_results.exists():
         match = matches_results.first()
         # print(f'Match {match} found for: {title}')
@@ -84,14 +83,11 @@ def extract_names_from_title(title):
 
 
 def find_match(home_team, away_team, from_date=date.today()):
-    print(f"find_match('{home_team}','{away_team}')")
     affiliate_home = re.findall(r'( W| U19| U20| U21| U23)$', home_team)
     affiliate_away = re.findall(r'( W| U19| U20| U21| U23)$', away_team)
     matches = Match.objects.filter(home_team__name__unaccent__trigram_similar=home_team,
                                    away_team__name__unaccent__trigram_similar=away_team,
                                    datetime__gte=(from_date - timedelta(days=2)))
-    print(matches)
-    print(from_date - timedelta(days=2))
     if len(affiliate_home) > 0:
         matches = matches.filter(home_team__name__contains=affiliate_home[0])
     else:
