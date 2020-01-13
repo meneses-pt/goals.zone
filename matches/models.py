@@ -12,6 +12,14 @@ class Team(models.Model):
         return self.name
 
 
+class TeamAlias(models.Model):
+    alias = models.CharField(max_length=256)
+    team = models.ForeignKey(Team, related_name="alias", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.alias + " - Original: " + self.team.name
+
+
 class Match(models.Model):
     home_team = models.ForeignKey(Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
     away_team = models.ForeignKey(Team, related_name='away_team', null=True, on_delete=models.SET_NULL)

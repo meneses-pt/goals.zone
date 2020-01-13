@@ -126,3 +126,6 @@ dmypy.json
 
 # Idea
 .idea/
+
+# Local Scripts
+/local/
