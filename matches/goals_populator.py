@@ -83,8 +83,8 @@ def extract_names_from_title(title):
 
 
 def find_match(home_team, away_team, from_date=date.today()):
-    affiliate_home = re.findall(r'( W| U19| U20| U21| U23)$', home_team)
-    affiliate_away = re.findall(r'( W| U19| U20| U21| U23)$', away_team)
+    affiliate_home = re.findall(r'( W| U19| U20| U21| U23| II)$', home_team)
+    affiliate_away = re.findall(r'( W| U19| U20| U21| U23| II)$', away_team)
     matches = Match.objects.filter(Q(home_team__name__unaccent__trigram_similar=home_team) |
                                    Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
                                    Q(away_team__name__unaccent__trigram_similar=away_team) |
@@ -97,7 +97,8 @@ def find_match(home_team, away_team, from_date=date.today()):
                                   Q(home_team__name__contains=' U19') |
                                   Q(home_team__name__contains=' U20') |
                                   Q(home_team__name__contains=' U21') |
-                                  Q(home_team__name__contains=' U23'))
+                                  Q(home_team__name__contains=' U23') |
+                                  Q(home_team__name__contains=' II'))
     if len(affiliate_away) > 0:
         matches = matches.filter(away_team__name__contains=affiliate_away[0])
     else:
@@ -105,7 +106,8 @@ def find_match(home_team, away_team, from_date=date.today()):
                                   Q(away_team__name__contains=' U19') |
                                   Q(away_team__name__contains=' U20') |
                                   Q(away_team__name__contains=' U21') |
-                                  Q(away_team__name__contains=' U23'))
+                                  Q(away_team__name__contains=' U23') |
+                                  Q(home_team__name__contains=' II'))
     return matches
 
 
