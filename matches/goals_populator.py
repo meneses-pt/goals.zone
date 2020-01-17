@@ -1,6 +1,8 @@
 import json
+import operator
 import re
 from datetime import date, timedelta
+from functools import reduce
 
 import requests
 from background_task import background
@@ -83,31 +85,25 @@ def extract_names_from_title(title):
 
 
 def find_match(home_team, away_team, from_date=date.today()):
-    affiliate_home = re.findall(r'( W| U19| U20| U21| U23| II)$', home_team)
-    affiliate_away = re.findall(r'( W| U19| U20| U21| U23| II)$', away_team)
+    affiliate_terms = ['W', 'U19', 'U20', 'U21', 'U23', 'II', 'B']
+    regex_string = r'( ' + r'| '.join(affiliate_terms) + r')$'
+    affiliate_home = re.findall(regex_string, home_team)
+    affiliate_away = re.findall(regex_string, away_team)
     matches = Match.objects.filter(Q(home_team__name__unaccent__trigram_similar=home_team) |
                                    Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
                                    Q(away_team__name__unaccent__trigram_similar=away_team) |
                                    Q(away_team__alias__alias__unaccent__trigram_similar=away_team),
                                    datetime__gte=(from_date - timedelta(days=2)))
     if len(affiliate_home) > 0:
-        matches = matches.filter(home_team__name__contains=affiliate_home[0])
+        matches = matches.filter(home_team__name__endswith=affiliate_home[0])
     else:
-        matches = matches.exclude(Q(home_team__name__contains=' W') |
-                                  Q(home_team__name__contains=' U19') |
-                                  Q(home_team__name__contains=' U20') |
-                                  Q(home_team__name__contains=' U21') |
-                                  Q(home_team__name__contains=' U23') |
-                                  Q(home_team__name__contains=' II'))
+        matches = matches.exclude(
+            reduce(operator.or_, (Q(home_team__name__endswith=f' {term}') for term in affiliate_terms)))
     if len(affiliate_away) > 0:
-        matches = matches.filter(away_team__name__contains=affiliate_away[0])
+        matches = matches.filter(away_team__name__endswith=affiliate_away[0])
     else:
-        matches = matches.exclude(Q(away_team__name__contains=' W') |
-                                  Q(away_team__name__contains=' U19') |
-                                  Q(away_team__name__contains=' U20') |
-                                  Q(away_team__name__contains=' U21') |
-                                  Q(away_team__name__contains=' U23') |
-                                  Q(home_team__name__contains=' II'))
+        matches = matches.exclude(
+            reduce(operator.or_, (Q(away_team__name__endswith=f' {term}') for term in affiliate_terms)))
     return matches
 
 
