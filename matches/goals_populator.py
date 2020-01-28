@@ -1,6 +1,7 @@
 import json
 import operator
 import re
+import time
 from datetime import date, timedelta
 from functools import reduce
 
@@ -15,6 +16,8 @@ from matches.models import Match, VideoGoal
 def fetch_videogoals():
     print('Fetching new goals')
     _fetch_reddit_goals()
+    # How to get historic data
+    # _fetch_reddit_goals_from_date(days_ago=30)
 
 
 def _fetch_reddit_goals():
@@ -35,6 +38,23 @@ def _fetch_reddit_goals():
                 find_and_store_match(post, title)
         after = data['data']['after']
         i += 1
+    print('Finished fetching goals')
+
+
+def _fetch_reddit_goals_from_date(days_ago=2):
+    start_date = date.today() - timedelta(days=days_ago)
+    for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
+        response = _fetch_historic_data_from_reddit_api(single_date)
+        data = json.loads(response.content)
+        if 'data' not in data.keys():
+            print(f'No data in response: {response.content}')
+            return
+        results = len(data['data'])
+        print(f'{results} posts fetched...')
+        for post in data['data']:
+            if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
+                title = post['title']
+                find_and_store_match(post, title)
     print('Finished fetching goals')
 
 
@@ -113,4 +133,17 @@ def _fetch_data_from_reddit_api(after):
     }
     response = requests.get(f'http://api.reddit.com/r/soccer/new?limit=100&after={after}',
                             headers=headers)
+    return response
+
+
+def _fetch_historic_data_from_reddit_api(from_date):
+    after = int(time.mktime(from_date.timetuple()))
+    before = int(after + 86400)  # a day
+    headers = {
+        "User-agent": "Goals Populator 0.1"
+    }
+    response = requests.get(
+        f'https://api.pushshift.io/reddit/search/submission/'
+        f'?subreddit=soccer&sort=desc&sort_type=created_utc&after={after}&before={before}&size=1000',
+        headers=headers)
     return response

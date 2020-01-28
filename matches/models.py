@@ -1,3 +1,7 @@
+import os
+from urllib import request
+
+from django.core.files import File
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -6,10 +10,20 @@ from django.utils.text import slugify
 class Team(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=256)
-    logo = models.CharField(max_length=256)
+    logo_url = models.CharField(max_length=256)
+    logo_file = models.ImageField(upload_to='media/logos', default=None)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self.logo_url and not self.logo_file:
+            result = request.urlretrieve(self.logo_url)
+            self.logo_file.save(
+                os.path.basename(self.logo_url),
+                File(open(result[0], 'rb'))
+            )
+        super().save(*args, **kwargs)
 
 
 class TeamAlias(models.Model):

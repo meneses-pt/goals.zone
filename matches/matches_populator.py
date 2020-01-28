@@ -8,18 +8,24 @@ from background_task import background
 from .models import Match, Team
 
 
-@background(schedule=60 * 60)
+@background(schedule=60 * 5)
 def fetch_new_matches():
     print('Fetching new matches...')
-    start_date = date.today() - timedelta(days=2)
-    for single_date in (start_date + timedelta(n) for n in range(3)):
-        response = _fetch_data_from_api(single_date)
+    fetch_matches_from_sofascore()
+    # How to get historic data
+    # fetch_matches_from_sofascore(days_ago=30)
+
+
+def fetch_matches_from_rapidapi(days_ago=2):
+    start_date = date.today() - timedelta(days=days_ago)
+    for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
+        response = _fetch_data_from_rapidpi_api(single_date)
         data = json.loads(response.content)
         results = data['api']['results']
         print(f'{results} matches fetched...')
         for fixture in data['api']['fixtures']:
-            home_team = _get_or_create_home_team(fixture)
-            away_team = _get_or_create_away_team(fixture)
+            home_team = _get_or_create_home_team_rapidapi(fixture)
+            away_team = _get_or_create_away_team_rapidapi(fixture)
             home_goals = fixture['goalsHomeTeam']
             away_goals = fixture['goalsAwayTeam']
             score = None
@@ -36,39 +42,71 @@ def fetch_new_matches():
             _save_or_update_match(match)
         print(f'Ended processing day {single_date}')
     print('Ended processing matches')
-    pass
 
 
-def _delete_legacy_team(team):
-    legacy_teams = Team.objects.filter(name__exact=team.name, id__gte=9990000)
-    if legacy_teams.exists():
-        for legacy_team in legacy_teams:
-            matches_home = Match.objects.filter(home_team=legacy_team)
-            matches_home.update(home_team=team)
-            matches_away = Match.objects.filter(away_team=legacy_team)
-            matches_away.update(away_team=team)
-            legacy_team.delete()
+def fetch_matches_from_sofascore(days_ago=0):
+    start_date = date.today() - timedelta(days=days_ago)
+    for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
+        response = _fetch_data_from_sofascore_api(single_date)
+        data = json.loads(response.content)
+        for tournament in data['sportItem']['tournaments']:
+            for fixture in tournament["events"]:
+                home_team = _get_or_create_home_team_sofascore(fixture)
+                away_team = _get_or_create_away_team_sofascore(fixture)
+                score = None
+                if 'display' in fixture['homeScore'] and 'display' in fixture['awayScore']:
+                    home_goals = fixture['homeScore']['display']
+                    away_goals = fixture['awayScore']['display']
+                    if home_goals is not None and away_goals is not None:
+                        score = f'{home_goals}:{away_goals}'
+                start_timestamp = fixture["startTimestamp"]
+                match_datetime = datetime.fromtimestamp(start_timestamp)
+                print(f'{home_team} - {away_team} | {score} at {match_datetime}')
+                match = Match()
+                match.home_team = home_team
+                match.away_team = away_team
+                match.score = score
+                match.datetime = match_datetime
+                _save_or_update_match(match)
+        print(f'Ended processing day {single_date}')
+    print('Ended processing matches')
 
 
-def _get_or_create_away_team(fixture):
+def _get_or_create_away_team_rapidapi(fixture):
     away_team, away_team_created = Team.objects.get_or_create(id=fixture['awayTeam']['team_id'])
     away_team.name = fixture['awayTeam']['team_name']
-    away_team.logo = fixture['awayTeam']['logo']
+    away_team.logo_url = fixture['awayTeam']['logo']
     away_team.save()
-    _delete_legacy_team(away_team)
     return away_team
 
 
-def _get_or_create_home_team(fixture):
+def _get_or_create_away_team_sofascore(fixture):
+    team_id = fixture['awayTeam']['id']
+    away_team, away_team_created = Team.objects.get_or_create(id=team_id)
+    away_team.name = fixture['awayTeam']['name']
+    away_team.logo_url = f"https://www.sofascore.com/images/team-logo/football_{team_id}.png"
+    away_team.save()
+    return away_team
+
+
+def _get_or_create_home_team_rapidapi(fixture):
     home_team, home_team_created = Team.objects.get_or_create(id=fixture['homeTeam']['team_id'])
     home_team.name = fixture['homeTeam']['team_name']
-    home_team.logo = fixture['homeTeam']['logo']
+    home_team.logo_url = fixture['homeTeam']['logo']
     home_team.save()
-    _delete_legacy_team(home_team)
     return home_team
 
 
-def _fetch_data_from_api(single_date):
+def _get_or_create_home_team_sofascore(fixture):
+    team_id = fixture['homeTeam']['id']
+    away_team, away_team_created = Team.objects.get_or_create(id=team_id)
+    away_team.name = fixture['homeTeam']['name']
+    away_team.logo_url = f"https://www.sofascore.com/images/team-logo/football_{team_id}.png"
+    away_team.save()
+    return away_team
+
+
+def _fetch_data_from_rapidpi_api(single_date):
     today_str = single_date.strftime("%Y-%m-%d")
     headers = {
         "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
@@ -77,6 +115,14 @@ def _fetch_data_from_api(single_date):
     response = requests.get(
         f'https://api-football-v1.p.rapidapi.com/v2/fixtures/date/{today_str}?timezone=Europe/London',
         headers=headers
+    )
+    return response
+
+
+def _fetch_data_from_sofascore_api(single_date):
+    today_str = single_date.strftime("%Y-%m-%d")
+    response = requests.get(
+        f'https://www.sofascore.com/football//{today_str}/json'
     )
     return response
 
