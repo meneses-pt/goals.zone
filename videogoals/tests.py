@@ -294,4 +294,4 @@ class AffiliateTeamsTestCase(TestCase):
         matches = find_match(home, away, from_date=datetime.datetime(2019, 12, 11))
         assert len(matches) > 0
         match_id = matches.first().id
-        assert match_id == (8602 + 2)
+        assert match_id == 8602
