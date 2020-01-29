@@ -1,5 +1,7 @@
 # VideoGoals
 
+[![Build Status](https://travis-ci.org/meneses-pt/videogoals.svg?branch=master)](https://travis-ci.org/meneses-pt/videogoals)
+
 The aim of this project is to make a website available where one could easily search for videos of goals in footbal (soccer), matches posted to reddit.com (/r/soccer)
 
 ## Getting Started
