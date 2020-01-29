@@ -1,1 +1,1442 @@
-[{"model": "matches.team", "pk": 5409, "fields": {"name": "PWD", "logo": "https://media.api-football.com/teams/5409.png"}}, {"model": "matches.team", "pk": 2895, "fields": {"name": "Al Sadd", "logo": "https://media.api-football.com/teams/2895.png"}}, {"model": "matches.team", "pk": 4574, "fields": {"name": "Salam Zgharta", "logo": "https://media.api-football.com/teams/4574.png"}}, {"model": "matches.team", "pk": 1046, "fields": {"name": "Wadi Degla", "logo": "https://media.api-football.com/teams/1046.png"}}, {"model": "matches.team", "pk": 85, "fields": {"name": "Paris Saint Germain", "logo": "https://media.api-football.com/teams/85.png"}}, {"model": "matches.team", "pk": 2954, "fields": {"name": "Al-Ansar", "logo": "https://media.api-football.com/teams/2954.png"}}, {"model": "matches.team", "pk": 5223, "fields": {"name": "Herentals", "logo": "https://media.api-football.com/teams/5223.png"}}, {"model": "matches.team", "pk": 5227, "fields": {"name": "Manica Diamonds", "logo": "https://media.api-football.com/teams/5227.png"}}, {"model": "matches.team", "pk": 5230, "fields": {"name": "Platinum", "logo": "https://media.api-football.com/teams/5230.png"}}, {"model": "matches.team", "pk": 5229, "fields": {"name": "Ngezi Platinum", "logo": "https://media.api-football.com/teams/5229.png"}}, {"model": "matches.team", "pk": 5231, "fields": {"name": "TelOne", "logo": "https://media.api-football.com/teams/5231.png"}}, {"model": "matches.team", "pk": 5221, "fields": {"name": "Dynamos", "logo": "https://media.api-football.com/teams/5221.png"}}, {"model": "matches.team", "pk": 5224, "fields": {"name": "Highlanders", "logo": "https://media.api-football.com/teams/5224.png"}}, {"model": "matches.team", "pk": 7896, "fields": {"name": "Dinamo Zagreb U19", "logo": "https://media.api-football.com/teams/7896.png"}}, {"model": "matches.team", "pk": 7893, "fields": {"name": "Club Brugge U19", "logo": "https://media.api-football.com/teams/7893.png"}}, {"model": "matches.team", "pk": 7886, "fields": {"name": "Bayer Leverkusen U19", "logo": "https://media.api-football.com/teams/7886.png"}}, {"model": "matches.team", "pk": 5429, "fields": {"name": "Security Systems", "logo": "https://media.api-football.com/teams/5429.png"}}, {"model": "matches.team", "pk": 7884, "fields": {"name": "Atl\u00e9tico Madrid U19", "logo": "https://media.api-football.com/teams/7884.png"}}, {"model": "matches.team", "pk": 5423, "fields": {"name": "Miscellaneous", "logo": "https://media.api-football.com/teams/5423.png"}}, {"model": "matches.team", "pk": 7921, "fields": {"name": "PSG U19", "logo": "https://media.api-football.com/teams/7921.png"}}, {"model": "matches.team", "pk": 7887, "fields": {"name": "Bayern M\u00fcnchen U19", "logo": "https://media.api-football.com/teams/7887.png"}}, {"model": "matches.team", "pk": 7929, "fields": {"name": "Shakhtar Donetsk U19", "logo": "https://media.api-football.com/teams/7929.png"}}, {"model": "matches.team", "pk": 7918, "fields": {"name": "Olympiakos Piraeus U19", "logo": "https://media.api-football.com/teams/7918.png"}}, {"model": "matches.team", "pk": 5417, "fields": {"name": "BR Highlanders", "logo": "https://media.api-football.com/teams/5417.png"}}, {"model": "matches.team", "pk": 17, "fields": {"name": "South Korea", "logo": "https://media.api-football.com/teams/17.png"}}, {"model": "matches.team", "pk": 6437, "fields": {"name": "Vita Club", "logo": "https://media.api-football.com/teams/6437.png"}}, {"model": "matches.team", "pk": 5226, "fields": {"name": "Kariba", "logo": "https://media.api-football.com/teams/5226.png"}}, {"model": "matches.team", "pk": 5238, "fields": {"name": "Al Khartoum", "logo": "https://media.api-football.com/teams/5238.png"}}, {"model": "matches.team", "pk": 2461, "fields": {"name": "Chemelil Sugar", "logo": "https://media.api-football.com/teams/2461.png"}}, {"model": "matches.team", "pk": 2478, "fields": {"name": "Wazito FC", "logo": "https://media.api-football.com/teams/2478.png"}}, {"model": "matches.team", "pk": 2471, "fields": {"name": "Western Stima", "logo": "https://media.api-football.com/teams/2471.png"}}, {"model": "matches.team", "pk": 990, "fields": {"name": "Etoile DU Sahel", "logo": "https://media.api-football.com/teams/990.png"}}, {"model": "matches.team", "pk": 569, "fields": {"name": "Club Brugge KV", "logo": "https://media.api-football.com/teams/569.png"}}, {"model": "matches.team", "pk": 2699, "fields": {"name": "Mamelodi Sundowns", "logo": "https://media.api-football.com/teams/2699.png"}}, {"model": "matches.team", "pk": 1715, "fields": {"name": "Juventus U23", "logo": "https://media.api-football.com/teams/1715.png"}}, {"model": "matches.team", "pk": 1591, "fields": {"name": "Pontedera", "logo": "https://media.api-football.com/teams/1591.png"}}, {"model": "matches.team", "pk": 530, "fields": {"name": "Atletico Madrid", "logo": "https://media.api-football.com/teams/530.png"}}, {"model": "matches.team", "pk": 550, "fields": {"name": "Shakhtar Donetsk", "logo": "https://media.api-football.com/teams/550.png"}}, {"model": "matches.team", "pk": 168, "fields": {"name": "Bayer Leverkusen", "logo": "https://media.api-football.com/teams/168.png"}}, {"model": "matches.team", "pk": 553, "fields": {"name": "Olympiakos Piraeus", "logo": "https://media.api-football.com/teams/553.png"}}, {"model": "matches.team", "pk": 2401, "fields": {"name": "Dorogi FC", "logo": "https://media.api-football.com/teams/2401.png"}}, {"model": "matches.team", "pk": 976, "fields": {"name": "Raja Casablanca", "logo": "https://media.api-football.com/teams/976.png"}}, {"model": "matches.team", "pk": 620, "fields": {"name": "Dinamo Zagreb", "logo": "https://media.api-football.com/teams/620.png"}}, {"model": "matches.team", "pk": 890, "fields": {"name": "Paganese", "logo": "https://media.api-football.com/teams/890.png"}}, {"model": "matches.team", "pk": 3703, "fields": {"name": "Club Destroyers", "logo": "https://media.api-football.com/teams/3703.png"}}, {"model": "matches.team", "pk": 3662, "fields": {"name": "Guastatoya", "logo": "https://media.api-football.com/teams/3662.png"}}, {"model": "matches.team", "pk": 2442, "fields": {"name": "Pusamania Borneo", "logo": "https://media.api-football.com/teams/2442.png"}}, {"model": "matches.team", "pk": 2947, "fields": {"name": "Jeddah Club", "logo": "https://media.api-football.com/teams/2947.png"}}, {"model": "matches.team", "pk": 5424, "fields": {"name": "Notwane", "logo": "https://media.api-football.com/teams/5424.png"}}, {"model": "matches.team", "pk": 2957, "fields": {"name": "Al Shoalah", "logo": "https://media.api-football.com/teams/2957.png"}}, {"model": "matches.team", "pk": 2865, "fields": {"name": "Al Ain", "logo": "https://media.api-football.com/teams/2865.png"}}, {"model": "matches.team", "pk": 2870, "fields": {"name": "Shabab Al Ahli Dubai", "logo": "https://media.api-football.com/teams/2870.png"}}, {"model": "matches.team", "pk": 5422, "fields": {"name": "Galaxy", "logo": "https://media.api-football.com/teams/5422.png"}}, {"model": "matches.team", "pk": 2869, "fields": {"name": "Hatta SC", "logo": "https://media.api-football.com/teams/2869.png"}}, {"model": "matches.team", "pk": 7230, "fields": {"name": "Guernsey", "logo": "https://media.api-football.com/teams/7230.png"}}, {"model": "matches.team", "pk": 2450, "fields": {"name": "Persela Lamongan", "logo": "https://media.api-football.com/teams/2450.png"}}, {"model": "matches.team", "pk": 2872, "fields": {"name": "Al-Wasl FC", "logo": "https://media.api-football.com/teams/2872.png"}}, {"model": "matches.team", "pk": 972, "fields": {"name": "Olympique Khouribga", "logo": "https://media.api-football.com/teams/972.png"}}, {"model": "matches.team", "pk": 5242, "fields": {"name": "Al Shorta", "logo": "https://media.api-football.com/teams/5242.png"}}, {"model": "matches.team", "pk": 1681, "fields": {"name": "Vibonese", "logo": "https://media.api-football.com/teams/1681.png"}}, {"model": "matches.team", "pk": 1030, "fields": {"name": "Ismaily SC", "logo": "https://media.api-football.com/teams/1030.png"}}, {"model": "matches.team", "pk": 2348, "fields": {"name": "Penarol", "logo": "https://media.api-football.com/teams/2348.png"}}, {"model": "matches.team", "pk": 3423, "fields": {"name": "Digenis Morphou", "logo": "https://media.api-football.com/teams/3423.png"}}, {"model": "matches.team", "pk": 157, "fields": {"name": "Bayern Munich", "logo": "https://media.api-football.com/teams/157.png"}}, {"model": "matches.team", "pk": 76, "fields": {"name": "Swansea", "logo": "https://media.api-football.com/teams/76.png"}}, {"model": "matches.team", "pk": 69, "fields": {"name": "Derby", "logo": "https://media.api-football.com/teams/69.png"}}, {"model": "matches.team", "pk": 747, "fields": {"name": "Barnsley", "logo": "https://media.api-football.com/teams/747.png"}}, {"model": "matches.team", "pk": 54, "fields": {"name": "Birmingham", "logo": "https://media.api-football.com/teams/54.png"}}, {"model": "matches.team", "pk": 55, "fields": {"name": "Brentford", "logo": "https://media.api-football.com/teams/55.png"}}, {"model": "matches.team", "pk": 61, "fields": {"name": "Wigan", "logo": "https://media.api-football.com/teams/61.png"}}, {"model": "matches.team", "pk": 643, "fields": {"name": "FK Mladost Podgorica", "logo": "https://media.api-football.com/teams/643.png"}}, {"model": "matches.team", "pk": 579, "fields": {"name": "Buducnost Podgorica", "logo": "https://media.api-football.com/teams/579.png"}}, {"model": "matches.team", "pk": 3467, "fields": {"name": "Mohun Bagan", "logo": "https://media.api-football.com/teams/3467.png"}}, {"model": "matches.team", "pk": 5200, "fields": {"name": "Green Eagles", "logo": "https://media.api-football.com/teams/5200.png"}}, {"model": "matches.team", "pk": 2453, "fields": {"name": "Barito Putera", "logo": "https://media.api-football.com/teams/2453.png"}}, {"model": "matches.team", "pk": 1576, "fields": {"name": "Haras El Hodood", "logo": "https://media.api-football.com/teams/1576.png"}}, {"model": "matches.team", "pk": 4194, "fields": {"name": "Akademija Pandev", "logo": "https://media.api-football.com/teams/4194.png"}}, {"model": "matches.team", "pk": 7177, "fields": {"name": "Odisha", "logo": "https://media.api-football.com/teams/7177.png"}}, {"model": "matches.team", "pk": 4570, "fields": {"name": "Al Nejmeh", "logo": "https://media.api-football.com/teams/4570.png"}}, {"model": "matches.team", "pk": 3701, "fields": {"name": "Blooming", "logo": "https://media.api-football.com/teams/3701.png"}}, {"model": "matches.team", "pk": 5280, "fields": {"name": "UD Logro\u00f1\u00e9s", "logo": "https://media.api-football.com/teams/5280.png"}}, {"model": "matches.team", "pk": 2928, "fields": {"name": "Al Khaleej Saihat", "logo": "https://media.api-football.com/teams/2928.png"}}, {"model": "matches.team", "pk": 5551, "fields": {"name": "Hilal El-Fasher", "logo": "https://media.api-football.com/teams/5551.png"}}, {"model": "matches.team", "pk": 2958, "fields": {"name": "Al Jabalain", "logo": "https://media.api-football.com/teams/2958.png"}}, {"model": "matches.team", "pk": 1843, "fields": {"name": "Havant & Wville", "logo": "https://media.api-football.com/teams/1843.png"}}, {"model": "matches.team", "pk": 3445, "fields": {"name": "Tivoli Gardens", "logo": "https://media.api-football.com/teams/3445.png"}}, {"model": "matches.team", "pk": 7753, "fields": {"name": "Tiverton Town", "logo": "https://media.api-football.com/teams/7753.png"}}, {"model": "matches.team", "pk": 2462, "fields": {"name": "Homeboyz", "logo": "https://media.api-football.com/teams/2462.png"}}, {"model": "matches.team", "pk": 598, "fields": {"name": "FK Crvena Zvezda", "logo": "https://media.api-football.com/teams/598.png"}}, {"model": "matches.team", "pk": 6407, "fields": {"name": "Molynes United", "logo": "https://media.api-football.com/teams/6407.png"}}, {"model": "matches.team", "pk": 7763, "fields": {"name": "Hyderabad", "logo": "https://media.api-football.com/teams/7763.png"}}, {"model": "matches.team", "pk": 1577, "fields": {"name": "Al Ahly", "logo": "https://media.api-football.com/teams/1577.png"}}, {"model": "matches.team", "pk": 9261, "fields": {"name": "TRAU", "logo": "https://media.api-football.com/teams/9261.png"}}, {"model": "matches.team", "pk": 7455, "fields": {"name": "Kansanshi Dynamos", "logo": "https://media.api-football.com/teams/7455.png"}}, {"model": "matches.team", "pk": 2946, "fields": {"name": "Al Najoom", "logo": "https://media.api-football.com/teams/2946.png"}}, {"model": "matches.team", "pk": 2960, "fields": {"name": "Al Nahdha", "logo": "https://media.api-football.com/teams/2960.png"}}, {"model": "matches.team", "pk": 2474, "fields": {"name": "Ulinzi Stars", "logo": "https://media.api-football.com/teams/2474.png"}}, {"model": "matches.team", "pk": 6257, "fields": {"name": "Al Taqdom", "logo": "https://media.api-football.com/teams/6257.png"}}, {"model": "matches.team", "pk": 5216, "fields": {"name": "Black Rhinos", "logo": "https://media.api-football.com/teams/5216.png"}}, {"model": "matches.team", "pk": 5222, "fields": {"name": "Harare City", "logo": "https://media.api-football.com/teams/5222.png"}}, {"model": "matches.team", "pk": 72, "fields": {"name": "QPR", "logo": "https://media.api-football.com/teams/72.png"}}, {"model": "matches.team", "pk": 5225, "fields": {"name": "Hwange", "logo": "https://media.api-football.com/teams/5225.png"}}, {"model": "matches.team", "pk": 5217, "fields": {"name": "Bulawayo Chiefs", "logo": "https://media.api-football.com/teams/5217.png"}}, {"model": "matches.team", "pk": 5228, "fields": {"name": "Mushowani Stars", "logo": "https://media.api-football.com/teams/5228.png"}}, {"model": "matches.team", "pk": 5220, "fields": {"name": "Chicken Inn", "logo": "https://media.api-football.com/teams/5220.png"}}, {"model": "matches.team", "pk": 5219, "fields": {"name": "Chapungu United", "logo": "https://media.api-football.com/teams/5219.png"}}, {"model": "matches.team", "pk": 7883, "fields": {"name": "Atalanta U19", "logo": "https://media.api-football.com/teams/7883.png"}}, {"model": "matches.team", "pk": 7904, "fields": {"name": "Juventus U19", "logo": "https://media.api-football.com/teams/7904.png"}}, {"model": "matches.team", "pk": 5596, "fields": {"name": "Gilport Lions", "logo": "https://media.api-football.com/teams/5596.png"}}, {"model": "matches.team", "pk": 7900, "fields": {"name": "Galatasaray U19", "logo": "https://media.api-football.com/teams/7900.png"}}, {"model": "matches.team", "pk": 6385, "fields": {"name": "Molepolole City Stars", "logo": "https://media.api-football.com/teams/6385.png"}}, {"model": "matches.team", "pk": 7910, "fields": {"name": "Lokomotiv Moskva U19", "logo": "https://media.api-football.com/teams/7910.png"}}, {"model": "matches.team", "pk": 7926, "fields": {"name": "Real Madrid U19", "logo": "https://media.api-football.com/teams/7926.png"}}, {"model": "matches.team", "pk": 7914, "fields": {"name": "Manchester City U19", "logo": "https://media.api-football.com/teams/7914.png"}}, {"model": "matches.team", "pk": 7937, "fields": {"name": "Tottenham Hotspur U19", "logo": "https://media.api-football.com/teams/7937.png"}}, {"model": "matches.team", "pk": 7894, "fields": {"name": "Crvena Zvezda U19", "logo": "https://media.api-football.com/teams/7894.png"}}, {"model": "matches.team", "pk": 5421, "fields": {"name": "Gaborone United", "logo": "https://media.api-football.com/teams/5421.png"}}, {"model": "matches.team", "pk": 5218, "fields": {"name": "CAPS United", "logo": "https://media.api-football.com/teams/5218.png"}}, {"model": "matches.team", "pk": 3882, "fields": {"name": "PSS Sleman", "logo": "https://media.api-football.com/teams/3882.png"}}, {"model": "matches.team", "pk": 5427, "fields": {"name": "Prisons XI", "logo": "https://media.api-football.com/teams/5427.png"}}, {"model": "matches.team", "pk": 673, "fields": {"name": "Sutjeska", "logo": "https://media.api-football.com/teams/673.png"}}, {"model": "matches.team", "pk": 2460, "fields": {"name": "Bandari", "logo": "https://media.api-football.com/teams/2460.png"}}, {"model": "matches.team", "pk": 43, "fields": {"name": "Cardiff", "logo": "https://media.api-football.com/teams/43.png"}}, {"model": "matches.team", "pk": 609, "fields": {"name": "Shkendija", "logo": "https://media.api-football.com/teams/609.png"}}, {"model": "matches.team", "pk": 2473, "fields": {"name": "Zoo Kericho", "logo": "https://media.api-football.com/teams/2473.png"}}, {"model": "matches.team", "pk": 2441, "fields": {"name": "PSM Makassar", "logo": "https://media.api-football.com/teams/2441.png"}}, {"model": "matches.team", "pk": 1191, "fields": {"name": "CS Hammam-Lif", "logo": "https://media.api-football.com/teams/1191.png"}}, {"model": "matches.team", "pk": 4460, "fields": {"name": "Hong Kong", "logo": "https://media.api-football.com/teams/4460.png"}}, {"model": "matches.team", "pk": 5431, "fields": {"name": "Township Rollers", "logo": "https://media.api-football.com/teams/5431.png"}}, {"model": "matches.team", "pk": 1687, "fields": {"name": "Catanzaro", "logo": "https://media.api-football.com/teams/1687.png"}}, {"model": "matches.team", "pk": 499, "fields": {"name": "Atalanta", "logo": "https://media.api-football.com/teams/499.png"}}, {"model": "matches.team", "pk": 6379, "fields": {"name": "Lecco", "logo": "https://media.api-football.com/teams/6379.png"}}, {"model": "matches.team", "pk": 5564, "fields": {"name": "Panth\u00e8re", "logo": "https://media.api-football.com/teams/5564.png"}}, {"model": "matches.team", "pk": 2392, "fields": {"name": "Debreceni VSC", "logo": "https://media.api-football.com/teams/2392.png"}}, {"model": "matches.team", "pk": 3412, "fields": {"name": "Ethnikos Achna", "logo": "https://media.api-football.com/teams/3412.png"}}, {"model": "matches.team", "pk": 597, "fields": {"name": "Lokomotiv Moscow", "logo": "https://media.api-football.com/teams/597.png"}}, {"model": "matches.team", "pk": 1580, "fields": {"name": "Catania", "logo": "https://media.api-football.com/teams/1580.png"}}, {"model": "matches.team", "pk": 50, "fields": {"name": "Manchester City", "logo": "https://media.api-football.com/teams/50.png"}}, {"model": "matches.team", "pk": 3658, "fields": {"name": "Comunicaciones", "logo": "https://media.api-football.com/teams/3658.png"}}, {"model": "matches.team", "pk": 1714, "fields": {"name": "Gozzano", "logo": "https://media.api-football.com/teams/1714.png"}}, {"model": "matches.team", "pk": 3708, "fields": {"name": "Real Potos\u00ed", "logo": "https://media.api-football.com/teams/3708.png"}}, {"model": "matches.team", "pk": 2356, "fields": {"name": "Club Nacional", "logo": "https://media.api-football.com/teams/2356.png"}}, {"model": "matches.team", "pk": 496, "fields": {"name": "Juventus", "logo": "https://media.api-football.com/teams/496.png"}}, {"model": "matches.team", "pk": 7456, "fields": {"name": "Al Fallah", "logo": "https://media.api-football.com/teams/7456.png"}}, {"model": "matches.team", "pk": 2445, "fields": {"name": "Persib Bandung", "logo": "https://media.api-football.com/teams/2445.png"}}, {"model": "matches.team", "pk": 2878, "fields": {"name": "Al Nasr", "logo": "https://media.api-football.com/teams/2878.png"}}, {"model": "matches.team", "pk": 2871, "fields": {"name": "Al-Jazira", "logo": "https://media.api-football.com/teams/2871.png"}}, {"model": "matches.team", "pk": 2875, "fields": {"name": "Al Wahda FC", "logo": "https://media.api-football.com/teams/2875.png"}}, {"model": "matches.team", "pk": 4905, "fields": {"name": "Stellenbosch", "logo": "https://media.api-football.com/teams/4905.png"}}, {"model": "matches.team", "pk": 4685, "fields": {"name": "Slough Town", "logo": "https://media.api-football.com/teams/4685.png"}}, {"model": "matches.team", "pk": 2475, "fields": {"name": "Tusker", "logo": "https://media.api-football.com/teams/2475.png"}}, {"model": "matches.team", "pk": 8002, "fields": {"name": "Hiengh\u00e8ne Sport", "logo": "https://media.api-football.com/teams/8002.png"}}, {"model": "matches.team", "pk": 2942, "fields": {"name": "Al Taee", "logo": "https://media.api-football.com/teams/2942.png"}}, {"model": "matches.team", "pk": 7680, "fields": {"name": "Whitstable Town", "logo": "https://media.api-football.com/teams/7680.png"}}, {"model": "matches.team", "pk": 7520, "fields": {"name": "Masr", "logo": "https://media.api-football.com/teams/7520.png"}}, {"model": "matches.team", "pk": 968, "fields": {"name": "Wydad AC", "logo": "https://media.api-football.com/teams/968.png"}}, {"model": "matches.team", "pk": 2880, "fields": {"name": "Al Fujairah SC", "logo": "https://media.api-football.com/teams/2880.png"}}, {"model": "matches.team", "pk": 645, "fields": {"name": "Galatasaray", "logo": "https://media.api-football.com/teams/645.png"}}, {"model": "matches.team", "pk": 47, "fields": {"name": "Tottenham", "logo": "https://media.api-football.com/teams/47.png"}}, {"model": "matches.team", "pk": 4702, "fields": {"name": "Chesham United", "logo": "https://media.api-football.com/teams/4702.png"}}, {"model": "matches.team", "pk": 2258, "fields": {"name": "Rudar Velenje", "logo": "https://media.api-football.com/teams/2258.png"}}, {"model": "matches.team", "pk": 53, "fields": {"name": "Reading", "logo": "https://media.api-football.com/teams/53.png"}}, {"model": "matches.team", "pk": 5237, "fields": {"name": "Al Hilal Omdurman", "logo": "https://media.api-football.com/teams/5237.png"}}, {"model": "matches.team", "pk": 3700, "fields": {"name": "Always Ready", "logo": "https://media.api-football.com/teams/3700.png"}}, {"model": "matches.team", "pk": 541, "fields": {"name": "Real Madrid", "logo": "https://media.api-football.com/teams/541.png"}}, {"model": "matches.team", "pk": 1038, "fields": {"name": "Misr EL Makasa", "logo": "https://media.api-football.com/teams/1038.png"}}, {"model": "matches.team", "pk": 8064, "fields": {"name": "Maniema Union", "logo": "https://media.api-football.com/teams/8064.png"}}, {"model": "matches.team", "pk": 5235, "fields": {"name": "Al Ahly Shendi", "logo": "https://media.api-football.com/teams/5235.png"}}, {"model": "matches.team", "pk": 4567, "fields": {"name": "Al Ahed", "logo": "https://media.api-football.com/teams/4567.png"}}, {"model": "matches.team", "pk": 7516, "fields": {"name": "Bourj", "logo": "https://media.api-football.com/teams/7516.png"}}, {"model": "matches.team", "pk": 9401, "fields": {"name": "Marino de Luanco", "logo": "https://media.api-football.com/teams/9401.png"}}, {"model": "matches.team", "pk": 2966, "fields": {"name": "Al Bukayriyah", "logo": "https://media.api-football.com/teams/2966.png"}}, {"model": "matches.team", "pk": 67, "fields": {"name": "Blackburn", "logo": "https://media.api-football.com/teams/67.png"}}, {"model": "matches.team", "pk": 74, "fields": {"name": "Sheffield Wednesday", "logo": "https://media.api-football.com/teams/74.png"}}, {"model": "matches.team", "pk": 965, "fields": {"name": "Moghreb Tetouan", "logo": "https://media.api-football.com/teams/965.png"}}, {"model": "matches.team", "pk": 60, "fields": {"name": "West Brom", "logo": "https://media.api-football.com/teams/60.png"}}]
+[
+  {
+    "model": "matches.team",
+    "pk": 5409,
+    "fields": {
+      "name": "PWD",
+      "logo_url": "https://media.api-football.com/teams/5409.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2895,
+    "fields": {
+      "name": "Al Sadd",
+      "logo_url": "https://media.api-football.com/teams/2895.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4574,
+    "fields": {
+      "name": "Salam Zgharta",
+      "logo_url": "https://media.api-football.com/teams/4574.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1046,
+    "fields": {
+      "name": "Wadi Degla",
+      "logo_url": "https://media.api-football.com/teams/1046.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 85,
+    "fields": {
+      "name": "Paris Saint Germain",
+      "logo_url": "https://media.api-football.com/teams/85.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2954,
+    "fields": {
+      "name": "Al-Ansar",
+      "logo_url": "https://media.api-football.com/teams/2954.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5223,
+    "fields": {
+      "name": "Herentals",
+      "logo_url": "https://media.api-football.com/teams/5223.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5227,
+    "fields": {
+      "name": "Manica Diamonds",
+      "logo_url": "https://media.api-football.com/teams/5227.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5230,
+    "fields": {
+      "name": "Platinum",
+      "logo_url": "https://media.api-football.com/teams/5230.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5229,
+    "fields": {
+      "name": "Ngezi Platinum",
+      "logo_url": "https://media.api-football.com/teams/5229.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5231,
+    "fields": {
+      "name": "TelOne",
+      "logo_url": "https://media.api-football.com/teams/5231.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5221,
+    "fields": {
+      "name": "Dynamos",
+      "logo_url": "https://media.api-football.com/teams/5221.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5224,
+    "fields": {
+      "name": "Highlanders",
+      "logo_url": "https://media.api-football.com/teams/5224.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7896,
+    "fields": {
+      "name": "Dinamo Zagreb U19",
+      "logo_url": "https://media.api-football.com/teams/7896.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7893,
+    "fields": {
+      "name": "Club Brugge U19",
+      "logo_url": "https://media.api-football.com/teams/7893.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7886,
+    "fields": {
+      "name": "Bayer Leverkusen U19",
+      "logo_url": "https://media.api-football.com/teams/7886.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5429,
+    "fields": {
+      "name": "Security Systems",
+      "logo_url": "https://media.api-football.com/teams/5429.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7884,
+    "fields": {
+      "name": "Atlético Madrid U19",
+      "logo_url": "https://media.api-football.com/teams/7884.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5423,
+    "fields": {
+      "name": "Miscellaneous",
+      "logo_url": "https://media.api-football.com/teams/5423.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7921,
+    "fields": {
+      "name": "PSG U19",
+      "logo_url": "https://media.api-football.com/teams/7921.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7887,
+    "fields": {
+      "name": "Bayern München U19",
+      "logo_url": "https://media.api-football.com/teams/7887.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7929,
+    "fields": {
+      "name": "Shakhtar Donetsk U19",
+      "logo_url": "https://media.api-football.com/teams/7929.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7918,
+    "fields": {
+      "name": "Olympiakos Piraeus U19",
+      "logo_url": "https://media.api-football.com/teams/7918.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5417,
+    "fields": {
+      "name": "BR Highlanders",
+      "logo_url": "https://media.api-football.com/teams/5417.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 17,
+    "fields": {
+      "name": "South Korea",
+      "logo_url": "https://media.api-football.com/teams/17.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 6437,
+    "fields": {
+      "name": "Vita Club",
+      "logo_url": "https://media.api-football.com/teams/6437.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5226,
+    "fields": {
+      "name": "Kariba",
+      "logo_url": "https://media.api-football.com/teams/5226.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5238,
+    "fields": {
+      "name": "Al Khartoum",
+      "logo_url": "https://media.api-football.com/teams/5238.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2461,
+    "fields": {
+      "name": "Chemelil Sugar",
+      "logo_url": "https://media.api-football.com/teams/2461.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2478,
+    "fields": {
+      "name": "Wazito FC",
+      "logo_url": "https://media.api-football.com/teams/2478.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2471,
+    "fields": {
+      "name": "Western Stima",
+      "logo_url": "https://media.api-football.com/teams/2471.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 990,
+    "fields": {
+      "name": "Etoile DU Sahel",
+      "logo_url": "https://media.api-football.com/teams/990.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 569,
+    "fields": {
+      "name": "Club Brugge KV",
+      "logo_url": "https://media.api-football.com/teams/569.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2699,
+    "fields": {
+      "name": "Mamelodi Sundowns",
+      "logo_url": "https://media.api-football.com/teams/2699.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1715,
+    "fields": {
+      "name": "Juventus U23",
+      "logo_url": "https://media.api-football.com/teams/1715.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1591,
+    "fields": {
+      "name": "Pontedera",
+      "logo_url": "https://media.api-football.com/teams/1591.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 530,
+    "fields": {
+      "name": "Atletico Madrid",
+      "logo_url": "https://media.api-football.com/teams/530.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 550,
+    "fields": {
+      "name": "Shakhtar Donetsk",
+      "logo_url": "https://media.api-football.com/teams/550.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 168,
+    "fields": {
+      "name": "Bayer Leverkusen",
+      "logo_url": "https://media.api-football.com/teams/168.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 553,
+    "fields": {
+      "name": "Olympiakos Piraeus",
+      "logo_url": "https://media.api-football.com/teams/553.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2401,
+    "fields": {
+      "name": "Dorogi FC",
+      "logo_url": "https://media.api-football.com/teams/2401.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 976,
+    "fields": {
+      "name": "Raja Casablanca",
+      "logo_url": "https://media.api-football.com/teams/976.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 620,
+    "fields": {
+      "name": "Dinamo Zagreb",
+      "logo_url": "https://media.api-football.com/teams/620.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 890,
+    "fields": {
+      "name": "Paganese",
+      "logo_url": "https://media.api-football.com/teams/890.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3703,
+    "fields": {
+      "name": "Club Destroyers",
+      "logo_url": "https://media.api-football.com/teams/3703.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3662,
+    "fields": {
+      "name": "Guastatoya",
+      "logo_url": "https://media.api-football.com/teams/3662.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2442,
+    "fields": {
+      "name": "Pusamania Borneo",
+      "logo_url": "https://media.api-football.com/teams/2442.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2947,
+    "fields": {
+      "name": "Jeddah Club",
+      "logo_url": "https://media.api-football.com/teams/2947.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5424,
+    "fields": {
+      "name": "Notwane",
+      "logo_url": "https://media.api-football.com/teams/5424.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2957,
+    "fields": {
+      "name": "Al Shoalah",
+      "logo_url": "https://media.api-football.com/teams/2957.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2865,
+    "fields": {
+      "name": "Al Ain",
+      "logo_url": "https://media.api-football.com/teams/2865.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2870,
+    "fields": {
+      "name": "Shabab Al Ahli Dubai",
+      "logo_url": "https://media.api-football.com/teams/2870.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5422,
+    "fields": {
+      "name": "Galaxy",
+      "logo_url": "https://media.api-football.com/teams/5422.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2869,
+    "fields": {
+      "name": "Hatta SC",
+      "logo_url": "https://media.api-football.com/teams/2869.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7230,
+    "fields": {
+      "name": "Guernsey",
+      "logo_url": "https://media.api-football.com/teams/7230.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2450,
+    "fields": {
+      "name": "Persela Lamongan",
+      "logo_url": "https://media.api-football.com/teams/2450.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2872,
+    "fields": {
+      "name": "Al-Wasl FC",
+      "logo_url": "https://media.api-football.com/teams/2872.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 972,
+    "fields": {
+      "name": "Olympique Khouribga",
+      "logo_url": "https://media.api-football.com/teams/972.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5242,
+    "fields": {
+      "name": "Al Shorta",
+      "logo_url": "https://media.api-football.com/teams/5242.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1681,
+    "fields": {
+      "name": "Vibonese",
+      "logo_url": "https://media.api-football.com/teams/1681.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1030,
+    "fields": {
+      "name": "Ismaily SC",
+      "logo_url": "https://media.api-football.com/teams/1030.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2348,
+    "fields": {
+      "name": "Penarol",
+      "logo_url": "https://media.api-football.com/teams/2348.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3423,
+    "fields": {
+      "name": "Digenis Morphou",
+      "logo_url": "https://media.api-football.com/teams/3423.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 157,
+    "fields": {
+      "name": "Bayern Munich",
+      "logo_url": "https://media.api-football.com/teams/157.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 76,
+    "fields": {
+      "name": "Swansea",
+      "logo_url": "https://media.api-football.com/teams/76.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 69,
+    "fields": {
+      "name": "Derby",
+      "logo_url": "https://media.api-football.com/teams/69.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 747,
+    "fields": {
+      "name": "Barnsley",
+      "logo_url": "https://media.api-football.com/teams/747.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 54,
+    "fields": {
+      "name": "Birmingham",
+      "logo_url": "https://media.api-football.com/teams/54.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 55,
+    "fields": {
+      "name": "Brentford",
+      "logo_url": "https://media.api-football.com/teams/55.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 61,
+    "fields": {
+      "name": "Wigan",
+      "logo_url": "https://media.api-football.com/teams/61.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 643,
+    "fields": {
+      "name": "FK Mladost Podgorica",
+      "logo_url": "https://media.api-football.com/teams/643.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 579,
+    "fields": {
+      "name": "Buducnost Podgorica",
+      "logo_url": "https://media.api-football.com/teams/579.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3467,
+    "fields": {
+      "name": "Mohun Bagan",
+      "logo_url": "https://media.api-football.com/teams/3467.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5200,
+    "fields": {
+      "name": "Green Eagles",
+      "logo_url": "https://media.api-football.com/teams/5200.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2453,
+    "fields": {
+      "name": "Barito Putera",
+      "logo_url": "https://media.api-football.com/teams/2453.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1576,
+    "fields": {
+      "name": "Haras El Hodood",
+      "logo_url": "https://media.api-football.com/teams/1576.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4194,
+    "fields": {
+      "name": "Akademija Pandev",
+      "logo_url": "https://media.api-football.com/teams/4194.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7177,
+    "fields": {
+      "name": "Odisha",
+      "logo_url": "https://media.api-football.com/teams/7177.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4570,
+    "fields": {
+      "name": "Al Nejmeh",
+      "logo_url": "https://media.api-football.com/teams/4570.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3701,
+    "fields": {
+      "name": "Blooming",
+      "logo_url": "https://media.api-football.com/teams/3701.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5280,
+    "fields": {
+      "name": "UD Logroñés",
+      "logo_url": "https://media.api-football.com/teams/5280.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2928,
+    "fields": {
+      "name": "Al Khaleej Saihat",
+      "logo_url": "https://media.api-football.com/teams/2928.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5551,
+    "fields": {
+      "name": "Hilal El-Fasher",
+      "logo_url": "https://media.api-football.com/teams/5551.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2958,
+    "fields": {
+      "name": "Al Jabalain",
+      "logo_url": "https://media.api-football.com/teams/2958.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1843,
+    "fields": {
+      "name": "Havant & Wville",
+      "logo_url": "https://media.api-football.com/teams/1843.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3445,
+    "fields": {
+      "name": "Tivoli Gardens",
+      "logo_url": "https://media.api-football.com/teams/3445.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7753,
+    "fields": {
+      "name": "Tiverton Town",
+      "logo_url": "https://media.api-football.com/teams/7753.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2462,
+    "fields": {
+      "name": "Homeboyz",
+      "logo_url": "https://media.api-football.com/teams/2462.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 598,
+    "fields": {
+      "name": "FK Crvena Zvezda",
+      "logo_url": "https://media.api-football.com/teams/598.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 6407,
+    "fields": {
+      "name": "Molynes United",
+      "logo_url": "https://media.api-football.com/teams/6407.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7763,
+    "fields": {
+      "name": "Hyderabad",
+      "logo_url": "https://media.api-football.com/teams/7763.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1577,
+    "fields": {
+      "name": "Al Ahly",
+      "logo_url": "https://media.api-football.com/teams/1577.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 9261,
+    "fields": {
+      "name": "TRAU",
+      "logo_url": "https://media.api-football.com/teams/9261.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7455,
+    "fields": {
+      "name": "Kansanshi Dynamos",
+      "logo_url": "https://media.api-football.com/teams/7455.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2946,
+    "fields": {
+      "name": "Al Najoom",
+      "logo_url": "https://media.api-football.com/teams/2946.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2960,
+    "fields": {
+      "name": "Al Nahdha",
+      "logo_url": "https://media.api-football.com/teams/2960.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2474,
+    "fields": {
+      "name": "Ulinzi Stars",
+      "logo_url": "https://media.api-football.com/teams/2474.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 6257,
+    "fields": {
+      "name": "Al Taqdom",
+      "logo_url": "https://media.api-football.com/teams/6257.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5216,
+    "fields": {
+      "name": "Black Rhinos",
+      "logo_url": "https://media.api-football.com/teams/5216.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5222,
+    "fields": {
+      "name": "Harare City",
+      "logo_url": "https://media.api-football.com/teams/5222.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 72,
+    "fields": {
+      "name": "QPR",
+      "logo_url": "https://media.api-football.com/teams/72.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5225,
+    "fields": {
+      "name": "Hwange",
+      "logo_url": "https://media.api-football.com/teams/5225.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5217,
+    "fields": {
+      "name": "Bulawayo Chiefs",
+      "logo_url": "https://media.api-football.com/teams/5217.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5228,
+    "fields": {
+      "name": "Mushowani Stars",
+      "logo_url": "https://media.api-football.com/teams/5228.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5220,
+    "fields": {
+      "name": "Chicken Inn",
+      "logo_url": "https://media.api-football.com/teams/5220.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5219,
+    "fields": {
+      "name": "Chapungu United",
+      "logo_url": "https://media.api-football.com/teams/5219.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7883,
+    "fields": {
+      "name": "Atalanta U19",
+      "logo_url": "https://media.api-football.com/teams/7883.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7904,
+    "fields": {
+      "name": "Juventus U19",
+      "logo_url": "https://media.api-football.com/teams/7904.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5596,
+    "fields": {
+      "name": "Gilport Lions",
+      "logo_url": "https://media.api-football.com/teams/5596.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7900,
+    "fields": {
+      "name": "Galatasaray U19",
+      "logo_url": "https://media.api-football.com/teams/7900.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 6385,
+    "fields": {
+      "name": "Molepolole City Stars",
+      "logo_url": "https://media.api-football.com/teams/6385.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7910,
+    "fields": {
+      "name": "Lokomotiv Moskva U19",
+      "logo_url": "https://media.api-football.com/teams/7910.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7926,
+    "fields": {
+      "name": "Real Madrid U19",
+      "logo_url": "https://media.api-football.com/teams/7926.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7914,
+    "fields": {
+      "name": "Manchester City U19",
+      "logo_url": "https://media.api-football.com/teams/7914.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7937,
+    "fields": {
+      "name": "Tottenham Hotspur U19",
+      "logo_url": "https://media.api-football.com/teams/7937.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7894,
+    "fields": {
+      "name": "Crvena Zvezda U19",
+      "logo_url": "https://media.api-football.com/teams/7894.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5421,
+    "fields": {
+      "name": "Gaborone United",
+      "logo_url": "https://media.api-football.com/teams/5421.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5218,
+    "fields": {
+      "name": "CAPS United",
+      "logo_url": "https://media.api-football.com/teams/5218.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3882,
+    "fields": {
+      "name": "PSS Sleman",
+      "logo_url": "https://media.api-football.com/teams/3882.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5427,
+    "fields": {
+      "name": "Prisons XI",
+      "logo_url": "https://media.api-football.com/teams/5427.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 673,
+    "fields": {
+      "name": "Sutjeska",
+      "logo_url": "https://media.api-football.com/teams/673.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2460,
+    "fields": {
+      "name": "Bandari",
+      "logo_url": "https://media.api-football.com/teams/2460.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 43,
+    "fields": {
+      "name": "Cardiff",
+      "logo_url": "https://media.api-football.com/teams/43.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 609,
+    "fields": {
+      "name": "Shkendija",
+      "logo_url": "https://media.api-football.com/teams/609.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2473,
+    "fields": {
+      "name": "Zoo Kericho",
+      "logo_url": "https://media.api-football.com/teams/2473.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2441,
+    "fields": {
+      "name": "PSM Makassar",
+      "logo_url": "https://media.api-football.com/teams/2441.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1191,
+    "fields": {
+      "name": "CS Hammam-Lif",
+      "logo_url": "https://media.api-football.com/teams/1191.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4460,
+    "fields": {
+      "name": "Hong Kong",
+      "logo_url": "https://media.api-football.com/teams/4460.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5431,
+    "fields": {
+      "name": "Township Rollers",
+      "logo_url": "https://media.api-football.com/teams/5431.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1687,
+    "fields": {
+      "name": "Catanzaro",
+      "logo_url": "https://media.api-football.com/teams/1687.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 499,
+    "fields": {
+      "name": "Atalanta",
+      "logo_url": "https://media.api-football.com/teams/499.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 6379,
+    "fields": {
+      "name": "Lecco",
+      "logo_url": "https://media.api-football.com/teams/6379.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5564,
+    "fields": {
+      "name": "Panthère",
+      "logo_url": "https://media.api-football.com/teams/5564.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2392,
+    "fields": {
+      "name": "Debreceni VSC",
+      "logo_url": "https://media.api-football.com/teams/2392.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3412,
+    "fields": {
+      "name": "Ethnikos Achna",
+      "logo_url": "https://media.api-football.com/teams/3412.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 597,
+    "fields": {
+      "name": "Lokomotiv Moscow",
+      "logo_url": "https://media.api-football.com/teams/597.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1580,
+    "fields": {
+      "name": "Catania",
+      "logo_url": "https://media.api-football.com/teams/1580.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 50,
+    "fields": {
+      "name": "Manchester City",
+      "logo_url": "https://media.api-football.com/teams/50.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3658,
+    "fields": {
+      "name": "Comunicaciones",
+      "logo_url": "https://media.api-football.com/teams/3658.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1714,
+    "fields": {
+      "name": "Gozzano",
+      "logo_url": "https://media.api-football.com/teams/1714.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3708,
+    "fields": {
+      "name": "Real Potosí",
+      "logo_url": "https://media.api-football.com/teams/3708.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2356,
+    "fields": {
+      "name": "Club Nacional",
+      "logo_url": "https://media.api-football.com/teams/2356.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 496,
+    "fields": {
+      "name": "Juventus",
+      "logo_url": "https://media.api-football.com/teams/496.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7456,
+    "fields": {
+      "name": "Al Fallah",
+      "logo_url": "https://media.api-football.com/teams/7456.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2445,
+    "fields": {
+      "name": "Persib Bandung",
+      "logo_url": "https://media.api-football.com/teams/2445.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2878,
+    "fields": {
+      "name": "Al Nasr",
+      "logo_url": "https://media.api-football.com/teams/2878.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2871,
+    "fields": {
+      "name": "Al-Jazira",
+      "logo_url": "https://media.api-football.com/teams/2871.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2875,
+    "fields": {
+      "name": "Al Wahda FC",
+      "logo_url": "https://media.api-football.com/teams/2875.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4905,
+    "fields": {
+      "name": "Stellenbosch",
+      "logo_url": "https://media.api-football.com/teams/4905.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4685,
+    "fields": {
+      "name": "Slough Town",
+      "logo_url": "https://media.api-football.com/teams/4685.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2475,
+    "fields": {
+      "name": "Tusker",
+      "logo_url": "https://media.api-football.com/teams/2475.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 8002,
+    "fields": {
+      "name": "Hienghène Sport",
+      "logo_url": "https://media.api-football.com/teams/8002.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2942,
+    "fields": {
+      "name": "Al Taee",
+      "logo_url": "https://media.api-football.com/teams/2942.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7680,
+    "fields": {
+      "name": "Whitstable Town",
+      "logo_url": "https://media.api-football.com/teams/7680.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7520,
+    "fields": {
+      "name": "Masr",
+      "logo_url": "https://media.api-football.com/teams/7520.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 968,
+    "fields": {
+      "name": "Wydad AC",
+      "logo_url": "https://media.api-football.com/teams/968.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2880,
+    "fields": {
+      "name": "Al Fujairah SC",
+      "logo_url": "https://media.api-football.com/teams/2880.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 645,
+    "fields": {
+      "name": "Galatasaray",
+      "logo_url": "https://media.api-football.com/teams/645.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 47,
+    "fields": {
+      "name": "Tottenham",
+      "logo_url": "https://media.api-football.com/teams/47.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4702,
+    "fields": {
+      "name": "Chesham United",
+      "logo_url": "https://media.api-football.com/teams/4702.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2258,
+    "fields": {
+      "name": "Rudar Velenje",
+      "logo_url": "https://media.api-football.com/teams/2258.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 53,
+    "fields": {
+      "name": "Reading",
+      "logo_url": "https://media.api-football.com/teams/53.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5237,
+    "fields": {
+      "name": "Al Hilal Omdurman",
+      "logo_url": "https://media.api-football.com/teams/5237.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3700,
+    "fields": {
+      "name": "Always Ready",
+      "logo_url": "https://media.api-football.com/teams/3700.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 541,
+    "fields": {
+      "name": "Real Madrid",
+      "logo_url": "https://media.api-football.com/teams/541.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 1038,
+    "fields": {
+      "name": "Misr EL Makasa",
+      "logo_url": "https://media.api-football.com/teams/1038.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 8064,
+    "fields": {
+      "name": "Maniema Union",
+      "logo_url": "https://media.api-football.com/teams/8064.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 5235,
+    "fields": {
+      "name": "Al Ahly Shendi",
+      "logo_url": "https://media.api-football.com/teams/5235.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4567,
+    "fields": {
+      "name": "Al Ahed",
+      "logo_url": "https://media.api-football.com/teams/4567.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 7516,
+    "fields": {
+      "name": "Bourj",
+      "logo_url": "https://media.api-football.com/teams/7516.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 9401,
+    "fields": {
+      "name": "Marino de Luanco",
+      "logo_url": "https://media.api-football.com/teams/9401.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2966,
+    "fields": {
+      "name": "Al Bukayriyah",
+      "logo_url": "https://media.api-football.com/teams/2966.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 67,
+    "fields": {
+      "name": "Blackburn",
+      "logo_url": "https://media.api-football.com/teams/67.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 74,
+    "fields": {
+      "name": "Sheffield Wednesday",
+      "logo_url": "https://media.api-football.com/teams/74.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 965,
+    "fields": {
+      "name": "Moghreb Tetouan",
+      "logo_url": "https://media.api-football.com/teams/965.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 60,
+    "fields": {
+      "name": "West Brom",
+      "logo_url": "https://media.api-football.com/teams/60.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3000,
+    "fields": {
+      "name": "Ajax",
+      "logo_url": "https://media.api-football.com/teams/3000.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3001,
+    "fields": {
+      "name": "Utrecht",
+      "logo_url": "https://media.api-football.com/teams/3001.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3002,
+    "fields": {
+      "name": "Jong Ajax",
+      "logo_url": "https://media.api-football.com/teams/3002.png"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 3003,
+    "fields": {
+      "name": "Jong Utrecht",
+      "logo_url": "https://media.api-football.com/teams/3003.png"
+    }
+  }
+]

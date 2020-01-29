@@ -80,3 +80,11 @@ class VideoGoal(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class AffiliateTerm(models.Model):
+    term = models.CharField(max_length=25, unique=True)
+    is_prefix = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.term

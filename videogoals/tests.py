@@ -6,7 +6,10 @@ from matches.goals_populator import find_match, extract_names_from_title
 
 
 class AffiliateTeamsTestCase(TestCase):
-    fixtures = ['videogoals/test/teams.json', 'videogoals/test/matches.json', 'videogoals/test/teamalias.json']
+    fixtures = ['videogoals/test/teams.json',
+                'videogoals/test/matches.json',
+                'videogoals/test/teamalias.json',
+                'videogoals/test/affiliateterms.json']
 
     def setUp(self):
         from django.db import connection
@@ -112,6 +115,15 @@ class AffiliateTeamsTestCase(TestCase):
         assert len(matches) > 0
         match_id = matches.first().id
         assert match_id == 8494
+
+    @staticmethod
+    def test_u19_match_12():
+        title = "Jong Ajax 3-0 Jong Utrecht - Liam Van Gelderen 17'"
+        home, away, minute = extract_names_from_title(title)
+        matches = find_match(home, away, from_date=datetime.datetime(2019, 12, 11))
+        assert len(matches) > 0
+        match_id = matches.first().id
+        assert match_id == 8603
 
     @staticmethod
     def test_senior_match_1():
@@ -274,3 +286,12 @@ class AffiliateTeamsTestCase(TestCase):
         assert len(matches) > 0
         match_id = matches.first().id
         assert match_id == 8529
+
+    @staticmethod
+    def test_senior_match_19():
+        title = "Ajax 1-0 Utrecht - Bruno Varela 49'"
+        home, away, minute = extract_names_from_title(title)
+        matches = find_match(home, away, from_date=datetime.datetime(2019, 12, 11))
+        assert len(matches) > 0
+        match_id = matches.first().id
+        assert match_id == 8602
