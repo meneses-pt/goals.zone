@@ -132,3 +132,6 @@ dmypy.json
 
 # Media folder
 /media/
+
+# Deploy Key
+/deploy_key
