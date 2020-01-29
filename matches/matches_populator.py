@@ -13,7 +13,7 @@ def fetch_new_matches():
     print('Fetching new matches...')
     fetch_matches_from_sofascore()
     # How to get historic data
-    # fetch_matches_from_sofascore(days_ago=30)
+    # fetch_matches_from_sofascore(days_ago=2)
 
 
 def fetch_matches_from_rapidapi(days_ago=2):

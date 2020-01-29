@@ -11,7 +11,7 @@ class Team(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=256)
     logo_url = models.CharField(max_length=256)
-    logo_file = models.ImageField(upload_to='media/logos', default=None)
+    logo_file = models.ImageField(upload_to='logos', default=None)
 
     def __str__(self):
         return self.name

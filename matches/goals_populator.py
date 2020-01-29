@@ -17,7 +17,7 @@ def fetch_videogoals():
     print('Fetching new goals')
     _fetch_reddit_goals()
     # How to get historic data
-    # _fetch_reddit_goals_from_date(days_ago=30)
+    # _fetch_reddit_goals_from_date(days_ago=2)
 
 
 def _fetch_reddit_goals():
@@ -54,15 +54,16 @@ def _fetch_reddit_goals_from_date(days_ago=2):
         for post in data['data']:
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
                 title = post['title']
-                find_and_store_match(post, title)
+                find_and_store_match(post, title, single_date)
+        print(f'Ended processing day {single_date}')
     print('Finished fetching goals')
 
 
-def find_and_store_match(post, title):
+def find_and_store_match(post, title, match_date=date.today()):
     home_team, away_team, minute_str = extract_names_from_title(title)
     if home_team is None or away_team is None:
         return
-    matches_results = find_match(home_team, away_team, from_date=date.today())
+    matches_results = find_match(home_team, away_team, from_date=match_date)
     if matches_results.exists():
         match = matches_results.first()
         # print(f'Match {match} found for: {title}')
