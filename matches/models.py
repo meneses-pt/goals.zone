@@ -41,6 +41,22 @@ class Match(models.Model):
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
 
+    @property
+    def home_team_score(self):
+        if self.score is None:
+            return None
+        else:
+            splitted = self.score.split(':')
+            return splitted[0]
+
+    @property
+    def away_team_score(self):
+        if self.score is None:
+            return None
+        else:
+            splitted = self.score.split(':')
+            return splitted[0]
+
     def __str__(self):
         return self.home_team.name + ' ' + (self.score if self.score else ':') + ' ' + self.away_team.name
 

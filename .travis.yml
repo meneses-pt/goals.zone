@@ -6,7 +6,7 @@ jobs:
     - stage: test
       script:
         - pip install -r requirements.txt
-        - python manage.py test
+        - python manage.py test --noinput
     - stage: deploy
       script:
         - openssl aes-256-cbc -K $encrypted_62d57faec6f0_key -iv $encrypted_62d57faec6f0_iv
