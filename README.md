@@ -1,4 +1,4 @@
-# VideoGoals [videogoals.meneses.pt](https://videogoals.meneses.pt)
+# [VideoGoals](https://videogoals.meneses.pt)
 
 |Test|Deploy|
 |---|---|
@@ -17,8 +17,6 @@ You will need to set a database and to define the following environment variable
  * `DB_NAME`
  * `DB_USER`
  * `DB_PASSWORD`
- 
-To update matches data you will need a key to the API that is being used to fetch matches information ([API-FOOTBALL](https://rapidapi.com/api-sports/api/api-football)) and define an environment variable named `RAPIDAPI_KEY` with its information.
 
 To build the database structure you'll run the command:
 ```python manage.py migrate```
