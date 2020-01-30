@@ -1,6 +1,8 @@
 # VideoGoals [videogoals.meneses.pt](https://videogoals.meneses.pt)
 
-[![Build Status](https://travis-ci.org/meneses-pt/videogoals.svg?branch=master)](https://travis-ci.org/meneses-pt/videogoals)
+|Test|Deploy|
+|---|---|
+|![Test](https://travis-matrix-badges.herokuapp.com/repos/meneses-pt/videogoals/branches/master/1 "Test")|![Deploy](https://travis-matrix-badges.herokuapp.com/repos/meneses-pt/videogoals/branches/master/2 "Deploy")|
 
 The aim of this project is to make a website available where one could easily search for videos of goals in footbal (soccer), matches posted to reddit.com (/r/soccer)
 
