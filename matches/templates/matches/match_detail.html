@@ -5,12 +5,12 @@
 
 {% block content %}
     <h2>
-        {% if match.home_team.logo %}
-            <img src="{{ match.home_team.logo.url }}" alt="{{ match.home_team.name }}" class="img-fluid detail-img-thumb"/>
+        {% if match.home_team.logo_file %}
+            <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}" class="img-fluid detail-img-thumb"/>
         {% endif %}
         {{ object }}
-        {% if match.away_team.logo %}
-            <img src="{{ match.away_team.logo.url }}" alt="{{ match.away_team.name }}" class="img-fluid detail-img-thumb"/>
+        {% if match.away_team.logo_file %}
+            <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}" class="img-fluid detail-img-thumb"/>
         {% endif %}
         <br/>
         <small>&nbsp;on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small>
@@ -25,7 +25,7 @@
                     </a>
                     {% if goal.permalink %}
                         <a href="http://reddit.com{{ goal.permalink }}" class="float-right list-group-small-link">
-                            <img src="{% static "img/reddit_logo.png" %}" class="list-group-img">
+                            <img alt="reddit" src="{% static "img/reddit_logo.png" %}" class="list-group-img">
                         </a>
                     {% endif %}
                 </div>

@@ -3,16 +3,24 @@ python:
 - '3.6'
 jobs:
   include:
-    - stage: test
-      script:
-        - pip install -r requirements.txt
-        - python manage.py test --noinput
-    - stage: deploy
-      script:
-        - openssl aes-256-cbc -K $encrypted_62d57faec6f0_key -iv $encrypted_62d57faec6f0_iv
-          -in deploy_key.enc -out ./deploy_key -d
-        - eval "$(ssh-agent -s)"
-        - chmod 600 ./deploy_key
-        - echo -e "Host 142.93.99.85\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
-        - ssh-add ./deploy_key
-        - ssh -i ./deploy_key root@142.93.99.85 ./deploy.sh
+  - stage: test
+    script:
+    - pip install -r requirements.txt
+    - python manage.py test --noinput
+  - stage: deploy
+    script:
+    - openssl aes-256-cbc -K $encrypted_62d57faec6f0_key -iv $encrypted_62d57faec6f0_iv
+      -in deploy_key.enc -out ./deploy_key -d
+    - eval "$(ssh-agent -s)"
+    - chmod 600 ./deploy_key
+    - echo -e "Host 142.93.99.85\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+    - ssh-add ./deploy_key
+    - ssh -i ./deploy_key root@142.93.99.85 ./deploy.sh
+notifications:
+  email:
+    recipients:
+    - andre@meneses.pt
+    on_success: change
+    on_failure: always
+  slack:
+    secure: KuCMEEEweQmWBNKcVcczbMit6HTODqbD00H7yXFnRrzxRj7ZnI7X2DQtCnMt1In8+nmoDGhd+Hzu/ntUNkDVgigcX3lXe4nn7pEYCpScSp+b176ugmcALUes0HNW0QNn+3n6+LbjcnvejmNSOsFKqKkK88ZgAz5KDzH/NCCMj7xoq3IwP8++2dwWulrkLBFrVbJZBWoOI+3hUc2OmQi7jB1Jgsz3TtY9Il3PDfTjG0Oj56GlADJOUiZCVDgU0NSJ860ez2GFTNoGPZCAsul9Hx9Ye45v+YH9MSfdrISKG+Bmk4pnKPR0vUQyUAq2A99ceQpnHJ3snJWLtwt/MPXQDLfIHcbPTSqIzEXNU24IU3j+jiI/4/idzpkQ/Bc/njHazg45nZSLuwmFepAoMUKlTyzj/RFi4VsQAsKRSGataBv80J++WXSMSC0zhztzt5Uhz7wbsbAcQePVL6Di107/oLTkIAPKC23/9qfKi6WapXoDdf44Kvtf4jICvG9tEpORUQbRX8A7Ya3Hg9btQT3xdvnAkfXfHOtVw0YR5vqN3EiVoVjx1yelZr7BYpwEjI0Pj7UA7uO33gAL/+DGz26kJTT2GdlH6MzJ+PoIs3+xpBZuyjN9YoDTPgeuZtOVXmivUJlJdwOBiSTwWOKOcTg4ure6NVji4W4shBM0T8ETVxQ=

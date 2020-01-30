@@ -14,7 +14,7 @@ class MatchesListView(generic.ListView):
             query_date_obj = datetime.strptime(query_date_str, '%Y-%m-%d')
             start_date = query_date_obj
             end_date = query_date_obj + timedelta(days=1)
-        except:
+        except (ValueError, TypeError):
             start_date = datetime.combine(datetime.today(), datetime.min.time())
             end_date = start_date + timedelta(days=1)
         start_date = timezone.get_current_timezone().localize(start_date)
@@ -28,7 +28,7 @@ class MatchesListView(generic.ListView):
         try:
             query_date_str = self.request.GET.get('date')
             query_date_obj = datetime.strptime(query_date_str, '%Y-%m-%d')
-        except:
+        except (ValueError, TypeError):
             query_date_obj = datetime.today()
         context['date'] = query_date_obj
         if query_date_obj.date() < date.today():

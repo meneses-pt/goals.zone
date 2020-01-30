@@ -2,19 +2,6 @@
 
 from django.db import migrations, models
 
-from matches.models import Match
-
-
-def migrate_data_forward(apps, schema_editor):
-    # only applicable to one migration
-    # # for instance in Match.objects.all():
-    # #     instance.save()  # Will trigger slug update
-    pass
-
-
-def migrate_data_backward(apps, schema_editor):
-    pass
-
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -27,9 +14,5 @@ class Migration(migrations.Migration):
             name='slug',
             field=models.SlugField(null=True, default=None, max_length=200, unique=True),
             preserve_default=False,
-        ),
-        migrations.RunPython(
-            migrate_data_forward,
-            migrate_data_backward,
-        ),
+        )
     ]
