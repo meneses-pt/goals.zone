@@ -135,3 +135,6 @@ dmypy.json
 
 # Deploy Key
 /deploy_key
+
+# StaticFiles Folder
+/staticfiles

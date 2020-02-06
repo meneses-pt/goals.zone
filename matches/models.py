@@ -1,10 +1,28 @@
 import os
 from urllib import request
+import requests
+from lxml.html import fromstring
+import random
+import shutil
 
 from django.core.files import File
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+
+
+def get_proxies():
+    url = 'https://sslproxies.org/'
+    response = requests.get(url)
+    parser = fromstring(response.text)
+    proxies = list()
+    for i in parser.xpath('//tbody/tr')[:10]:
+        if i.xpath('.//td[7][contains(text(),"yes")]'):
+            # Grabbing IP and corresponding PORT
+            proxy = ":".join([i.xpath('.//td[1]/text()')[0],
+                              i.xpath('.//td[2]/text()')[0]])
+            proxies.append(proxy)
+    return proxies
 
 
 class Team(models.Model):
@@ -18,25 +36,39 @@ class Team(models.Model):
 
     def save(self, *args, **kwargs):
         if self.logo_url and not self.logo_file:
-            result = request.urlretrieve(self.logo_url)
-            self.logo_file.save(
-                os.path.basename(self.logo_url),
-                File(open(result[0], 'rb'))
-            )
+            saved = False
+            attempts = 0
+            while not saved and attempts < 3:
+                print(attempts)
+                try:
+                    attempts += 1
+                    proxies = get_proxies()
+                    print(proxies)
+                    proxy = random.choice(proxies)
+                    response = requests.get(
+                        self.logo_url, proxies={"http": proxy, "https": proxy}, stream=True, timeout=3)
+                    self.logo_file.save(os.path.basename(self.logo_url), response.raw)
+                    saved = True
+                except Exception as e:
+                    print(e)
+        print('Saved team')
         super().save(*args, **kwargs)
 
 
 class TeamAlias(models.Model):
     alias = models.CharField(max_length=256)
-    team = models.ForeignKey(Team, related_name="alias", on_delete=models.CASCADE)
+    team = models.ForeignKey(Team, related_name="alias",
+                             on_delete=models.CASCADE)
 
     def __str__(self):
         return self.alias + " - Original: " + self.team.name
 
 
 class Match(models.Model):
-    home_team = models.ForeignKey(Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
-    away_team = models.ForeignKey(Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
+    home_team = models.ForeignKey(
+        Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
+    away_team = models.ForeignKey(
+        Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
@@ -64,7 +96,8 @@ class Match(models.Model):
         return reverse('match-detail', kwargs={'slug': self.slug})
 
     def _get_unique_slug(self):
-        slug = slugify(f'{self.home_team.name}-{self.away_team.name}-{self.datetime.strftime("%Y%m%d")}')
+        slug = slugify(
+            f'{self.home_team.name}-{self.away_team.name}-{self.datetime.strftime("%Y%m%d")}')
         unique_slug = slug
         num = 1
         while Match.objects.filter(slug=unique_slug).exists():

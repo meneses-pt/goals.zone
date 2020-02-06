@@ -1,6 +1,8 @@
 import json
 import os
+import random
 from datetime import date, datetime, timedelta
+from lxml.html import fromstring
 
 import requests
 from background_task import background
@@ -48,6 +50,9 @@ def fetch_matches_from_sofascore(days_ago=0):
     start_date = date.today() - timedelta(days=days_ago)
     for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
         response = _fetch_data_from_sofascore_api(single_date)
+        print('****************************')
+        print(response.content)
+        print('****************************')
         data = json.loads(response.content)
         for tournament in data['sportItem']['tournaments']:
             for fixture in tournament["events"]:
@@ -118,12 +123,39 @@ def _fetch_data_from_rapidpi_api(single_date):
     )
     return response
 
+def get_proxies():
+    url = 'https://sslproxies.org/'
+    response = requests.get(url)
+    parser = fromstring(response.text)
+    proxies = list()
+    for i in parser.xpath('//tbody/tr')[:10]:
+        if i.xpath('.//td[7][contains(text(),"yes")]'):
+            #Grabbing IP and corresponding PORT
+            proxy = ":".join([i.xpath('.//td[1]/text()')[0], i.xpath('.//td[2]/text()')[0]])
+            proxies.append(proxy)
+    return proxies
+
 
 def _fetch_data_from_sofascore_api(single_date):
-    today_str = single_date.strftime("%Y-%m-%d")
-    response = requests.get(
-        f'https://www.sofascore.com/football//{today_str}/json'
-    )
+    response = None
+    attempts = 0
+    while response is None and attempts < 10:
+        try:
+            attempts += 1
+            proxies = get_proxies()
+            print(proxies)
+            proxy = random.choice(proxies)
+            today_str = single_date.strftime("%Y-%m-%d")
+            response = requests.get(
+                f'https://www.sofascore.com/football//{today_str}/json'
+                ,proxies={"http": proxy, "https": proxy}
+                ,timeout=10
+            )
+            print('************')
+            print(response.content)
+            print('************')
+        except Exception as e:
+            print(e)
     return response
 
 
