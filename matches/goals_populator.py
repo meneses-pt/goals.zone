@@ -1,15 +1,21 @@
 import json
 import operator
+import os
 import re
 import time
+import traceback
 from datetime import date, timedelta
 from functools import reduce
+from xml.etree import ElementTree as ETree
 
+import markdown as markdown
 import requests
 from background_task import background
+from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
 from django.db.models import Q
 
-from matches.models import Match, VideoGoal, AffiliateTerm
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror
 
 
 @background(schedule=60)
@@ -59,6 +65,69 @@ def _fetch_reddit_goals_from_date(days_ago=2):
     print('Finished fetching goals')
 
 
+def find_mirrors(videogoal):
+    main_comments_link = 'http://api.reddit.com' + videogoal.permalink
+    response = _make_reddit_api_request(main_comments_link)
+    data = json.loads(response.content)
+    try:
+        for child in data[1]['data']['children']:
+            if 'author' in child['data'] and child['data']['author'] == 'AutoModerator':
+                children_url = main_comments_link + child['data']['id']
+                children_response = _make_reddit_api_request(children_url)
+                children = json.loads(children_response.content)
+                replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
+                for reply in replies:
+                    body = reply['data']['body']
+                    stripped_body = os.linesep.join([s for s in body.splitlines() if s])
+                    try:
+                        doc = ETree.fromstring(markdown.markdown(stripped_body))
+                    except Exception as e:
+                        tb = traceback.format_exc()
+                        print(tb)
+                        print(e)
+                    else:
+                        links = doc.findall('.//a')
+                        if len(links) > 0:
+                            for link in links:
+                                val = URLValidator()
+                                try:
+                                    val(link.get('href'))
+                                    insert_or_update_mirror(videogoal, link.text, link.get('href'))
+                                except ValidationError:
+                                    pass
+                        else:
+                            for line in body.splitlines():
+                                urls = re.findall(
+                                    r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                    line)
+                                if len(urls) > 0:
+                                    for url in urls:
+                                        val = URLValidator()
+                                        try:
+                                            val(url)
+                                            text = line.replace(url, '')
+                                            if ':' in text:
+                                                text = text.split(':', 1)[0]
+                                            insert_or_update_mirror(videogoal, text, url)
+                                        except ValidationError:
+                                            pass
+    except Exception as e:
+        tb = traceback.format_exc()
+        print(tb)
+        print(e)
+
+
+def insert_or_update_mirror(videogoal, text, url):
+    try:
+        mirror = VideoGoalMirror.objects.get(url__exact=url, videogoal__exact=videogoal)
+    except VideoGoalMirror.DoesNotExist:
+        mirror = VideoGoalMirror()
+        mirror.url = url
+        mirror.videogoal = videogoal
+    mirror.text = text
+    mirror.save()
+
+
 def find_and_store_match(post, title, match_date=date.today()):
     home_team, away_team, minute_str = extract_names_from_title(title)
     if home_team is None or away_team is None:
@@ -77,6 +146,7 @@ def find_and_store_match(post, title, match_date=date.today()):
         videogoal.title = post['title']
         videogoal.minute = minute_str
         videogoal.save()
+        find_mirrors(videogoal)
         # print('Saved: ' + title)
     else:
         print(f'No match found in database [{home_team}]-[{away_team}] for: {title}')
@@ -149,6 +219,14 @@ def _fetch_data_from_reddit_api(after):
     }
     response = requests.get(f'http://api.reddit.com/r/soccer/new?limit=100&after={after}',
                             headers=headers)
+    return response
+
+
+def _make_reddit_api_request(link):
+    headers = {
+        "User-agent": "Goals Populator 0.1"
+    }
+    response = requests.get(link, headers=headers)
     return response
 
 

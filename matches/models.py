@@ -98,6 +98,15 @@ class VideoGoal(models.Model):
         return self.title
 
 
+class VideoGoalMirror(models.Model):
+    videogoal = models.ForeignKey(VideoGoal, related_name='videogoal', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200, null=True)
+    url = models.CharField(max_length=256, null=True)
+
+    def __str__(self):
+        return self.title
+
+
 class AffiliateTerm(models.Model):
     term = models.CharField(max_length=25, unique=True)
     is_prefix = models.BooleanField(default=False)
