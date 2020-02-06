@@ -1,14 +1,11 @@
 import os
-from urllib import request
-import requests
-from lxml.html import fromstring
 import random
-import shutil
 
-from django.core.files import File
+import requests
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
+from lxml.html import fromstring
 
 
 def get_proxies():
@@ -39,11 +36,11 @@ class Team(models.Model):
             saved = False
             attempts = 0
             while not saved and attempts < 3:
-                print(attempts)
+                print("Trying to save image. Attempt: " + str(attempts))
                 try:
                     attempts += 1
                     proxies = get_proxies()
-                    print(proxies)
+                    print(str(len(proxies)) + " proxies fetched.")
                     proxy = random.choice(proxies)
                     response = requests.get(
                         self.logo_url, proxies={"http": proxy, "https": proxy}, stream=True, timeout=3)
@@ -51,7 +48,6 @@ class Team(models.Model):
                     saved = True
                 except Exception as e:
                     print(e)
-        print('Saved team')
         super().save(*args, **kwargs)
 
 

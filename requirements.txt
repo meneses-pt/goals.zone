@@ -1,12 +1,13 @@
-markdown
 asgiref==3.2.3
 certifi==2019.11.28
 chardet==3.0.4
 dj-database-url==0.5.0
-Django==3.0.2
+Django==3.0.3
 django-appconf==1.0.3
 django-background-tasks==1.2.5
 django-compat==1.0.15
+django-heroku==0.3.1
+docopt==0.6.2
 geoip2==3.0.0
 gitdb2==2.0.6
 GitPython==3.0.5
@@ -14,9 +15,12 @@ gunicorn==20.0.4
 idna==2.8
 ipaddress==1.0.23
 ipapi==0.5.2
+lxml==4.5.0
+Markdown==3.1.1
 maxminddb==1.5.2
 pbs==0.110
 Pillow==7.0.0
+pipreqs==0.4.10
 psycopg2==2.8.4
 psycopg2-binary==2.8.4
 pytz==2019.3
@@ -28,3 +32,4 @@ smmap2==2.0.5
 sqlparse==0.3.0
 urllib3==1.25.8
 whitenoise==5.0.1
+yarg==0.1.9
