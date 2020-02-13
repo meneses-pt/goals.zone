@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% load tz %}
 
 {% block content %}
@@ -16,10 +17,16 @@
                             {% if match.home_team.logo_file %}
                                 <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
                                      class="img-fluid list-img-thumb"/>
+                            {% else %}
+                                <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
+                                     class="img-fluid list-img-thumb"/>
                             {% endif %}
                             <b>{{ match }}</b>
                             {% if match.away_team.logo_file %}
                                 <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                                     class="img-fluid list-img-thumb"/>
+                            {% else %}
+                                <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
                                      class="img-fluid list-img-thumb"/>
                             {% endif %}
                             at {{ match.datetime|date:"H:i" }}
