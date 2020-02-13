@@ -1,32 +1,22 @@
 import os
 import random
+from io import BytesIO
 
 import requests
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-from lxml.html import fromstring
 
-
-def get_proxies():
-    url = 'https://sslproxies.org/'
-    response = requests.get(url)
-    parser = fromstring(response.text)
-    proxies = list()
-    for i in parser.xpath('//tbody/tr')[:10]:
-        if i.xpath('.//td[7][contains(text(),"yes")]'):
-            # Grabbing IP and corresponding PORT
-            proxy = ":".join([i.xpath('.//td[1]/text()')[0],
-                              i.xpath('.//td[2]/text()')[0]])
-            proxies.append(proxy)
-    return proxies
+from matches.utils import get_proxies
 
 
 class Team(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=256)
     logo_url = models.CharField(max_length=256)
-    logo_file = models.ImageField(upload_to='logos', default=None)
+    logo_file = models.ImageField(upload_to='logos', default=None, null=True)
 
     def __str__(self):
         return self.name
@@ -35,16 +25,22 @@ class Team(models.Model):
         if self.logo_url and not self.logo_file:
             saved = False
             attempts = 0
-            while not saved and attempts < 3:
+            proxies = get_proxies()
+            print(str(len(proxies)) + " proxies fetched.")
+            while not saved and attempts < 10:
                 print("Trying to save image. Attempt: " + str(attempts))
+                proxy = random.choice(proxies)
+                proxies.remove(proxy)
                 try:
                     attempts += 1
-                    proxies = get_proxies()
-                    print(str(len(proxies)) + " proxies fetched.")
-                    proxy = random.choice(proxies)
-                    response = requests.get(
-                        self.logo_url, proxies={"http": proxy, "https": proxy}, stream=True, timeout=3)
-                    self.logo_file.save(os.path.basename(self.logo_url), response.raw)
+                    print("Proxy tried: " + proxy)
+                    response = requests.get(self.logo_url,
+                                            proxies={"http": proxy, "https": proxy},
+                                            stream=True,
+                                            timeout=10)
+                    fp = BytesIO()
+                    fp.write(response.content)
+                    self.logo_file.save(os.path.basename(self.logo_url), File(fp), save=True)
                     saved = True
                 except Exception as e:
                     print(e)
@@ -128,7 +124,7 @@ class VideoGoal(models.Model):
 
 
 class VideoGoalMirror(models.Model):
-    videogoal = models.ForeignKey(VideoGoal, related_name='videogoal', on_delete=models.CASCADE)
+    videogoal = models.ForeignKey(VideoGoal, related_name='mirrors', on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True)
     url = models.CharField(max_length=256, null=True)
 

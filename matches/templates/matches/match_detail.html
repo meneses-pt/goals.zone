@@ -4,30 +4,58 @@
 {% block head_title %}{{ object }} || {{ block.super }}{% endblock head_title %}
 
 {% block content %}
-    <h2>
-        {% if match.home_team.logo_file %}
-            <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}" class="img-fluid detail-img-thumb"/>
-        {% endif %}
-        {{ object }}
-        {% if match.away_team.logo_file %}
-            <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}" class="img-fluid detail-img-thumb"/>
-        {% endif %}
-        <br/>
-        <small>&nbsp;on {{ match.datetime|date:"l, d F Y \a\t H:i" }}</small>
-    </h2>
+    <div class="mobile">
+        <h3 class="small-header mobile">
+            <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
+                 class="img-fluid detail-img-thumb">&nbsp;{{ object.home_team }} {{ object.home_team_score }}
+            <br>
+            <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                 class="img-fluid detail-img-thumb">&nbsp;{{ object.away_team }} {{ object.away_team_score }}
+            <br>
+        </h3>
+        <p class="mobile-spacing">&nbsp;{{ match.datetime|date:"d-b-Y H:i" }}</p>
+    </div>
+    <div class="desktop">
+        <h3 class="small-header">
+			<span style="white-space: nowrap">
+				<img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
+                     class="img-fluid detail-img-thumb">&nbsp;{{ object }}
+				<img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                     class="img-fluid detail-img-thumb">
+			</span>
+            <p class="desktop-spacing">&nbsp;{{ match.datetime|date:"d-b-Y H:i" }}</p>
+        </h3>
+    </div>
 
     {% if object.videogoal_set.all.count > 0 %}
-        <ul class="list-group">
+        <ul id="goals-list" class="list-group">
             {% for goal in object.videogoal_set.all|dictsort:"minute_int" %}
                 <div class="list-group-item no-padding list-group-item-action">
-                    <a class="list-group-item-left-link" style="" href="{{ goal.url }}">
+                    <button class="btn btn-link list-group-item-left-link" data-toggle="collapse"
+                            data-target="#collapse{{ forloop.counter }}">
                         {{ goal.title }}
-                    </a>
+                    </button>
                     {% if goal.permalink %}
                         <a href="http://reddit.com{{ goal.permalink }}" class="float-right list-group-small-link">
                             <img alt="reddit" src="{% static "img/reddit_logo.png" %}" class="list-group-img">
                         </a>
                     {% endif %}
+                </div>
+                <div id="collapse{{ forloop.counter }}" class="collapse" data-parent="#goals-list">
+                    <ul class="list-group mirror-list">
+                        <div class="list-group-item no-padding list-group-item-action mirror-item">
+                            <a class="list-group-item-left-link mirror-link" href="{{ goal.url }}">
+                                Original Link
+                            </a>
+                        </div>
+                        {% for mirror in goal.mirrors.all %}
+                            <div class="list-group-item no-padding list-group-item-action mirror-item">
+                                <a class="list-group-item-left-link mirror-link" href="{{ mirror.url }}">
+                                    {{ mirror.title|default:"Mirror" }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </ul>
                 </div>
             {% endfor %}
         </ul>

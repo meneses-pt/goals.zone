@@ -1,12 +1,12 @@
 .list-img-thumb {
     max-height: 30px;
     max-width: 30px;
-    margin: 5px
+    margin: 5px;
 }
 
 .detail-img-thumb {
-    height: 50px;
-    margin: 5px
+    height: 30px;
+    margin: 5px;
 }
 
 .footer {
@@ -49,6 +49,7 @@
     width: 90%;
     float: left;
     padding: 0.75rem 1.25rem;
+    text-align: left;
 }
 
 .list-group-item-left-link:hover {
@@ -56,7 +57,7 @@
     text-decoration: underline;
 }
 
-.list-group-small-link{
+.list-group-small-link {
     position: absolute;
     width: 10%;
     height: 100%;
@@ -76,4 +77,49 @@
     position: absolute;
     height: auto;
     margin: 10px;
+}
+
+.mobile {
+    display: none;
+}
+
+@media all and (max-width: 767px) {
+    .mobile { display: block; !important }
+    .desktop { display: none;!important }
+}
+
+.small-header {
+    font-size: 1.8rem;
+}
+
+.small-header.mobile {
+    margin-top: 15px;
+}
+
+.mobile-spacing {
+    margin-bottom: 20px;
+    margin-top: -5px;
+    font-weight: 800;
+    font-size: 90%;
+}
+
+.desktop-spacing {
+    margin-bottom: 20px;
+    margin-top: 5px;
+    font-weight: 800;
+    font-size: 50%;
+    white-space: nowrap;
+    display: inline-block;
+}
+
+.mirror-list {
+    margin: 0 0 10px 0;
+}
+
+.mirror-item {
+    border-top-style: none;
+}
+
+.mirror-link {
+    padding-left: 40px;
 }

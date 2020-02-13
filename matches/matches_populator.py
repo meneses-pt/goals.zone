@@ -5,9 +5,9 @@ from datetime import date, datetime, timedelta
 
 import requests
 from background_task import background
-from lxml.html import fromstring
 
 from .models import Match, Team
+from .utils import get_proxies
 
 
 @background(schedule=60 * 5)
@@ -121,19 +121,6 @@ def _fetch_data_from_rapidpi_api(single_date):
     return response
 
 
-def get_proxies():
-    url = 'https://sslproxies.org/'
-    response = requests.get(url)
-    parser = fromstring(response.text)
-    proxies = list()
-    for i in parser.xpath('//tbody/tr')[:10]:
-        if i.xpath('.//td[7][contains(text(),"yes")]'):
-            # Grabbing IP and corresponding PORT
-            proxy = ":".join([i.xpath('.//td[1]/text()')[0], i.xpath('.//td[2]/text()')[0]])
-            proxies.append(proxy)
-    return proxies
-
-
 def _fetch_data_from_sofascore_api(single_date):
     r"""
     :return: :class:`Response <Response>` object
@@ -141,19 +128,23 @@ def _fetch_data_from_sofascore_api(single_date):
     """
     response = None
     attempts = 0
+    proxies = get_proxies()
+    print(str(len(proxies)) + " proxies fetched.")
     while response is None and attempts < 10:
         print("Trying to fetch data. Attempt: " + str(attempts))
+        proxy = random.choice(proxies)
+        proxies.remove(proxy)
         try:
             attempts += 1
-            proxies = get_proxies()
-            print(str(len(proxies)) + " proxies fetched.")
-            proxy = random.choice(proxies)
+            print("Proxy tried: " + proxy)
             today_str = single_date.strftime("%Y-%m-%d")
             response = requests.get(
                 f'https://www.sofascore.com/football//{today_str}/json',
                 proxies={"http": proxy, "https": proxy},
                 timeout=10
             )
+            if response.status_code != 200:
+                raise Exception("Wrong Status Code: " + str(response.status_code))
         except Exception as e:
             print(e)
     return response

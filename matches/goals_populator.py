@@ -75,42 +75,47 @@ def find_mirrors(videogoal):
                 children_url = main_comments_link + child['data']['id']
                 children_response = _make_reddit_api_request(children_url)
                 children = json.loads(children_response.content)
-                replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
-                for reply in replies:
-                    body = reply['data']['body']
-                    stripped_body = os.linesep.join([s for s in body.splitlines() if s])
-                    try:
-                        doc = ETree.fromstring(markdown.markdown(stripped_body))
-                    except Exception as e:
-                        tb = traceback.format_exc()
-                        print(tb)
-                        print(e)
-                    else:
-                        links = doc.findall('.//a')
-                        if len(links) > 0:
-                            for link in links:
-                                val = URLValidator()
-                                try:
-                                    val(link.get('href'))
-                                    insert_or_update_mirror(videogoal, link.text, link.get('href'))
-                                except ValidationError:
-                                    pass
+                if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
+                        children[1]['data']['children'][0]['data']['replies'], dict):
+                    replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
+                    for reply in replies:
+                        body = reply['data']['body']
+                        stripped_body = os.linesep.join([s for s in body.splitlines() if s])
+                        try:
+                            doc = ETree.fromstring(markdown.markdown(stripped_body))
+                        except Exception as e:
+                            tb = traceback.format_exc()
+                            print(tb)
+                            print(e)
                         else:
-                            for line in body.splitlines():
-                                urls = re.findall(
-                                    r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
-                                    line)
-                                if len(urls) > 0:
-                                    for url in urls:
-                                        val = URLValidator()
-                                        try:
-                                            val(url)
-                                            text = line.replace(url, '')
-                                            if ':' in text:
-                                                text = text.split(':', 1)[0]
-                                            insert_or_update_mirror(videogoal, text, url)
-                                        except ValidationError:
-                                            pass
+                            links = doc.findall('.//a')
+                            if len(links) > 0:
+                                for link in links:
+                                    val = URLValidator()
+                                    try:
+                                        val(link.get('href'))
+                                        text = link.text
+                                        if 'http' in text and link.tail is not None and len(link.tail) > 0:
+                                            text = link.tail
+                                        insert_or_update_mirror(videogoal, text, link.get('href'))
+                                    except ValidationError:
+                                        pass
+                            else:
+                                for line in body.splitlines():
+                                    urls = re.findall(
+                                        r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+                                        line)
+                                    if len(urls) > 0:
+                                        for url in urls:
+                                            val = URLValidator()
+                                            try:
+                                                val(url)
+                                                text = line.replace(url, '')
+                                                if ':' in text:
+                                                    text = text.split(':', 1)[0]
+                                                insert_or_update_mirror(videogoal, text, url)
+                                            except ValidationError:
+                                                pass
     except Exception as e:
         tb = traceback.format_exc()
         print(tb)
@@ -124,7 +129,7 @@ def insert_or_update_mirror(videogoal, text, url):
         mirror = VideoGoalMirror()
         mirror.url = url
         mirror.videogoal = videogoal
-    mirror.text = text
+    mirror.title = text
     mirror.save()
 
 
