@@ -1,4 +1,4 @@
-# [VideoGoals](https://videogoals.meneses.pt)
+# [goals.zone](https://goals.zone) <sub><sup>(formerly VideoGoals)</sup></sub>
 
 |Test|Deploy|
 |---|---|

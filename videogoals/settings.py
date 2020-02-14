@@ -24,7 +24,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '4&h7em$riknyt&y!@9!w@j%d&3s+0gz&xq%p0
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False if os.environ.get('SECRET_KEY') is not None else True
 
-ALLOWED_HOSTS = ['videogoals.meneses.pt', '127.0.0.1']
+ALLOWED_HOSTS = ['goals.zone', 'videogoals.meneses.pt', '127.0.0.1']
 
 # Application definition
 

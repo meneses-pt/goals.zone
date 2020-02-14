@@ -1,6 +1,6 @@
 {
-    "name": "VideoGoals",
-    "short_name": "VideoGoals",
+    "name": "goals.zone",
+    "short_name": "goals.zone",
     "icons": [
         {
             "src": "/android-chrome-192x192.png?v=BGm2LQ4N3q",
@@ -15,6 +15,6 @@
     ],
     "theme_color": "#00bc8c",
     "background_color": "#00bc8c",
-    "start_url": "http://videogoals.meneses.pt",
+    "start_url": "https://goals.zone",
     "display": "standalone"
 }
