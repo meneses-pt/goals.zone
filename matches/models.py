@@ -79,7 +79,7 @@ class Match(models.Model):
             return None
         else:
             splitted = self.score.split(':')
-            return splitted[0]
+            return splitted[1]
 
     def __str__(self):
         return self.home_team.name + ' ' + (self.score if self.score else ':') + ' ' + self.away_team.name
