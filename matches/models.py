@@ -21,19 +21,18 @@ class Team(models.Model):
     def __str__(self):
         return self.name
 
+    # noinspection PyBroadException
     def save(self, *args, **kwargs):
         if self.logo_url and not self.logo_file:
             saved = False
             attempts = 0
             proxies = get_proxies()
-            print(str(len(proxies)) + " proxies fetched.")
+            print(str(len(proxies)) + " proxies returned. Going to fetch team lgo.")
             while not saved and attempts < 10:
-                print("Trying to save image. Attempt: " + str(attempts))
                 proxy = random.choice(proxies)
                 proxies.remove(proxy)
                 try:
                     attempts += 1
-                    print("Proxy tried: " + proxy)
                     response = requests.get(self.logo_url,
                                             proxies={"http": proxy, "https": proxy},
                                             stream=True,
@@ -42,8 +41,10 @@ class Team(models.Model):
                     fp.write(response.content)
                     self.logo_file.save(os.path.basename(self.logo_url), File(fp), save=True)
                     saved = True
-                except Exception as e:
-                    print(e)
+                except Exception:
+                    pass
+            if attempts == 10:
+                print("Number of attempts exceeded trying to fetch team logo: " + str(self.name))
         super().save(*args, **kwargs)
 
 

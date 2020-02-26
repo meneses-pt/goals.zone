@@ -137,6 +137,7 @@ def _fetch_data_from_rapidpi_api(single_date):
     return response
 
 
+# noinspection PyBroadException
 def _fetch_data_from_sofascore_api(single_date):
     r"""
     :return: :class:`Response <Response>` object
@@ -145,14 +146,12 @@ def _fetch_data_from_sofascore_api(single_date):
     response = None
     attempts = 0
     proxies = get_proxies()
-    print(str(len(proxies)) + " proxies fetched.")
+    print(str(len(proxies)) + " proxies returned. Going to fetch data.")
     while response is None and attempts < 10:
-        print("Trying to fetch data. Attempt: " + str(attempts))
         proxy = random.choice(proxies)
         proxies.remove(proxy)
         try:
             attempts += 1
-            print("Proxy tried: " + proxy)
             today_str = single_date.strftime("%Y-%m-%d")
             response = requests.get(
                 f'https://www.sofascore.com/football//{today_str}/json',
@@ -161,11 +160,14 @@ def _fetch_data_from_sofascore_api(single_date):
             )
             if response.status_code != 200:
                 raise Exception("Wrong Status Code: " + str(response.status_code))
-        except Exception as e:
-            print(e)
+        except:
+            pass
+    if attempts == 10:
+        print("Number of attempts exceeded trying to fetch data: " + str(single_date))
     return response
 
 
+# noinspection PyBroadException
 def _fetch_sofascore_match_details(event_id):
     r"""
     :return: :class:`Response <Response>` object
@@ -174,14 +176,12 @@ def _fetch_sofascore_match_details(event_id):
     response = None
     attempts = 0
     proxies = get_proxies()
-    print(str(len(proxies)) + " proxies fetched.")
+    print(str(len(proxies)) + " proxies returned. Going to fetch match details.")
     while response is None and attempts < 10:
-        print("Trying to fetch match details. Attempt: " + str(attempts))
         proxy = random.choice(proxies)
         proxies.remove(proxy)
         try:
             attempts += 1
-            print("Proxy tried: " + proxy)
             response = requests.get(
                 f'https://api.sofascore.com/mobile/v4/event/{event_id}/details',
                 proxies={"http": proxy, "https": proxy},
@@ -189,8 +189,10 @@ def _fetch_sofascore_match_details(event_id):
             )
             if response.status_code != 200:
                 raise Exception("Wrong Status Code: " + str(response.status_code))
-        except Exception as e:
-            print(e)
+        except Exception:
+            pass
+    if attempts == 10:
+        print("Number of attempts exceeded trying to fetch event details: " + str(event_id))
     return response
 
 
