@@ -4,7 +4,6 @@ from io import BytesIO
 
 import requests
 from django.core.files import File
-from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
@@ -15,6 +14,7 @@ from matches.utils import get_proxies
 class Team(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=256)
+    name_code = models.CharField(max_length=5, default=None, null=True)
     logo_url = models.CharField(max_length=256)
     logo_file = models.ImageField(upload_to='logos', default=None, null=True)
 

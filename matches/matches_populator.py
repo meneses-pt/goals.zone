@@ -52,9 +52,15 @@ def fetch_matches_from_sofascore(days_ago=0):
         response = _fetch_data_from_sofascore_api(single_date)
         data = json.loads(response.content)
         for tournament in data['sportItem']['tournaments']:
-            for fixture in tournament["events"]:
+            for fixture in tournament['events']:
                 home_team = _get_or_create_home_team_sofascore(fixture)
                 away_team = _get_or_create_away_team_sofascore(fixture)
+                if home_team.name_code is None or away_team.name_code is None:
+                    match_details_response = _fetch_sofascore_match_details(fixture['id'])
+                    if home_team.name_code is None:
+                        get_team_name_code(home_team, match_details_response, 'homeTeam')
+                    if away_team.name_code is None:
+                        get_team_name_code(away_team, match_details_response, 'awayTeam')
                 score = None
                 if 'display' in fixture['homeScore'] and 'display' in fixture['awayScore']:
                     home_goals = fixture['homeScore']['display']
@@ -89,6 +95,16 @@ def _get_or_create_away_team_sofascore(fixture):
     away_team.logo_url = f"https://www.sofascore.com/images/team-logo/football_{team_id}.png"
     away_team.save()
     return away_team
+
+
+def get_team_name_code(team, response, team_tag):
+    try:
+        data = json.loads(response.content)
+        name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
+        team.name_code = name_code
+        team.save()
+    except Exception as e:
+        print(e)
 
 
 def _get_or_create_home_team_rapidapi(fixture):
@@ -140,6 +156,34 @@ def _fetch_data_from_sofascore_api(single_date):
             today_str = single_date.strftime("%Y-%m-%d")
             response = requests.get(
                 f'https://www.sofascore.com/football//{today_str}/json',
+                proxies={"http": proxy, "https": proxy},
+                timeout=10
+            )
+            if response.status_code != 200:
+                raise Exception("Wrong Status Code: " + str(response.status_code))
+        except Exception as e:
+            print(e)
+    return response
+
+
+def _fetch_sofascore_match_details(event_id):
+    r"""
+    :return: :class:`Response <Response>` object
+    :rtype: requests.Response
+    """
+    response = None
+    attempts = 0
+    proxies = get_proxies()
+    print(str(len(proxies)) + " proxies fetched.")
+    while response is None and attempts < 10:
+        print("Trying to fetch match details. Attempt: " + str(attempts))
+        proxy = random.choice(proxies)
+        proxies.remove(proxy)
+        try:
+            attempts += 1
+            print("Proxy tried: " + proxy)
+            response = requests.get(
+                f'https://api.sofascore.com/mobile/v4/event/{event_id}/details',
                 proxies={"http": proxy, "https": proxy},
                 timeout=10
             )
