@@ -65,6 +65,7 @@ class Match(models.Model):
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
+    tweet_sent = models.BooleanField(default=False)
 
     @property
     def home_team_score(self):
