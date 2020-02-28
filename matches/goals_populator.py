@@ -135,6 +135,8 @@ def insert_or_update_mirror(videogoal, text, url):
         mirror = VideoGoalMirror()
         mirror.url = url
         mirror.videogoal = videogoal
+    if len(re.sub(r"[\r\n\t\s]*", "", text)) == 0:
+        text = None
     mirror.title = text
     mirror.save()
 
