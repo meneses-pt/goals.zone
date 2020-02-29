@@ -9,8 +9,7 @@ class TeamAdmin(admin.ModelAdmin):
 
 class TeamAliasAdmin(admin.ModelAdmin):
     autocomplete_fields = ['team']
-    search_fields = ['team']
-    raw_id_fields = ['team']
+    search_fields = ['alias', 'team__name']
 
 
 # Register your models here.
