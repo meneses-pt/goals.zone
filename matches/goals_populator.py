@@ -137,7 +137,7 @@ def insert_or_update_mirror(videogoal, text, url):
         mirror.videogoal = videogoal
     if len(re.sub(r"[\r\n\t\s]*", "", text)) == 0:
         text = None
-    mirror.title = text
+    mirror.title = (text[:195] + '..') if len(text) > 195 else text
     mirror.save()
 
 
@@ -169,7 +169,7 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
             videogoal.permalink = post['permalink']
         videogoal.match = match
         videogoal.url = post['url']
-        videogoal.title = post['title']
+        videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
         videogoal.minute = minute_str
         videogoal.save()
         if len(match.videogoal_set.all()) > 0 and\

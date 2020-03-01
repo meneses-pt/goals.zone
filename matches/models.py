@@ -106,9 +106,9 @@ class Match(models.Model):
 
 
 class VideoGoal(models.Model):
-    permalink = models.CharField(max_length=256, unique=True)
+    permalink = models.CharField(max_length=1024, unique=True)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    url = models.CharField(max_length=256, null=True)
+    url = models.CharField(max_length=1024, null=True)
     title = models.CharField(max_length=200, null=True)
     minute = models.CharField(max_length=10, null=True)
 
@@ -128,7 +128,7 @@ class VideoGoal(models.Model):
 class VideoGoalMirror(models.Model):
     videogoal = models.ForeignKey(VideoGoal, related_name='mirrors', on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True)
-    url = models.CharField(max_length=256, null=True)
+    url = models.CharField(max_length=1024, null=True)
 
     def __str__(self):
         return self.title
