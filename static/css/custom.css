@@ -166,7 +166,7 @@
 }
 
 .right-ad {
-    position: fixed;
+    position: absolute;
     top: 70px;
     right: 0;
 }
