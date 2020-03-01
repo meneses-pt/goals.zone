@@ -12,8 +12,6 @@
 
     <title>{% block head_title %}goals.zone{% endblock %}</title>
     {% include "snippets/css.html" %}
-    <script data-ad-client="ca-pub-8520909641604027" async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 </head>
 
 <body>
@@ -22,6 +20,10 @@
         <img src="{% static 'videogoals/original_icon_w200.png' %}" width="40" class="d-inline-block align-top" alt="">
         &nbsp;goals.zone
     </a>
+    <div class="form-inline">
+        <button id="moreButton" class="btn btn-outline-success" data-toggle="modal" data-target="#aboutModal">More
+        </button>
+    </div>
 </nav>
 <div class="container-fluid">
     <div class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content bottom-margin">
@@ -31,6 +33,18 @@
         </div>
         {% include "snippets/js.html" %}
     </div>
+</div>
+<div class="right-ad desktop">
+    <script type="text/javascript">
+        atOptions = {
+            'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
+            'format': 'iframe',
+            'height': 600,
+            'width': 160,
+            'params': {}
+        };
+        document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
+    </script>
 </div>
 {% include "snippets/footer.html" %}
 </body>
