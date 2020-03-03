@@ -16,8 +16,9 @@ from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
+from slack_webhook import Slack
 
-from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, DiscordWebhookUrl
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, WebhookUrl
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
 TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
@@ -138,35 +139,70 @@ def insert_or_update_mirror(videogoal, text, url):
         mirror.videogoal = videogoal
     if len(re.sub(r"[\r\n\t\s]*", "", text)) == 0:
         text = None
-    mirror.title = (text[:195] + '..') if len(text) > 195 else text
+    if text is not None:
+        mirror.title = (text[:195] + '..') if len(text) > 195 else text
+    else:
+        mirror.title = None
     mirror.save()
 
 
 def send_messages(match):
-    message = f"Check out the latest goals from {match.home_team.name} - {match.away_team.name} on" \
-              f" https://goals.zone/{match.slug}\n#SofaScore #{match.home_team.name_code} #{match.away_team.name_code}"
-    send_tweet(message)
-    send_discord_webhook_message(message)
+    send_tweet(match)
+    send_discord_webhook_message(match)
+    send_slack_webhook_message(match)
     match.tweet_sent = True
     match.save()
 
 
-def send_discord_webhook_message(message):
+def format_webhook_message(match, wh):
+    message = wh.message
+    message = message.format(m=match)
+    return message
+
+
+def send_slack_webhook_message(match):
     try:
-        webhook_urls = DiscordWebhookUrl.objects.all()
-        webhook = DiscordWebhook(url=webhook_urls, content=message)
-        response = webhook.execute()
-        print(response)
+        webhooks = WebhookUrl.objects.filter(destination__exact=2)  # Slack
+        for wh in webhooks:
+            message = format_webhook_message(match, wh)
+            try:
+                slack = Slack(url=wh.webhook)
+                response = slack.post(text=message)
+                print(response)
+            except Exception as ex:
+                print("Error sending webhook single message: " + str(ex))
     except Exception as ex:
         print("Error sending webhook messages: " + str(ex))
 
 
-def send_tweet(message):
-    auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
-    auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
-    api = tweepy.API(auth)
-    result = api.update_status(status=message)
-    print(result)
+def send_discord_webhook_message(match):
+    try:
+        webhooks = WebhookUrl.objects.filter(destination__exact=1)  # Discord
+        for wh in webhooks:
+            message = format_webhook_message(match, wh)
+            try:
+                webhook = DiscordWebhook(url=wh.webhook, content=message)
+                response = webhook.execute()
+                print(response)
+            except Exception as ex:
+                print("Error sending webhook single message: " + str(ex))
+    except Exception as ex:
+        print("Error sending webhook messages: " + str(ex))
+
+
+def send_tweet(message, match):
+    try:
+
+        message = f"Check out the latest goals from {match.home_team.name} - {match.away_team.name} on" \
+                  f" https://goals.zone/{match.slug}\n" \
+                  f"#SofaScore #{match.home_team.name_code} #{match.away_team.name_code}"
+        auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
+        auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
+        api = tweepy.API(auth)
+        result = api.update_status(status=message)
+        print(result)
+    except Exception as ex:
+        print("Error sending twitter messages: " + str(ex))
 
 
 def find_and_store_videogoal(post, title, match_date=date.today()):

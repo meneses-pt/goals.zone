@@ -27,7 +27,7 @@ class Team(models.Model):
             saved = False
             attempts = 0
             proxies = get_proxies()
-            print(str(len(proxies)) + " proxies returned. Going to fetch team lgo.")
+            print(str(len(proxies)) + " proxies returned. Going to fetch team logo.")
             while not saved and attempts < 10:
                 proxy = random.choice(proxies)
                 proxies.remove(proxy)
@@ -142,9 +142,15 @@ class AffiliateTerm(models.Model):
         return self.term
 
 
-class DiscordWebhookUrl(models.Model):
+class WebhookUrl(models.Model):
+    webhook_destinations = (
+        (1, "Discord"),
+        (2, "Slack")
+    )
     description = models.CharField(max_length=100, unique=True)
     webhook = models.CharField(max_length=2000, unique=True)
+    message = models.CharField(max_length=2000)
+    destination = models.IntegerField(choices=webhook_destinations, default=1)
 
     def __str__(self):
-        return self.description + " - " + self.webhook
+        return self.description
