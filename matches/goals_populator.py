@@ -190,7 +190,7 @@ def send_discord_webhook_message(match):
         print("Error sending webhook messages: " + str(ex))
 
 
-def send_tweet(message, match):
+def send_tweet(match):
     try:
 
         message = f"Check out the latest goals from {match.home_team.name} - {match.away_team.name} on" \
