@@ -12,11 +12,12 @@ import markdown as markdown
 import requests
 import tweepy
 from background_task import background
+from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
 
-from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, DiscordWebhookUrl
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
 TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
@@ -141,17 +142,31 @@ def insert_or_update_mirror(videogoal, text, url):
     mirror.save()
 
 
-def send_tweet(match):
+def send_messages(match):
+    message = f"Check out the latest goals from {match.home_team.name} - {match.away_team.name} on" \
+              f" https://goals.zone/{match.slug}\n#SofaScore #{match.home_team.name_code} #{match.away_team.name_code}"
+    send_tweet(message)
+    send_discord_webhook_message(message)
+    match.tweet_sent = True
+    match.save()
+
+
+def send_discord_webhook_message(message):
+    try:
+        webhook_urls = DiscordWebhookUrl.objects.all()
+        webhook = DiscordWebhook(url=webhook_urls, content=message)
+        response = webhook.execute()
+        print(response)
+    except Exception as ex:
+        print("Error sending webhook messages: " + str(ex))
+
+
+def send_tweet(message):
     auth = tweepy.OAuthHandler(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET)
     auth.set_access_token(TWITTER_ACCESS_TOKEN, TWITTER_ACCESS_TOKEN_SECRET)
     api = tweepy.API(auth)
-
-    message = f"Check out the latest goals from {match.home_team.name} - {match.away_team.name} on" \
-              f" https://goals.zone/{match.slug}\n#SofaScore #{match.home_team.name_code} #{match.away_team.name_code}"
-
     result = api.update_status(status=message)
-    match.tweet_sent = True
-    match.save()
+    print(result)
 
 
 def find_and_store_videogoal(post, title, match_date=date.today()):
@@ -172,9 +187,9 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
         videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
         videogoal.minute = minute_str
         videogoal.save()
-        if len(match.videogoal_set.all()) > 0 and\
-                not match.tweet_sent and\
-                len(match.home_team.name_code) > 0 and\
+        if len(match.videogoal_set.all()) > 0 and \
+                not match.tweet_sent and \
+                len(match.home_team.name_code) > 0 and \
                 len(match.away_team.name_code) > 0:
             send_tweet(match)
         find_mirrors(videogoal)

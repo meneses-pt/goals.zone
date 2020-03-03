@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Match, VideoGoal, Team, TeamAlias, AffiliateTerm
+from .models import Match, VideoGoal, Team, TeamAlias, AffiliateTerm, DiscordWebhookUrl
 
 
 class TeamAdmin(admin.ModelAdmin):
@@ -18,3 +18,4 @@ admin.site.register(VideoGoal)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(TeamAlias, TeamAliasAdmin)
 admin.site.register(AffiliateTerm)
+admin.site.register(DiscordWebhookUrl)

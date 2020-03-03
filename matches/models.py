@@ -140,3 +140,11 @@ class AffiliateTerm(models.Model):
 
     def __str__(self):
         return self.term
+
+
+class DiscordWebhookUrl(models.Model):
+    description = models.CharField(max_length=100, unique=True)
+    webhook = models.CharField(max_length=2000, unique=True)
+
+    def __str__(self):
+        return self.description + " - " + self.webhook
