@@ -191,7 +191,7 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
                 not match.tweet_sent and \
                 len(match.home_team.name_code) > 0 and \
                 len(match.away_team.name_code) > 0:
-            send_tweet(match)
+            send_messages(match)
         find_mirrors(videogoal)
         # print('Saved: ' + title)
     else:
