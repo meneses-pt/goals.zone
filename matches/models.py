@@ -57,11 +57,46 @@ class TeamAlias(models.Model):
         return self.alias + " - Original: " + self.team.name
 
 
+class Tournament(models.Model):
+    id = models.IntegerField(unique=True, primary_key=True)
+    unique_id = models.IntegerField(default=None, null=True)
+    name = models.CharField(max_length=256, default=None, null=True)
+    slug = models.CharField(max_length=256, default=None, null=True)
+    unique_name = models.CharField(max_length=256, default=None, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    id = models.IntegerField(unique=True, primary_key=True)
+    priority = models.IntegerField(default=None, null=True)
+    name = models.CharField(max_length=256, default=None, null=True)
+    slug = models.CharField(max_length=256, default=None, null=True)
+    flag = models.CharField(max_length=256, default=None, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Season(models.Model):
+    id = models.IntegerField(unique=True, primary_key=True)
+    name = models.CharField(max_length=256, default=None, null=True)
+    slug = models.CharField(max_length=256, default=None, null=True)
+    year = models.CharField(max_length=256, default=None, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Match(models.Model):
     home_team = models.ForeignKey(
         Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
     away_team = models.ForeignKey(
         Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
+    tournament = models.ForeignKey(Tournament, related_name='tournament', null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, related_name='category', null=True, on_delete=models.SET_NULL)
+    season = models.ForeignKey(Season, related_name='season', null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
