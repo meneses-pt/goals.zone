@@ -8,9 +8,11 @@ class WebhookAdminForm(forms.ModelForm):
     class Meta:
         model = Webhook
         fields = ['title',
+                  'destination',
+                  'event_type',
                   'webhook_url',
                   'message',
-                  'destination',
+                  'link_regex',
                   'include_tournaments',
                   'include_categories',
                   'exclude_tournaments',
@@ -32,11 +34,13 @@ class TweetAdminForm(forms.ModelForm):
     class Meta:
         model = Tweet
         fields = ['title',
+                  'event_type',
                   'consumer_key',
                   'consumer_secret',
                   'access_token_key',
                   'access_token_secret',
                   'message',
+                  'link_regex',
                   'include_tournaments',
                   'include_categories',
                   'exclude_tournaments',

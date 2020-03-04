@@ -19,7 +19,7 @@ from django.db.models import Q
 from slack_webhook import Slack
 
 from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror
-from msg_events.models import Webhook, Tweet
+from msg_events.models import Webhook, Tweet, MessageObject
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
 TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
@@ -145,18 +145,29 @@ def insert_or_update_mirror(videogoal, text, url):
     else:
         mirror.title = None
     mirror.save()
+    if not mirror.msg_sent and \
+            mirror.videogoal.match.home_team.name_code is not None and \
+            mirror.videogoal.match.away_team.name_code is not None:
+        send_messages(mirror.videogoal.match, None, mirror, MessageObject.MessageEventType.Mirror)
 
 
-def send_messages(match):
-    send_tweet(match)
-    send_discord_webhook_message(match)
-    send_slack_webhook_message(match)
-    match.msg_sent = True
-    match.save()
+def send_messages(match, videogoal, videogoal_mirror, event_filter):
+    send_tweet(match, videogoal, videogoal_mirror, event_filter)
+    send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
+    send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
+    if MessageObject.MessageEventType.Match == event_filter and match is not None:
+        match.msg_sent = True
+        match.save()
+    if MessageObject.MessageEventType.Video == event_filter and videogoal is not None:
+        videogoal.msg_sent = True
+        videogoal.save()
+    if MessageObject.MessageEventType.Mirror == event_filter and videogoal_mirror is not None:
+        videogoal_mirror.msg_sent = True
+        videogoal_mirror.save()
 
 
-def format_event_message(match, message):
-    message = message.format(m=match)
+def format_event_message(match, videogoal, videogoal_mirror, message):
+    message = message.format(m=match, vg=videogoal, vgm=videogoal_mirror)
     return message
 
 
@@ -176,14 +187,15 @@ def check_conditions(match, msg_obj):
     return True
 
 
-def send_slack_webhook_message(match):
+def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
-        webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack)
+        webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack,
+                                          event_type=event_filter)
         for wh in webhooks:
-            to_send = check_conditions(match, wh)
+            to_send = check_conditions(match, wh) and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 return
-            message = format_event_message(match, wh.message)
+            message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
                 slack = Slack(url=wh.webhook_url)
                 response = slack.post(text=message)
@@ -194,14 +206,15 @@ def send_slack_webhook_message(match):
         print("Error sending webhook messages: " + str(ex))
 
 
-def send_discord_webhook_message(match):
+def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
-        webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord)
+        webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
+                                          event_type=event_filter)
         for wh in webhooks:
-            to_send = check_conditions(match, wh)
+            to_send = check_conditions(match, wh) and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 return
-            message = format_event_message(match, wh.message)
+            message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
                 webhook = DiscordWebhook(url=wh.webhook_url, content=message)
                 response = webhook.execute()
@@ -212,15 +225,29 @@ def send_discord_webhook_message(match):
         print("Error sending webhook messages: " + str(ex))
 
 
-def send_tweet(match):
+def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):
+    if MessageObject.MessageEventType.Video == event_filter and videogoal is not None:
+        if msg_obj.link_regex is not None and len(msg_obj.link_regex) > 0:
+            pattern = re.compile(msg_obj.link_regex)
+            if not pattern.match(videogoal.url):
+                return False
+    if MessageObject.MessageEventType.Mirror == event_filter and videogoal_mirror is not None:
+        if msg_obj.link_regex is not None and len(msg_obj.link_regex) > 0:
+            pattern = re.compile(msg_obj.link_regex)
+            if not pattern.match(videogoal_mirror.url):
+                return False
+    return True
+
+
+def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
-        tweets = Tweet.objects.all()
+        tweets = Tweet.objects.filter(event_type=event_filter)
         for tw in tweets:
-            to_send = check_conditions(match, tw)
+            to_send = check_conditions(match, tw) and check_link_regex(tw, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 return
             try:
-                message = format_event_message(match, tw.message)
+                message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
                 auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
                 auth.set_access_token(tw.access_token_key, tw.access_token_secret)
                 api = tweepy.API(auth)
@@ -250,11 +277,15 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
         videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
         videogoal.minute = minute_str
         videogoal.save()
+        if not videogoal.msg_sent and \
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
+            send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
         if len(match.videogoal_set.all()) > 0 and \
                 not match.msg_sent and \
                 match.home_team.name_code is not None and \
                 match.away_team.name_code is not None:
-            send_messages(match)
+            send_messages(match, None, None, MessageObject.MessageEventType.Match)
         find_mirrors(videogoal)
         # print('Saved: ' + title)
     else:

@@ -146,6 +146,7 @@ class VideoGoal(models.Model):
     url = models.CharField(max_length=1024, null=True)
     title = models.CharField(max_length=200, null=True)
     minute = models.CharField(max_length=10, null=True)
+    msg_sent = models.BooleanField(default=False)
 
     @property
     def minute_int(self):
@@ -164,6 +165,7 @@ class VideoGoalMirror(models.Model):
     videogoal = models.ForeignKey(VideoGoal, related_name='mirrors', on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True)
     url = models.CharField(max_length=1024, null=True)
+    msg_sent = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

@@ -4,6 +4,10 @@ from matches.models import Tournament, Category
 
 
 class MessageObject(models.Model):
+    class MessageEventType(models.IntegerChoices):
+        Match = 1, 'Match'
+        Video = 2, 'Video'
+        Mirror = 3, 'Mirror'
     include_tournaments = models.ManyToManyField(Tournament,
                                                  related_name='%(class)s_include_tournaments', default=None, blank=True)
     include_categories = models.ManyToManyField(Category,
@@ -12,6 +16,9 @@ class MessageObject(models.Model):
                                                  related_name='%(class)s_exclude_tournaments', default=None, blank=True)
     exclude_categories = models.ManyToManyField(Category,
                                                 related_name='%(class)s_exclude_categories', default=None, blank=True)
+    event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.Match)
+    link_regex = models.CharField(max_length=2000, default=None, null=True)
+
 
     class Meta:
         abstract = True
@@ -35,7 +42,7 @@ class Webhook(MessageObject):
         Slack = 2, 'Slack'
 
     title = models.CharField(max_length=100, unique=True)
-    webhook_url = models.CharField(max_length=2000, unique=True)
+    webhook_url = models.CharField(max_length=2000, unique=False)
     message = models.CharField(max_length=2000)
     destination = models.IntegerField(choices=WebhookDestinations.choices, default=WebhookDestinations.Discord)
 
