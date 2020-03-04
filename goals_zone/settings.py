@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'matches.apps.MatchesConfig',
+    'msg_events.apps.MsgEventsConfig',
     'background_task'
 ]
 

@@ -65,7 +65,7 @@ class Match(models.Model):
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
-    tweet_sent = models.BooleanField(default=False)
+    msg_sent = models.BooleanField(default=False)
 
     @property
     def home_team_score(self):
@@ -140,17 +140,3 @@ class AffiliateTerm(models.Model):
 
     def __str__(self):
         return self.term
-
-
-class WebhookUrl(models.Model):
-    webhook_destinations = (
-        (1, "Discord"),
-        (2, "Slack")
-    )
-    description = models.CharField(max_length=100, unique=True)
-    webhook = models.CharField(max_length=2000, unique=True)
-    message = models.CharField(max_length=2000)
-    destination = models.IntegerField(choices=webhook_destinations, default=1)
-
-    def __str__(self):
-        return self.description
