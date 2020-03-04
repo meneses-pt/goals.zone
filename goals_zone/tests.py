@@ -6,10 +6,10 @@ from matches.goals_populator import find_match, extract_names_from_title
 
 
 class AffiliateTeamsTestCase(TestCase):
-    fixtures = ['videogoals/test/teams.json',
-                'videogoals/test/matches.json',
-                'videogoals/test/teamalias.json',
-                'videogoals/test/affiliateterms.json']
+    fixtures = ['goals_zone/test/teams.json',
+                'goals_zone/test/matches.json',
+                'goals_zone/test/teamalias.json',
+                'goals_zone/test/affiliateterms.json']
 
     def setUp(self):
         from django.db import connection

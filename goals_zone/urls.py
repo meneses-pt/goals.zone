@@ -6,7 +6,7 @@ from background_task.models import Task
 
 from matches.goals_populator import fetch_videogoals
 from matches.matches_populator import fetch_new_matches
-from videogoals import settings
+from goals_zone import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
