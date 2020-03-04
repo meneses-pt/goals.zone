@@ -54,7 +54,10 @@ def fetch_matches_from_sofascore(days_ago=0):
         for tournament in data['sportItem']['tournaments']:
             tournament_obj = _get_or_create_tournament_sofascore(tournament["tournament"])
             category_obj = _get_or_create_category_sofascore(tournament["category"])
-            season_obj = _get_or_create_season_sofascore(tournament["season"])
+            if 'season' in tournament and tournament['season'] is not None:
+                season_obj = _get_or_create_season_sofascore(tournament["season"])
+            else:
+                season_obj = None
             for fixture in tournament['events']:
                 home_team = _get_or_create_home_team_sofascore(fixture)
                 away_team = _get_or_create_away_team_sofascore(fixture)
@@ -131,35 +134,58 @@ def _get_or_create_home_team_sofascore(fixture):
 
 
 def _get_or_create_tournament_sofascore(tournament):
-    tid = tournament['id']
-    tournament_obj, tournament_obj_created = Tournament.objects.get_or_create(id=tid)
-    tournament_obj.unique_id = tournament['uniqueId']
-    tournament_obj.name = tournament['name']
-    tournament_obj.slug = tournament['slug']
-    tournament_obj.unique_name = tournament['uniqueName']
-    tournament_obj.save()
-    return tournament_obj
+    try:
+        tid = tournament['id']
+        tournament_obj, tournament_obj_created = Tournament.objects.get_or_create(id=tid)
+        if 'uniqueId' in tournament:
+            tournament_obj.unique_id = tournament['uniqueId']
+        if 'name' in tournament:
+            tournament_obj.name = tournament['name']
+        if 'slug' in tournament:
+            tournament_obj.slug = tournament['slug']
+        if 'uniqueName' in tournament:
+            tournament_obj.unique_name = tournament['uniqueName']
+        tournament_obj.save()
+        return tournament_obj
+    except Exception as e:
+        print("An exception as occurred getting or creating tournament", e)
+        return None
 
 
 def _get_or_create_category_sofascore(category):
-    cid = category['id']
-    category_obj, category_obj_created = Category.objects.get_or_create(id=cid)
-    category_obj.name = category['name']
-    category_obj.slug = category['slug']
-    category_obj.priority = category['priority']
-    category_obj.flag = category['flag']
-    category_obj.save()
-    return category_obj
+    try:
+        cid = category['id']
+        category_obj, category_obj_created = Category.objects.get_or_create(id=cid)
+        if 'name' in category:
+            category_obj.name = category['name']
+        if 'slug' in category:
+            category_obj.slug = category['slug']
+        if 'priority' in category:
+            category_obj.priority = category['priority']
+        if 'flag' in category:
+            category_obj.flag = category['flag']
+        category_obj.save()
+        return category_obj
+    except Exception as e:
+        print("An exception as occurred getting or creating category", e)
+        return None
 
 
 def _get_or_create_season_sofascore(season):
-    sid = season['id']
-    season_obj, season_obj_created = Season.objects.get_or_create(id=sid)
-    season_obj.name = season['name']
-    season_obj.slug = season['slug']
-    season_obj.year = season['year']
-    season_obj.save()
-    return season_obj
+    try:
+        sid = season['id']
+        season_obj, season_obj_created = Season.objects.get_or_create(id=sid)
+        if 'name' in season:
+            season_obj.name = season['name']
+        if 'slug' in season:
+            season_obj.slug = season['slug']
+        if 'year' in season:
+            season_obj.year = season['year']
+        season_obj.save()
+        return season_obj
+    except Exception as e:
+        print("An exception as occurred getting or creating season", e)
+        return None
 
 
 def _fetch_data_from_rapidpi_api(single_date):
@@ -240,7 +266,11 @@ def _save_or_update_match(match):
                                    datetime__gte=match.datetime - timedelta(days=1),
                                    datetime__lte=match.datetime + timedelta(days=1))
     if matches.exists():
-        matches.update(datetime=match.datetime, score=match.score)
+        matches.update(datetime=match.datetime,
+                       score=match.score,
+                       tournament=match.tournament,
+                       category=match.category,
+                       season=match.season)
     else:
         match.save()
 

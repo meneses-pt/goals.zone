@@ -7,20 +7,40 @@ from .models import Webhook, Tweet
 class WebhookAdminForm(forms.ModelForm):
     class Meta:
         model = Webhook
-        fields = ['title', 'webhook_url', 'message', 'destination']
+        fields = ['title',
+                  'webhook_url',
+                  'message',
+                  'destination',
+                  'include_tournaments',
+                  'include_categories',
+                  'exclude_tournaments',
+                  'exclude_categories']
         widgets = {
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
         }
 
 
 class WebhookAdmin(admin.ModelAdmin):
+    filter_horizontal = ['include_tournaments',
+                         'include_categories',
+                         'exclude_tournaments',
+                         'exclude_categories']
     form = WebhookAdminForm
 
 
 class TweetAdminForm(forms.ModelForm):
     class Meta:
         model = Tweet
-        fields = ['title', 'consumer_key', 'consumer_secret', 'access_token_key', 'access_token_secret', 'message']
+        fields = ['title',
+                  'consumer_key',
+                  'consumer_secret',
+                  'access_token_key',
+                  'access_token_secret',
+                  'message',
+                  'include_tournaments',
+                  'include_categories',
+                  'exclude_tournaments',
+                  'exclude_categories']
         widgets = {
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
         }

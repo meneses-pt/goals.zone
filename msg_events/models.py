@@ -1,7 +1,23 @@
 from django.db import models
 
+from matches.models import Tournament, Category
 
-class Tweet(models.Model):
+
+class MessageObject(models.Model):
+    include_tournaments = models.ManyToManyField(Tournament,
+                                                 related_name='%(class)s_include_tournaments', default=None, blank=True)
+    include_categories = models.ManyToManyField(Category,
+                                                related_name='%(class)s_include_categories', default=None, blank=True)
+    exclude_tournaments = models.ManyToManyField(Tournament,
+                                                 related_name='%(class)s_exclude_tournaments', default=None, blank=True)
+    exclude_categories = models.ManyToManyField(Category,
+                                                related_name='%(class)s_exclude_categories', default=None, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class Tweet(MessageObject):
     title = models.CharField(max_length=100, unique=True)
     consumer_key = models.CharField(max_length=100, unique=True)
     consumer_secret = models.CharField(max_length=100, unique=True)
@@ -13,7 +29,7 @@ class Tweet(models.Model):
         return self.title
 
 
-class Webhook(models.Model):
+class Webhook(MessageObject):
     class WebhookDestinations(models.IntegerChoices):
         Discord = 1, 'Discord'
         Slack = 2, 'Slack'

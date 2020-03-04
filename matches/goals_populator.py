@@ -160,10 +160,29 @@ def format_event_message(match, message):
     return message
 
 
+def check_conditions(match, msg_obj):
+    if msg_obj.include_categories.all().count() > 0 and \
+            (match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()):
+        return False
+    if msg_obj.include_tournaments.all().count() > 0 and \
+            (match.tournament is None or not msg_obj.include_tournaments.filter(id=match.tournament.id).exists()):
+        return False
+    if msg_obj.exclude_categories.all().count() > 0 and \
+            (match.category is None or msg_obj.exclude_categories.filter(id=match.category.id).exists()):
+        return False
+    if msg_obj.exclude_tournaments.all().count() > 0 and \
+            (match.tournament is None or msg_obj.exclude_tournaments.filter(id=match.tournament.id).exists()):
+        return False
+    return True
+
+
 def send_slack_webhook_message(match):
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack)
         for wh in webhooks:
+            to_send = check_conditions(match, wh)
+            if not to_send:
+                return
             message = format_event_message(match, wh.message)
             try:
                 slack = Slack(url=wh.webhook_url)
@@ -179,6 +198,9 @@ def send_discord_webhook_message(match):
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord)
         for wh in webhooks:
+            to_send = check_conditions(match, wh)
+            if not to_send:
+                return
             message = format_event_message(match, wh.message)
             try:
                 webhook = DiscordWebhook(url=wh.webhook_url, content=message)
@@ -194,6 +216,9 @@ def send_tweet(match):
     try:
         tweets = Tweet.objects.all()
         for tw in tweets:
+            to_send = check_conditions(match, tw)
+            if not to_send:
+                return
             try:
                 message = format_event_message(match, tw.message)
                 auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
@@ -202,7 +227,7 @@ def send_tweet(match):
                 result = api.update_status(status=message)
                 print(result)
             except Exception as ex:
-                print("Error sending webhook single message", str(ex))
+                print("Error sending twitter single message", str(ex))
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex))
 
@@ -227,8 +252,8 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
         videogoal.save()
         if len(match.videogoal_set.all()) > 0 and \
                 not match.msg_sent and \
-                len(match.home_team.name_code) > 0 and \
-                len(match.away_team.name_code) > 0:
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
             send_messages(match)
         find_mirrors(videogoal)
         # print('Saved: ' + title)
