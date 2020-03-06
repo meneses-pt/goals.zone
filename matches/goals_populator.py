@@ -89,6 +89,7 @@ def find_mirrors(videogoal):
                     replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
                     for reply in replies:
                         body = reply['data']['body']
+                        author = reply['data']['author']
                         stripped_body = os.linesep.join([s for s in body.splitlines() if s])
                         try:
                             doc = ETree.fromstring(markdown.markdown(stripped_body))
@@ -106,7 +107,7 @@ def find_mirrors(videogoal):
                                         text = link.text
                                         if 'http' in text and link.tail is not None and len(link.tail) > 0:
                                             text = link.tail
-                                        insert_or_update_mirror(videogoal, text, link.get('href'))
+                                        insert_or_update_mirror(videogoal, text, link.get('href'), author)
                                     except ValidationError:
                                         pass
                             else:
@@ -122,7 +123,7 @@ def find_mirrors(videogoal):
                                                 text = line.replace(url, '')
                                                 if ':' in text:
                                                     text = text.split(':', 1)[0]
-                                                insert_or_update_mirror(videogoal, text, url)
+                                                insert_or_update_mirror(videogoal, text, url, author)
                                             except ValidationError:
                                                 pass
     except Exception as e:
@@ -131,7 +132,7 @@ def find_mirrors(videogoal):
         print(e)
 
 
-def insert_or_update_mirror(videogoal, text, url):
+def insert_or_update_mirror(videogoal, text, url, author):
     try:
         mirror = VideoGoalMirror.objects.get(url__exact=url, videogoal__exact=videogoal)
     except VideoGoalMirror.DoesNotExist:
@@ -144,6 +145,7 @@ def insert_or_update_mirror(videogoal, text, url):
         mirror.title = (text[:195] + '..') if len(text) > 195 else text
     else:
         mirror.title = None
+    mirror.author = author
     mirror.save()
     if not mirror.msg_sent and \
             mirror.videogoal.match.home_team.name_code is not None and \
@@ -276,6 +278,7 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
         videogoal.url = post['url']
         videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
         videogoal.minute = minute_str
+        videogoal.author = post['author']
         videogoal.save()
         if not videogoal.msg_sent and \
                 match.home_team.name_code is not None and \
