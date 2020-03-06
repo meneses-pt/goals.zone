@@ -3,12 +3,12 @@
     "short_name": "goals.zone",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png?v=BGm2LQ4N3q",
+            "src": "/static/goals_zone/android-chrome-192x192.png?v=BGm2LQ4N3q",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-512x512.png?v=BGm2LQ4N3q",
+            "src": "/static/goals_zone/android-chrome-512x512.png?v=BGm2LQ4N3q",
             "sizes": "512x512",
             "type": "image/png"
         }
