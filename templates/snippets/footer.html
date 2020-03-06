@@ -2,23 +2,16 @@
 <footer class="footer">
 
     <div class="ad-footer-div">
-        {% with ab="ab"|make_list|random %}
-            {% if ab == "a" %}
-                <script type="text/javascript">
-                    atOptions = {
-                        'key': 'ecbd8e6f3144ae4b1e78762618f9fd92',
-                        'format': 'iframe',
-                        'height': 50,
-                        'width': 320,
-                        'params': {}
-                    };
-                    document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/ecbd8e6f3144ae4b1e78762618f9fd92/invoke.js"></scr' + 'ipt>');
-                </script>
-            {% else %}
-                <script data-cfasync='false' type='text/javascript'
-                        src='//p386254.clksite.com/adServe/banners?tid=386254_758200_0&type=footer&size=22'></script>
-            {% endif %}
-        {% endwith %}
+        <script type="text/javascript">
+            atOptions = {
+                'key': 'ecbd8e6f3144ae4b1e78762618f9fd92',
+                'format': 'iframe',
+                'height': 50,
+                'width': 320,
+                'params': {}
+            };
+            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/ecbd8e6f3144ae4b1e78762618f9fd92/invoke.js"></scr' + 'ipt>');
+        </script>
     </div>
 </footer>
 <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"

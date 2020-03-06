@@ -37,18 +37,16 @@
     </div>
 </div>
 <div class="right-ad desktop">
-    {% with ab="ab"|make_list|random %}
-        <script type="text/javascript">
-            atOptions = {
-                'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
-                'format': 'iframe',
-                'height': 600,
-                'width': 160,
-                'params': {}
-            };
-            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
-        </script>
-    {% endwith %}
+    <script type="text/javascript">
+        atOptions = {
+            'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
+            'format': 'iframe',
+            'height': 600,
+            'width': 160,
+            'params': {}
+        };
+        document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
+    </script>
 </div>
 {% include "snippets/footer.html" %}
 </body>
