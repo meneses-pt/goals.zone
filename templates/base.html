@@ -11,7 +11,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <title>{% block head_title %}goals.zone{% endblock %}</title>
-    <meta name="description" content="This is the place where you can watch videos of the latest goals of football matches." />
+    <meta name="description"
+          content="This is the place where you can watch videos of the latest goals of football matches."/>
     {% include "snippets/css.html" %}
 </head>
 
@@ -36,16 +37,23 @@
     </div>
 </div>
 <div class="right-ad desktop">
-    <script type="text/javascript">
-        atOptions = {
-            'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
-            'format': 'iframe',
-            'height': 600,
-            'width': 160,
-            'params': {}
-        };
-        document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
-    </script>
+    {% with ab="ab"|make_list|random %}
+        {% if ab == "a" %}
+            <script type="text/javascript">
+                atOptions = {
+                    'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
+                    'format': 'iframe',
+                    'height': 600,
+                    'width': 160,
+                    'params': {}
+                };
+                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
+            </script>
+        {% elif rnd == "b" %}
+            <script data-cfasync='false' type='text/javascript'
+                    src='//p386254.clksite.com/adServe/banners?tid=386254_758200_1&type=slider&side=right&size=9&position=top&close=disable&animate=on'></script>
+        {% endif %}
+    {% endwith %}
 </div>
 {% include "snippets/footer.html" %}
 </body>
