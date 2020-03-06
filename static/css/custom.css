@@ -85,13 +85,11 @@
 
 @media all and (max-width: 767px) {
     .mobile {
-        display: block;
-    !important
+        display: block; !important
     }
 
     .desktop {
-        display: none;
-    !important
+        display: none; !important
     }
 }
 

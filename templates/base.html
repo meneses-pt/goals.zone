@@ -38,21 +38,16 @@
 </div>
 <div class="right-ad desktop">
     {% with ab="ab"|make_list|random %}
-        {% if ab == "a" %}
-            <script type="text/javascript">
-                atOptions = {
-                    'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
-                    'format': 'iframe',
-                    'height': 600,
-                    'width': 160,
-                    'params': {}
-                };
-                document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
-            </script>
-        {% elif rnd == "b" %}
-            <script data-cfasync='false' type='text/javascript'
-                    src='//p386254.clksite.com/adServe/banners?tid=386254_758200_1&type=slider&side=right&size=9&position=top&close=disable&animate=on'></script>
-        {% endif %}
+        <script type="text/javascript">
+            atOptions = {
+                'key': 'b5f4096e1e509c7c6ace658e3cc1ed1a',
+                'format': 'iframe',
+                'height': 600,
+                'width': 160,
+                'params': {}
+            };
+            document.write('<scr' + 'ipt type="text/javascript" src="http' + (location.protocol === 'https:' ? 's' : '') + '://www.madcpms.com/b5f4096e1e509c7c6ace658e3cc1ed1a/invoke.js"></scr' + 'ipt>');
+        </script>
     {% endwith %}
 </div>
 {% include "snippets/footer.html" %}
