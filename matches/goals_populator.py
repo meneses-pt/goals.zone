@@ -194,7 +194,9 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack,
                                           event_type=event_filter)
         for wh in webhooks:
-            to_send = check_conditions(match, wh) and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
+            to_send = check_conditions(match, wh) and \
+                      check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
+                      check_author(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 return
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
@@ -213,7 +215,9 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
                                           event_type=event_filter)
         for wh in webhooks:
-            to_send = check_conditions(match, wh) and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
+            to_send = check_conditions(match, wh) and \
+                      check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
+                      check_author(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 return
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
@@ -241,11 +245,25 @@ def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):
     return True
 
 
+def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
+    if MessageObject.MessageEventType.Video == event_filter and videogoal is not None:
+        if msg_obj.author_filter is not None and len(msg_obj.author_filter) > 0:
+            if videogoal.author != msg_obj.author_filter:
+                return False
+    if MessageObject.MessageEventType.Mirror == event_filter and videogoal_mirror is not None:
+        if msg_obj.author_filter is not None and len(msg_obj.author_filter) > 0:
+            if videogoal_mirror.author != msg_obj.author_filter:
+                return False
+    return True
+
+
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         tweets = Tweet.objects.filter(event_type=event_filter)
         for tw in tweets:
-            to_send = check_conditions(match, tw) and check_link_regex(tw, videogoal, videogoal_mirror, event_filter)
+            to_send = check_conditions(match, tw) and \
+                      check_link_regex(tw, videogoal, videogoal_mirror, event_filter) and \
+                      check_author(tw, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 return
             try:
