@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head_title %}{{ object }} || {{ block.super }}{% endblock head_title %}
+{% block head_title %}{{ object.home_team.name }} - {{ object.away_team.name }} || {{ block.super }}{% endblock head_title %}
 
 {% block content %}
     <div class="mobile">
