@@ -17,8 +17,8 @@ class MessageObject(models.Model):
     exclude_categories = models.ManyToManyField(Category,
                                                 related_name='%(class)s_exclude_categories', default=None, blank=True)
     event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.Match)
-    link_regex = models.CharField(max_length=2000, default=None, null=True)
-    author_filter = models.CharField(max_length=200, default=None, null=True)
+    link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
+    author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
 
 
     class Meta:
