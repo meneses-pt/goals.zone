@@ -96,7 +96,7 @@ class Match(models.Model):
     away_team = models.ForeignKey(
         Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
     tournament = models.ForeignKey(Tournament, related_name='tournament', null=True, on_delete=models.SET_NULL)
-    category = models.ForeignKey(Category, related_name='category', null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, related_name='match_category', null=True, on_delete=models.SET_NULL)
     season = models.ForeignKey(Season, related_name='season', null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
