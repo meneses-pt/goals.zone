@@ -1,3 +1,4 @@
+import datetime
 import json
 import operator
 import os
@@ -19,6 +20,7 @@ from django.db.models import Q
 from slack_webhook import Slack
 
 from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror
+from monitoring.models import MatchNotFound, MonitoringAccount
 from msg_events.models import Webhook, Tweet, MessageObject
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
@@ -275,8 +277,33 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 print(result)
             except Exception as ex:
                 print("Error sending twitter single message", str(ex))
+                send_monitoring_message("*Twitter message not sent!*\n" + str(ex))
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex))
+
+
+def send_telegram_message(bot_key, user_id, message, disable_notification=False):
+    try:
+        url = f'https://api.telegram.org/bot{bot_key}/sendMessage'
+        msg_obj = {
+            "chat_id": user_id,
+            "text": message,
+            "parse_mode": "Markdown",
+            "disable_notification": disable_notification
+        }
+        resp = requests.post(url, data=msg_obj)
+        print(resp)
+    except Exception as ex:
+        print("Error sending monitoring message: " + str(ex))
+
+
+def send_monitoring_message(message, disable_notification=False):
+    try:
+        monitoring_accounts = MonitoringAccount.objects.all()
+        for ma in monitoring_accounts:
+            send_telegram_message(ma.telegram_bot_key, ma.telegram_user_id, message, disable_notification)
+    except Exception as ex:
+        print("Error sending monitoring message: " + str(ex))
 
 
 def find_and_store_videogoal(post, title, match_date=date.today()):
@@ -310,8 +337,23 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
         find_mirrors(videogoal)
         # print('Saved: ' + title)
     else:
-        print(f'No match found in database [{home_team}]-[{away_team}] for: {title}')
-        pass
+        try:
+            try:
+                MatchNotFound.objects.get(permalink__exact=post['permalink'])
+            except MatchNotFound.DoesNotExist:
+                d = datetime.datetime.utcnow()
+                epoch = datetime.datetime(1970, 1, 1)
+                t = (d - epoch).total_seconds()
+                if len(home_team) < 50 and len(away_team) < 50 and (t - post['created_utc']) < 86400:  # in the last day
+                    match_not_found = MatchNotFound()
+                    match_not_found.permalink = post['permalink']
+                    match_not_found.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
+                    match_not_found.home_team_str = home_team
+                    match_not_found.away_team_str = away_team
+                    match_not_found.save()
+                    send_monitoring_message(f'__Match not found in database__\n*{home_team}*\n*{away_team}*', True)
+        except Exception as ex:
+            print("Exception in monitoring: " + str(ex))
 
 
 def extract_names_from_title(title):
