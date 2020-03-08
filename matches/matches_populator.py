@@ -52,8 +52,8 @@ def fetch_matches_from_sofascore(days_ago=0):
         response = _fetch_data_from_sofascore_api(single_date)
         data = json.loads(response.content)
         for tournament in data['sportItem']['tournaments']:
-            tournament_obj = _get_or_create_tournament_sofascore(tournament["tournament"])
             category_obj = _get_or_create_category_sofascore(tournament["category"])
+            tournament_obj = _get_or_create_tournament_sofascore(tournament["tournament"], category_obj)
             if 'season' in tournament and tournament['season'] is not None:
                 season_obj = _get_or_create_season_sofascore(tournament["season"])
             else:
@@ -133,7 +133,7 @@ def _get_or_create_home_team_sofascore(fixture):
     return away_team
 
 
-def _get_or_create_tournament_sofascore(tournament):
+def _get_or_create_tournament_sofascore(tournament, category):
     try:
         tid = tournament['id']
         tournament_obj, tournament_obj_created = Tournament.objects.get_or_create(id=tid)
@@ -145,6 +145,7 @@ def _get_or_create_tournament_sofascore(tournament):
             tournament_obj.slug = tournament['slug']
         if 'uniqueName' in tournament:
             tournament_obj.unique_name = tournament['uniqueName']
+        tournament_obj.category = category
         tournament_obj.save()
         return tournament_obj
     except Exception as e:
