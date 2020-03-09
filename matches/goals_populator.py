@@ -351,7 +351,8 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
                     match_not_found.home_team_str = home_team
                     match_not_found.away_team_str = away_team
                     match_not_found.save()
-                    send_monitoring_message(f'__Match not found in database__\n*{home_team}*\n*{away_team}*', True)
+                    send_monitoring_message(
+                        f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
         except Exception as ex:
             print("Exception in monitoring: " + str(ex))
 

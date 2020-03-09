@@ -10,7 +10,7 @@ from .models import Match, Team, Tournament, Category, Season
 from .utils import get_proxies
 
 
-@background(schedule=60 * 5)
+@background(schedule=60 * 10)
 def fetch_new_matches():
     print('Fetching new matches...')
     fetch_matches_from_sofascore()
