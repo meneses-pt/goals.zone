@@ -329,7 +329,7 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
                 match.home_team.name_code is not None and \
                 match.away_team.name_code is not None:
             send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
-        if len(match.videogoal_set.all()) > 0 and \
+        if match.videogoal_set.count() > 0 and \
                 not match.msg_sent and \
                 match.home_team.name_code is not None and \
                 match.away_team.name_code is not None:
