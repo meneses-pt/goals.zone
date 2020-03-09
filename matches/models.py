@@ -1,3 +1,4 @@
+import datetime
 import os
 import random
 from io import BytesIO
@@ -149,6 +150,8 @@ class VideoGoal(models.Model):
     minute = models.CharField(max_length=10, null=True)
     msg_sent = models.BooleanField(default=False)
     author = models.CharField(max_length=200, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    next_mirrors_check = models.DateTimeField(default=datetime.datetime.now)
 
     @property
     def minute_int(self):

@@ -17,6 +17,7 @@ from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
+from django.utils import timezone
 from slack_webhook import Slack
 
 from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror
@@ -76,65 +77,110 @@ def _fetch_reddit_goals_from_date(days_ago=2):
     print('Finished fetching goals')
 
 
+def calculate_next_mirrors_check(videogoal):
+    now = timezone.now()
+    created_how_long = videogoal.created_at - now
+    if created_how_long < timedelta(minutes=10):
+        next_mirrors_check = now + datetime.timedelta(minutes=1)
+        videogoal.next_mirrors_check = next_mirrors_check
+        return
+    if created_how_long < timedelta(minutes=30):
+        next_mirrors_check = now + datetime.timedelta(minutes=5)
+        videogoal.next_mirrors_check = next_mirrors_check
+        return
+    if created_how_long < timedelta(minutes=60):
+        next_mirrors_check = now + datetime.timedelta(minutes=10)
+        videogoal.next_mirrors_check = next_mirrors_check
+        return
+    if created_how_long < timedelta(minutes=120):
+        next_mirrors_check = now + datetime.timedelta(minutes=20)
+        videogoal.next_mirrors_check = next_mirrors_check
+        return
+    if created_how_long < timedelta(minutes=240):
+        next_mirrors_check = now + datetime.timedelta(minutes=30)
+        videogoal.next_mirrors_check = next_mirrors_check
+        return
+    next_mirrors_check = now + datetime.timedelta(minutes=60)
+    videogoal.next_mirrors_check = next_mirrors_check
+
+
 def find_mirrors(videogoal):
-    main_comments_link = 'http://api.reddit.com' + videogoal.permalink
-    response = _make_reddit_api_request(main_comments_link)
-    data = json.loads(response.content)
     try:
-        for child in data[1]['data']['children']:
-            if 'author' in child['data'] and child['data']['author'] == 'AutoModerator':
-                children_url = main_comments_link + child['data']['id']
-                children_response = _make_reddit_api_request(children_url)
-                children = json.loads(children_response.content)
-                if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
-                        children[1]['data']['children'][0]['data']['replies'], dict):
-                    replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
-                    for reply in replies:
-                        body = reply['data']['body']
-                        author = reply['data']['author']
-                        stripped_body = os.linesep.join([s for s in body.splitlines() if s])
-                        try:
-                            doc = ETree.fromstring(markdown.markdown(stripped_body))
-                        except Exception as e:
-                            tb = traceback.format_exc()
-                            print(tb)
-                            print(e)
-                        else:
-                            links = doc.findall('.//a')
-                            if len(links) > 0:
-                                for link in links:
-                                    val = URLValidator()
-                                    try:
-                                        val(link.get('href'))
-                                        text = link.text
-                                        if 'http' in text and link.tail is not None and len(link.tail) > 0:
-                                            text = link.tail
-                                        insert_or_update_mirror(videogoal, text, link.get('href'), author)
-                                    except ValidationError:
-                                        pass
-                            else:
-                                for line in body.splitlines():
-                                    urls = re.findall(
-                                        r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
-                                        line)
-                                    if len(urls) > 0:
-                                        for url in urls:
-                                            val = URLValidator()
-                                            try:
-                                                val(url)
-                                                text = line.replace(url, '')
-                                                if ':' in text:
-                                                    text = text.split(':', 1)[0]
-                                                insert_or_update_mirror(videogoal, text, url, author)
-                                            except ValidationError:
-                                                pass
+        if videogoal.next_mirrors_check > timezone.now():
+            return
+        calculate_next_mirrors_check(videogoal)
+        main_comments_link = 'http://api.reddit.com' + videogoal.permalink
+        response = _make_reddit_api_request(main_comments_link)
+        data = json.loads(response.content)
+        try:
+            for child in data[1]['data']['children']:
+                if 'author' in child['data'] and child['data']['author'] == 'AutoModerator':
+                    children_url = main_comments_link + child['data']['id']
+                    children_response = _make_reddit_api_request(children_url)
+                    children = json.loads(children_response.content)
+                    if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
+                            children[1]['data']['children'][0]['data']['replies'], dict):
+                        replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
+                        for reply in replies:
+                            _parse_reply_for_mirrors(reply, videogoal)
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(tb)
+            print(e)
+    except Exception as e:
+        print("An exception as occurred trying to find mirrors", e)
+
+
+def _parse_reply_for_mirrors(reply, videogoal):
+    body = reply['data']['body']
+    author = reply['data']['author']
+    stripped_body = os.linesep.join([s for s in body.splitlines() if s])
+    try:
+        doc = ETree.fromstring(markdown.markdown(stripped_body))
     except Exception as e:
         tb = traceback.format_exc()
         print(tb)
         print(e)
+    else:
+        links = doc.findall('.//a')
+        if len(links) > 0:
+            _extract_links_from_comment(author, links, videogoal)
+        else:
+            _extract_urls_from_comment(author, body, videogoal)
 
 
-def insert_or_update_mirror(videogoal, text, url, author):
+def _extract_urls_from_comment(author, body, videogoal):
+    for line in body.splitlines():
+        urls = re.findall(
+            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+            line)
+        if len(urls) > 0:
+            for url in urls:
+                val = URLValidator()
+                try:
+                    val(url)
+                    text = line.replace(url, '')
+                    if ':' in text:
+                        text = text.split(':', 1)[0]
+                    _insert_or_update_mirror(videogoal, text, url, author)
+                except ValidationError:
+                    pass
+
+
+def _extract_links_from_comment(author, links, videogoal):
+    for link in links:
+        val = URLValidator()
+        try:
+            val(link.get('href'))
+            text = link.text
+            if 'http' in text and link.tail is not None and len(link.tail) > 0:
+                text = link.tail
+            _insert_or_update_mirror(videogoal, text, link.get('href'), author)
+        except ValidationError:
+            pass
+
+
+def _insert_or_update_mirror(videogoal, text, url, author):
     try:
         mirror = VideoGoalMirror.objects.get(url__exact=url, videogoal__exact=videogoal)
     except VideoGoalMirror.DoesNotExist:
@@ -312,49 +358,62 @@ def find_and_store_videogoal(post, title, match_date=date.today()):
         return
     matches_results = find_match(home_team, away_team, from_date=match_date)
     if matches_results.exists():
-        match = matches_results.first()
-        # print(f'Match {match} found for: {title}')
-        try:
-            videogoal = VideoGoal.objects.get(permalink__exact=post['permalink'])
-        except VideoGoal.DoesNotExist:
-            videogoal = VideoGoal()
-            videogoal.permalink = post['permalink']
-        videogoal.match = match
-        videogoal.url = post['url']
-        videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
-        videogoal.minute = minute_str
-        videogoal.author = post['author']
-        videogoal.save()
-        if not videogoal.msg_sent and \
-                match.home_team.name_code is not None and \
-                match.away_team.name_code is not None:
-            send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
-        if match.videogoal_set.count() > 0 and \
-                not match.msg_sent and \
-                match.home_team.name_code is not None and \
-                match.away_team.name_code is not None:
-            send_messages(match, None, None, MessageObject.MessageEventType.Match)
-        find_mirrors(videogoal)
-        # print('Saved: ' + title)
+        _save_found_match(matches_results, minute_str, post)
     else:
         try:
-            try:
-                MatchNotFound.objects.get(permalink__exact=post['permalink'])
-            except MatchNotFound.DoesNotExist:
-                d = datetime.datetime.utcnow()
-                epoch = datetime.datetime(1970, 1, 1)
-                t = (d - epoch).total_seconds()
-                if len(home_team) < 50 and len(away_team) < 50 and (t - post['created_utc']) < 86400:  # in the last day
-                    match_not_found = MatchNotFound()
-                    match_not_found.permalink = post['permalink']
-                    match_not_found.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
-                    match_not_found.home_team_str = home_team
-                    match_not_found.away_team_str = away_team
-                    match_not_found.save()
-                    send_monitoring_message(
-                        f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
+            _handle_not_found_match(away_team, home_team, post)
         except Exception as ex:
             print("Exception in monitoring: " + str(ex))
+
+
+def _save_found_match(matches_results, minute_str, post):
+    match = matches_results.first()
+    # print(f'Match {match} found for: {title}')
+    try:
+        videogoal = VideoGoal.objects.get(permalink__exact=post['permalink'])
+    except VideoGoal.DoesNotExist:
+        videogoal = VideoGoal()
+        videogoal.permalink = post['permalink']
+        videogoal.next_mirrors_check = timezone.now()
+    videogoal.match = match
+    videogoal.url = post['url']
+    videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
+    videogoal.minute = minute_str
+    videogoal.author = post['author']
+    videogoal.save()
+    _handle_messages_to_send(match, videogoal)
+    find_mirrors(videogoal)
+    # print('Saved: ' + title)
+
+
+def _handle_messages_to_send(match, videogoal):
+    if not videogoal.msg_sent and \
+            match.home_team.name_code is not None and \
+            match.away_team.name_code is not None:
+        send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
+    if match.videogoal_set.count() > 0 and \
+            not match.msg_sent and \
+            match.home_team.name_code is not None and \
+            match.away_team.name_code is not None:
+        send_messages(match, None, None, MessageObject.MessageEventType.Match)
+
+
+def _handle_not_found_match(away_team, home_team, post):
+    try:
+        MatchNotFound.objects.get(permalink__exact=post['permalink'])
+    except MatchNotFound.DoesNotExist:
+        d = datetime.datetime.utcnow()
+        epoch = datetime.datetime(1970, 1, 1)
+        t = (d - epoch).total_seconds()
+        if len(home_team) < 50 and len(away_team) < 50 and (t - post['created_utc']) < 86400:  # in the last day
+            match_not_found = MatchNotFound()
+            match_not_found.permalink = post['permalink']
+            match_not_found.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
+            match_not_found.home_team_str = home_team
+            match_not_found.away_team_str = away_team
+            match_not_found.save()
+            send_monitoring_message(
+                f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
 
 
 def extract_names_from_title(title):
