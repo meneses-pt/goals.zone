@@ -168,3 +168,14 @@
     top: 70px;
     right: 0;
 }
+
+.footer-iframe {
+    border: none;
+    width: 320px;
+}
+
+.side-iframe {
+    border: none;
+    width: 160px;
+    height: 610px;
+}

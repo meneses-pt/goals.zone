@@ -38,6 +38,11 @@
 </div>
 <div class="right-ad desktop">
     {#160x600#}
+    <iframe id="footer_ad_iframe"
+            class="side-iframe"
+            sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+            src="{% static 'html/side_ad.html' %}">
+    </iframe>
 </div>
 {% include "snippets/footer.html" %}
 </body>

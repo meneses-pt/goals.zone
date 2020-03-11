@@ -1,8 +1,13 @@
+{% load static %}
 <!--suppress HtmlDeprecatedAttribute -->
 <footer class="footer">
-
     <div class="ad-footer-div">
         {#320x50#}
+        <iframe id="footer_ad_iframe"
+                class="footer-iframe"
+                sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+                src="{% static 'html/footer_ad.html' %}">
+        </iframe>
     </div>
 </footer>
 <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
