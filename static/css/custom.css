@@ -149,6 +149,10 @@
     z-index: 0;
 }
 
+.list-group-flex {
+    display: flex;
+}
+
 .list-group-item:hover {
     z-index: 0;
 }

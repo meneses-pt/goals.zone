@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
 
-{% block head_title %}{{ object.home_team.name }} - {{ object.away_team.name }} || {{ block.super }}{% endblock head_title %}
+{% block head_title %}{{ object.home_team.name }} - {{ object.away_team.name }} ||
+    {{ block.super }}{% endblock head_title %}
 
 {% block content %}
     <div class="mobile">
@@ -82,4 +83,11 @@
     {% else %}
         <p>No goals for this match.</p>
     {% endif %}
+    <ul class="pagination" style="margin-top: 25px;">
+        <li class="page-item">
+            <a class="page-link" href="{% url 'index' %}?date={{ match.datetime|date:"Y-m-d" }}">
+                <span aria-hidden="true">&laquo; Back to day</span>
+            </a>
+        </li>
+    </ul>
 {% endblock content %}
