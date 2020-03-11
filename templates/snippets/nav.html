@@ -3,18 +3,18 @@
         <li class="page-item">
             <a class="page-link" href="{% url 'index' %}?date={{ date_prev|date:"Y-m-d" }}">
                 <span aria-hidden="true">&laquo;</span>
-                {{ date_prev|date:"Y-m-d" }}
+                {{ date_prev|date:"d b" }}
             </a>
         </li>
         <li class="page-item disabled"><a class="page-link"
                                           href="{% url 'index' %}?date={{ date|date:"Y-m-d" }}">
-            {{ date|date:"Y-m-d" }}
+            {{ date|date:"d b" }}
         </a>
         </li>
         {% if date_next %}
             <li class="page-item">
                 <a class="page-link" href="{% url 'index' %}?date={{ date_next|date:"Y-m-d" }}">
-                    {{ date_next|date:"Y-m-d" }}
+                    {{ date_next|date:"d b" }}
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>

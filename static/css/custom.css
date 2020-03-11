@@ -183,3 +183,45 @@
     width: 160px;
     height: 610px;
 }
+
+.br-spacing {
+    margin: 5px;
+    display: block;
+    content: '';
+}
+
+.detail-score {
+    margin-right: 5px;
+    font-size: 90%;
+    background: #303030;
+    padding: 5px 8px 5px 8px;
+    border-radius: 0.25rem;
+    margin-bottom: 5px
+}
+
+.detail-score-desktop {
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 90%;
+    background: #303030;
+    padding: 5px 8px 5px 8px;
+    border-radius: 0.25rem;
+    margin-bottom: 5px
+}
+
+.list-score {
+    margin-right: 5px;
+    font-size: 90%;
+    background: #282828;
+    padding: 5px 8px 5px 8px;
+    border-radius: 0.25rem;
+}
+
+.list-score-desktop {
+    margin-right: 5px;
+    margin-left: 5px;
+    font-size: 90%;
+    background: #282828;
+    padding: 5px 8px 5px 8px;
+    border-radius: 0.25rem;
+}
