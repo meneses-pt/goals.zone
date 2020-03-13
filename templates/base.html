@@ -36,19 +36,13 @@
         {% include "snippets/js.html" %}
     </div>
 </div>
-{#<div class="right-ad desktop">#}
-    {#160x600#}
-{#    <iframe id="footer_ad_iframe"#}
-{#            class="side-iframe"#}
-{#            sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"#}
-{#            src="{% static 'html/side_ad.html' %}">#}
-{#    </iframe>#}
-{#</div>#}
-{#{% include "snippets/footer.html" %}#}
-<script type="text/javascript">
-    var infolinks_pid = 3239472;
-    var infolinks_wsid = 0;
-</script>
-<script type="text/javascript" src="//resources.infolinks.com/js/infolinks_main.js"></script>
+<div class="right-ad desktop">
+    <iframe id="footer_ad_iframe"
+            class="side-iframe"
+            sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+            src="{% static 'html/side_ad.html' %}">
+    </iframe>
+</div>
+{% include "snippets/footer.html" %}
 </body>
 </html>
