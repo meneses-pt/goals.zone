@@ -2,11 +2,21 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <footer class="footer">
     <div class="ad-footer-div">
-        <iframe id="footer_ad_iframe"
-                class="footer-iframe"
-                sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
-                src="{% static 'html/footer_ad.html' %}">
-        </iframe>
+        {% with rnd="12"|make_list|random %}
+            {% if rnd == "1" %}
+                <iframe id="footer_ad_iframe_adsterra"
+                        class="footer-iframe"
+                        sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+                        src="{% static 'html/footer_ad_adsterra.html' %}">
+                </iframe>
+            {% elif rnd == "2" %}
+                <iframe id="footer_ad_iframe_kryptoads"
+                        class="footer-iframe"
+                        sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+                        src="{% static 'html/footer_ad_kryptoads.html' %}">
+                </iframe>
+            {% endif %}
+        {% endwith %}
     </div>
 </footer>
 <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"

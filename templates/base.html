@@ -37,11 +37,21 @@
     </div>
 </div>
 <div class="right-ad desktop">
-    <iframe id="right_ad_iframe"
-            class="side-iframe"
-            sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
-            src="{% static 'html/side_ad.html' %}">
-    </iframe>
+    {% with rnd="12"|make_list|random %}
+        {% if rnd == "1" %}
+            <iframe id="right_ad_iframe_adsterra"
+                    class="side-iframe"
+                    sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+                    src="{% static 'html/side_ad_adsterra.html' %}">
+            </iframe>
+        {% elif rnd == "2" %}
+            <iframe id="right_ad_iframe_kryptoads"
+                    class="side-iframe"
+                    sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+                    src="{% static 'html/side_ad_kryptoads.html' %}">
+            </iframe>
+        {% endif %}
+    {% endwith %}
 </div>
 {% include "snippets/footer.html" %}
 </body>
