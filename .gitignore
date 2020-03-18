@@ -138,3 +138,6 @@ dmypy.json
 
 # StaticFiles Folder
 /staticfiles
+
+#Other Data
+/data/
