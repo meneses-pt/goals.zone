@@ -2,26 +2,11 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <footer class="footer">
     <div class="ad-footer-div">
-        {% with rnd="12"|make_list|random %}
-            {% if rnd == "1" %}
-                <iframe id="footer_ad_iframe_adsterra"
-                        class="footer-iframe"
-                        sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
-                        src="{% static 'html/footer_ad_adsterra.html' %}">
-                </iframe>
-            {% elif rnd == "2" %}
-                <!-- Kryptoads Ad Network / Banners / 320x50 / Mobile Banner -->
-                <ins class="aso-zone" data-zone="49826"></ins>
-                <script data-cfasync="false" async="async" type="text/javascript"
-                        src="https://media.aso1.net/js/code.min.js"></script>
-                <!-- /Kryptoads Ad Network -->
-                <script>
-                    setTimeout(function () {
-                        console.log("Footer: KryptoAds");
-                    }, 1000);
-                </script>
-            {% endif %}
-        {% endwith %}
+        <iframe id="footer_ad_iframe_adsterra"
+                class="footer-iframe"
+                sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+                src="{% static 'html/footer_ad_adsterra.html' %}">
+        </iframe>
     </div>
 </footer>
 <div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"

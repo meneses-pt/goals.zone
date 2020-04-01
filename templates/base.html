@@ -37,26 +37,11 @@
     </div>
 </div>
 <div class="right-ad desktop">
-    {% with rnd="12"|make_list|random %}
-        {% if rnd == "1" %}
-            <iframe id="right_ad_iframe_adsterra"
-                    class="side-iframe"
-                    sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
-                    src="{% static 'html/side_ad_adsterra.html' %}">
-            </iframe>
-        {% elif rnd == "2" %}
-            <!-- Kryptoads Ad Network / Banners / 160x600 / Wide Skyscraper -->
-            <ins class="aso-zone" data-zone="49827"></ins>
-            <script data-cfasync="false" async="async" type="text/javascript"
-                    src="https://media.aso1.net/js/code.min.js"></script>
-            <!-- /Kryptoads Ad Network -->
-            <script>
-                setTimeout(function () {
-                    console.log("Right: KryptoAds");
-                }, 1000);
-            </script>
-        {% endif %}
-    {% endwith %}
+    <iframe id="right_ad_iframe_adsterra"
+            class="side-iframe"
+            sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"
+            src="{% static 'html/side_ad_adsterra.html' %}">
+    </iframe>
 </div>
 {% include "snippets/footer.html" %}
 </body>
