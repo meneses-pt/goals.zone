@@ -295,3 +295,12 @@ class AffiliateTeamsTestCase(TestCase):
         assert len(matches) > 0
         match_id = matches.first().id
         assert match_id == 8602
+
+    @staticmethod
+    def test_senior_match_20():
+        title = "Darmstadt 1-0 St. Pauli - Mathias Honsak 7'"
+        home, away, minute = extract_names_from_title(title)
+        matches = find_match(home, away, from_date=datetime.datetime(2019, 12, 11))
+        assert len(matches) > 0
+        match_id = matches.first().id
+        assert match_id == 8376

@@ -1,1 +1,2 @@
-[{"model": "matches.teamalias", "pk": 14, "fields": {"alias": "PSG", "team": 85}}]
+[{"model": "matches.teamalias", "pk": 14, "fields": {"alias": "PSG", "team": 85}},
+{"model": "matches.teamalias", "pk": 13, "fields": {"alias": "St. Pauli", "team": 5408}}]

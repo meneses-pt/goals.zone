@@ -1,6 +1,17 @@
 [
   {
     "model": "matches.match",
+    "pk": 8376,
+    "fields": {
+      "home_team": 5407,
+      "away_team": 5408,
+      "score": "4:0",
+      "datetime": "2019-12-11T14:00:00Z",
+      "slug": "darmstadt-98-fc-st-pauli-20191210"
+    }
+  },
+  {
+    "model": "matches.match",
     "pk": 8377,
     "fields": {
       "home_team": 643,

@@ -417,8 +417,10 @@ def _handle_not_found_match(away_team, home_team, post):
 
 
 def extract_names_from_title(title):
-    home = re.findall(r'\[?\]?\s?((\w|\s|-)+)((\d|\[\d\])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d\])', title)
-    away = re.findall(r'(\d|\[\d\])([-x]| [-x] | [-x]|[-x] )(\d|\[\d\])\s?(((\w|\s|-)(?!- ))+)(:|\s?\||-)?',
+    # Maybe later we should consider the format
+    # HOME_TEAM - AWAY_TEAM HOME_SCORE-AWAY_SCORE
+    home = re.findall(r'\[?\]?\s?((\w|\s|\.|-)+)((\d|\[\d\])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d\])', title)
+    away = re.findall(r'(\d|\[\d\])([-x]| [-x] | [-x]|[-x] )(\d|\[\d\])\s?(((\w|\s|\.|-)(?!- ))+)(:|\s?\||-)?',
                       title)
     minute = re.findall(r'(\S*\d+\S*)\'', title)
     if len(home) > 0:
