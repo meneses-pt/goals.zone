@@ -212,23 +212,29 @@ def _fetch_data_from_sofascore_api(single_date):
     attempts = 0
     proxies = get_proxies()
     print(str(len(proxies)) + " proxies returned. Going to fetch data.")
-    while response is None and attempts < 10:
+    today_str = single_date.strftime("%Y-%m-%d")
+    while response is None and attempts < 20:
         proxy = random.choice(proxies)
         proxies.remove(proxy)
         try:
             attempts += 1
-            today_str = single_date.strftime("%Y-%m-%d")
             response = requests.get(
                 f'https://www.sofascore.com/football//{today_str}/json',
                 proxies={"http": proxy, "https": proxy},
                 timeout=10
             )
             if response.status_code != 200:
-                raise Exception("Wrong Status Code: " + str(response.status_code))
+                print("Wrong Status Code: " + str(response.status_code))
+                response = None
         except:
             pass
     if attempts == 10:
         print("Number of attempts exceeded trying to fetch data: " + str(single_date))
+        if not response:
+            response = requests.get(
+                f'https://www.sofascore.com/football//{today_str}/json',
+                timeout=10
+            )
     return response
 
 
