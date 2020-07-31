@@ -20,7 +20,7 @@ from django.db.models import Q
 from django.utils import timezone
 from slack_webhook import Slack
 
-from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team
 from monitoring.models import MatchNotFound, MonitoringAccount
 from msg_events.models import Webhook, Tweet, MessageObject
 
@@ -405,15 +405,20 @@ def _handle_not_found_match(away_team, home_team, post):
         d = datetime.datetime.utcnow()
         epoch = datetime.datetime(1970, 1, 1)
         t = (d - epoch).total_seconds()
-        if len(home_team) < 50 and len(away_team) < 50 and (t - post['created_utc']) < 86400:  # in the last day
+        home_team_obj = Team.objects.filter(Q(name__unaccent__trigram_similar=home_team) |
+                                            Q(alias__alias__unaccent__trigram_similar=home_team))
+        away_team_obj = Team.objects.filter(Q(name__unaccent__trigram_similar=away_team) |
+                                            Q(alias__alias__unaccent__trigram_similar=away_team))
+        if (t - post['created_utc']) < 86400:  # in the last day
             match_not_found = MatchNotFound()
             match_not_found.permalink = post['permalink']
             match_not_found.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
             match_not_found.home_team_str = home_team
             match_not_found.away_team_str = away_team
             match_not_found.save()
-            send_monitoring_message(
-                f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
+            if home_team_obj or away_team_obj:
+                send_monitoring_message(
+                    f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
 
 
 def extract_names_from_title(title):
