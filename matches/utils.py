@@ -4,7 +4,11 @@ from lxml.html import fromstring
 
 def get_proxies():
     url = 'https://sslproxies.org/'
-    response = requests.get(url)
+    try:
+        response = requests.get(url)
+    except requests.exceptions.ConnectionError:
+        print(f'Connection error getting proxies')
+        return list()
     parser = fromstring(response.text)
     proxies = list()
     for i in parser.xpath('//tbody/tr')[:20]:

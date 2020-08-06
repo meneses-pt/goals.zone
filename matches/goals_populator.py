@@ -43,6 +43,9 @@ def _fetch_reddit_goals():
     after = None
     while i < 10:
         response = _fetch_data_from_reddit_api(after)
+        if response is None or response.content is None:
+            print(f'No response retrieved')
+            continue
         data = json.loads(response.content)
         if 'data' not in data.keys():
             print(f'No data in response: {response.content}')

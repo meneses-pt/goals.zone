@@ -50,6 +50,9 @@ def fetch_matches_from_sofascore(days_ago=0):
     start_date = date.today() - timedelta(days=days_ago)
     for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
         response = _fetch_data_from_sofascore_api(single_date)
+        if response is None or response.content is None:
+            print(f'No response retrieved')
+            continue
         data = json.loads(response.content)
         for tournament in data['sportItem']['tournaments']:
             category_obj = _get_or_create_category_sofascore(tournament["category"])
