@@ -20,7 +20,7 @@
                 <ul class="list-group small-margin-bottom">
                     {% for team in object_list %}
                         <a class="list-group-item list-group-item-action list-group-flex"
-                           href="#">
+                           href="{% url 'teams-detail' slug=team.slug %}">
                             <div class="list-match-result">
                                 {% if team.logo_file %}
                                     <img src="{{ team.logo_file.url }}" alt="{{ team.name }}"
@@ -83,7 +83,7 @@
 
             const $container = $(
                 `<a class="list-group-item list-group-item-action list-group-flex"` +
-                `   href="#">` +
+                `   href="/teams/${team.slug}">` +
                 `    <div class="list-match-result">` +
                 (team.logo_file ?
                         `                <img src="${team.logo_file}" alt="${team.name}"` +
