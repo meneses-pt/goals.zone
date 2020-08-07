@@ -122,6 +122,10 @@
                 templateResult: formatMatch
             }).focus(function () {
                 $(".select2-search__field").focus();
+            }).blur(function () {
+                setTimeout(function () {
+                    $(".select2-search__field").focus();
+                }, 20);
             });
         });
 
@@ -201,8 +205,8 @@
         }
 
         function formatDateToHourString(date) {
-            let dateObj = new Date(date);
-            return ("0" + dateObj.getUTCHours()).slice(-2) + ":" + ("0" + dateObj.getUTCMinutes()).slice(-2);
+            let dateObj = moment(date);
+            return dateObj.format("HH:mm")
         }
 
     </script>
