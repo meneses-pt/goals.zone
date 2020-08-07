@@ -85,6 +85,11 @@ class TeamsListView(generic.ListView):
                 ''')
 
 
+class TeamsDetailView(generic.DetailView):
+    template_name = 'matches/team_detail.html'
+    model = Team
+
+
 class TeamSearchView(generics.ListAPIView):
     serializer_class = TeamSerializer
 
@@ -94,12 +99,12 @@ class TeamSearchView(generics.ListAPIView):
                            from matches_team t
                            inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
                            inner join matches_videogoal vg on m.id = vg.match_id ''' + (
-                                '' if filter_q is None
-                                else
-                                f''
-                                f'where UPPER(UNACCENT(t.name)::text) '
-                                f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
-                        ) + '''
+            '' if filter_q is None
+            else
+            f''
+            f'where UPPER(UNACCENT(t.name)::text) '
+            f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
+        ) + '''
                             group by t.id, name, logo_url, logo_file, name_code
                             order by matches_count desc
                         '''

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block head_title %}{{ object.name }} ||
+    {{ block.super }}{% endblock head_title %}
+
+{% block content %}
+    <div class="mobile">
+        <h3 class="small-header mobile">
+            {% if team.logo_file %}
+                <img src="{{ team.logo_file.url }}" alt="{{ team.name }}"
+                     class="img-fluid detail-img-thumb">
+            {% else %}
+                <img src="{% static "img/badge_placeholder.png" %}" alt="{{ team.name }}"
+                     class="img-fluid detail-img-thumb">
+            {% endif %}&nbsp; {{ object }}
+            <br>
+        </h3>
+    </div>
+    <div class="desktop">
+        <h3 class="small-header">
+			<span style="white-space: nowrap">
+                {% if team.logo_file %}
+                    <img src="{{ team.logo_file.url }}" alt="{{ team.name }}"
+                         class="img-fluid detail-img-thumb">
+                {% else %}
+                    <img src="{% static "img/badge_placeholder.png" %}" alt="{{ team.name }}"
+                         class="img-fluid detail-img-thumb">
+                {% endif %}&nbsp;
+                <b>{{ team.name }} </b>
+			</span>
+        </h3>
+    </div>
+
+{#    {% if object.videogoal_set.all.count > 0 %}#}
+{#        <ul id="goals-list" class="list-group">#}
+{#            {% for goal in object.videogoal_set.all|dictsort:"minute_int" %}#}
+{#                <div class="list-group-item no-padding list-group-item-action">#}
+{#                    <button class="btn btn-link list-group-item-left-link" data-toggle="collapse"#}
+{#                            data-target="#collapse{{ forloop.counter }}">#}
+{#                        {{ goal.title }}#}
+{#                    </button>#}
+{#                    {% if goal.permalink %}#}
+{#                        <a href="http://reddit.com{{ goal.permalink }}" class="float-right list-group-small-link">#}
+{#                            <img alt="reddit" src="{% static "img/reddit_logo.png" %}" class="list-group-img">#}
+{#                        </a>#}
+{#                    {% endif %}#}
+{#                </div>#}
+{#                <div id="collapse{{ forloop.counter }}" class="collapse" data-parent="#goals-list">#}
+{#                    <ul class="list-group mirror-list">#}
+{#                        <div class="list-group-item no-padding list-group-item-action mirror-item">#}
+{#                            <a class="list-group-item-left-link mirror-link" href="{{ goal.url }}">#}
+{#                                Original Link#}
+{#                            </a>#}
+{#                        </div>#}
+{#                        {% for mirror in goal.mirrors.all %}#}
+{#                            <div class="list-group-item no-padding list-group-item-action mirror-item">#}
+{#                                <a class="list-group-item-left-link mirror-link" href="{{ mirror.url }}">#}
+{#                                    {{ mirror.title|default:"Mirror" }}#}
+{#                                </a>#}
+{#                            </div>#}
+{#                        {% endfor %}#}
+{#                    </ul>#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </ul>#}
+{#    {% else %}#}
+{#        <p>No goals for this match.</p>#}
+{#    {% endif %}#}
+{#    <ul class="pagination" style="margin-top: 25px;">#}
+{#        <li class="page-item">#}
+{#            <a class="page-link" href="{% url 'index' %}?date={{ match.datetime|date:"Y-m-d" }}">#}
+{#                <span aria-hidden="true">&laquo; Back to day</span>#}
+{#            </a>#}
+{#        </li>#}
+{#    </ul>#}
+{% endblock content %}
