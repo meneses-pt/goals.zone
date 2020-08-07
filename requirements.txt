@@ -12,13 +12,16 @@ django-appconf==1.0.4
 django-background-tasks==1.2.5
 django-compat==1.0.15
 django-heroku==0.3.1
+djangorestframework==3.11.1
 docopt==0.6.2
 geoip2==4.0.2
+gitdb==4.0.2
 gitdb2==4.0.2
 GitPython==3.1.7
 gunicorn==20.0.4
 idna==2.10
 idna-ssl==1.1.0
+importlib-metadata==1.7.0
 ipaddress==1.0.23
 ipapi==1.0.4
 lxml==4.5.2
@@ -39,6 +42,7 @@ scandir==1.10.0
 sh==1.13.1
 six==1.15.0
 slack-webhook==1.0.3
+smmap==3.0.1
 smmap2==3.0.1
 soupsieve==2.0.1
 sqlparse==0.3.1
@@ -49,3 +53,4 @@ websockets==8.1
 whitenoise==5.2.0
 yarg==0.1.9
 yarl==1.5.1
+zipp==3.1.0

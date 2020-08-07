@@ -85,11 +85,13 @@
 
 @media all and (max-width: 767px) {
     .mobile {
-        display: block; !important
+        display: block;
+    !important
     }
 
     .desktop {
-        display: none; !important
+        display: none;
+    !important
     }
 }
 
@@ -224,4 +226,43 @@
     background: #282828;
     padding: 5px 8px 5px 8px;
     border-radius: 0.25rem;
+}
+
+/*********************************/
+/* Select 2 theme customizations */
+/*********************************/
+
+.select2-el-label {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.select2-el {
+    width: 100%;
+}
+
+.select2-selection.select2-selection--single {
+    background-color: #444;
+}
+
+.select2-container--default .select2-selection--single {
+    border: #444;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #fff;
+}
+
+.select2-dropdown {
+    background-color: #222;
+    border-color: #444;
+}
+
+.select2-results__option {
+    color: #999;
+}
+
+.select2-search__field {
+    background-color: #444;
+    color: #fff;
 }

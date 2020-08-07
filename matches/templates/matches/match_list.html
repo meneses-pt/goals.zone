@@ -15,6 +15,12 @@
     {% if match_list %}
         <div class="row">
             <div class="col-12">
+
+                <label for="select-match" class="select2-el-label">
+                    <select id="select-match" class="select2-el">
+                    </select>
+                </label>
+
                 <ul class="list-group">
                     {% for match in match_list %}
                         <div class="mobile">
@@ -33,7 +39,8 @@
                                         <img src="{% static "img/badge_placeholder.png" %}"
                                              alt="{{ match.home_team.name }}"
                                              class="img-fluid detail-img-thumb">
-                                    {% endif %}&nbsp;<span class="list-score">{{ match.home_team_score|default_if_none:"-" }}</span>
+                                    {% endif %}&nbsp;<span
+                                        class="list-score">{{ match.home_team_score|default_if_none:"-" }}</span>
                                     <b>{{ match.home_team.name }} </b>
                                     <br>
                                     {% if match.away_team.logo_file %}
@@ -43,7 +50,8 @@
                                         <img src="{% static "img/badge_placeholder.png" %}"
                                              alt="{{ match.home_team.name }}"
                                              class="img-fluid detail-img-thumb">
-                                    {% endif %}&nbsp;<span class="list-score">{{ match.away_team_score|default_if_none:"-" }}</span>
+                                    {% endif %}&nbsp;<span
+                                        class="list-score">{{ match.away_team_score|default_if_none:"-" }}</span>
                                     <b>{{ match.away_team.name }} </b>
                                     <br>
                                 </div>
@@ -67,7 +75,8 @@
                                              class="img-fluid list-img-thumb"/>
                                     {% endif %}
                                     <b>{{ match.home_team.name }} </b>
-                                    <span class="list-score-desktop">{{ match.home_team_score|default_if_none:"-" }}</span>:<span class="list-score-desktop">{{ match.away_team_score|default_if_none:"-" }}</span>
+                                    <span class="list-score-desktop">{{ match.home_team_score|default_if_none:"-" }}</span>:<span
+                                        class="list-score-desktop">{{ match.away_team_score|default_if_none:"-" }}</span>
                                     <b> {{ match.away_team.name }}</b>
                                     {% if match.away_team.logo_file %}
                                         <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
@@ -87,4 +96,114 @@
     {% else %}
         <p>No matches found.</p>
     {% endif %}
+
 {% endblock content %}
+{% block customjs %}
+    <script>
+        $(document).ready(function () {
+            $('#select-match').select2({
+                ajax: {
+                    url: '/api/matches/',
+                    data: function (params) {
+                        return {
+                            date: new URLSearchParams(window.location.search).get('date') ?? null,
+                            filter: params.term,
+                            format: 'json'
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                },
+                placeholder: 'Search for a match...',
+                minimumInputLength: 1,
+                templateResult: formatMatch
+            }).focus(function () {
+                $(".select2-search__field").focus();
+            });
+        });
+
+        function formatMatch(match) {
+
+            if (match.loading) {
+                return match.text;
+            }
+
+            const $container = $(
+                `<div class="mobile">` +
+                `    <a class="list-group-item list-group-item-action list-group-flex"` +
+                `        href="/${match.slug}">` +
+                `        <div class="list-hour-mobile">` +
+                `            <span>` +
+                `                ${formatDateToHourString(match.datetime)}` +
+                `            </span>` +
+                `        </div>` +
+                `        <div class="list-match-result">` +
+                (match.home_team.logo_file ?
+                        `                <img src="${match.home_team.logo_file}" alt="${match.home_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">` :
+                        `                <img src="{% static "img/badge_placeholder.png" %}"` +
+                        `                        alt="${match.home_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">`
+                ) +
+                `            &nbsp;<span` +
+                `                class="list-score">${match.home_team_score ?? "-"}</span>` +
+                `            <b>${match.home_team.name} </b>` +
+                `            <br>` +
+                (match.away_team.logo_file ?
+                        `                <img src="${match.away_team.logo_file}" alt="${match.away_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">` :
+                        `                <img src="{% static "img/badge_placeholder.png" %}"` +
+                        `                        alt="${match.away_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">`
+                ) +
+                `            &nbsp;<span` +
+                `                class="list-score">${match.away_team_score ?? "-"}</span>` +
+                `            <b>${match.away_team.name} </b>` +
+                `            <br>` +
+                `        </div>` +
+                `    </a>` +
+                `</div>` +
+                `<div class="desktop">` +
+                `    <a class="list-group-item list-group-item-action"` +
+                `        href="/${match.slug}">` +
+                `        <div class="list-hour-desktop">` +
+                `            <span>` +
+                `                ${formatDateToHourString(match.datetime)}` +
+                `            </span>` +
+                `        </div>` +
+                `        <div class="list-match-result">` +
+                (match.home_team.logo_file ?
+                        `                <img src="${match.home_team.logo_file}" alt="${match.home_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">` :
+                        `                <img src="{% static "img/badge_placeholder.png" %}"` +
+                        `                        alt="${match.home_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">`
+                ) +
+                `            <b>${match.home_team.name} </b>` +
+                `            <span class="list-score-desktop">${match.home_team_score ?? "-"}</span>:<span` +
+                `                class="list-score-desktop">${match.away_team_score ?? "-"}</span>` +
+                `            <b>${match.away_team.name}</b>` +
+                (match.away_team.logo_file ?
+                        `                <img src="${match.away_team.logo_file}" alt="${match.away_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">` :
+                        `                <img src="{% static "img/badge_placeholder.png" %}"` +
+                        `                        alt="${match.away_team.name}"` +
+                        `                        class="img-fluid detail-img-thumb">`
+                ) +
+                `        </div>` +
+                `    </a>` +
+                `</div>`);
+
+            return $container;
+        }
+
+        function formatDateToHourString(date) {
+            let dateObj = new Date(date);
+            return ("0" + dateObj.getUTCHours()).slice(-2) + ":" + ("0" + dateObj.getUTCMinutes()).slice(-2);
+        }
+
+    </script>
+{% endblock customjs %}

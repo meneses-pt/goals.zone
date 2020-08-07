@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'matches.apps.MatchesConfig',
     'msg_events.apps.MsgEventsConfig',
     'monitoring.apps.MonitoringConfig',
-    'background_task'
+    'background_task',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
