@@ -37,7 +37,7 @@ class Team(models.Model):
 
     # noinspection PyBroadException
     def save(self, *args, **kwargs):
-        if not self.slug:
+        if not self.slug or self.slug == 'to-replace':
             self.slug = self._get_unique_slug()
         if self.logo_url and not self.logo_file:
             saved = False
