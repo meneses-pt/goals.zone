@@ -18,12 +18,27 @@ class Team(models.Model):
     name_code = models.CharField(max_length=5, default=None, null=True)
     logo_url = models.CharField(max_length=256)
     logo_file = models.ImageField(upload_to='logos', default=None, null=True)
+    slug = models.SlugField(max_length=200, unique=True)
 
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('match-detail', kwargs={'slug': self.slug})
+
+    def _get_unique_slug(self):
+        slug = slugify(self.name)
+        unique_slug = slug
+        num = 1
+        while Team.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
     # noinspection PyBroadException
     def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self._get_unique_slug()
         if self.logo_url and not self.logo_file:
             saved = False
             attempts = 0

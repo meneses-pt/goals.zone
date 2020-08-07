@@ -228,6 +228,14 @@
     border-radius: 0.25rem;
 }
 
+.small-margin-right {
+    margin-right: 10px;
+}
+
+.small-margin-bottom {
+    margin-bottom: 20px;
+}
+
 /*********************************/
 /* Select 2 theme customizations */
 /*********************************/

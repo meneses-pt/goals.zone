@@ -5,11 +5,12 @@ from django.utils import timezone
 from django.views import generic
 from rest_framework import generics
 
-from .models import Match
-from .serializers import MatchSerializer
+from .models import Match, Team
+from .serializers import MatchSerializer, TeamSerializer
 
 
 class MatchesListView(generic.ListView):
+    template_name = 'matches/match_list.html'
 
     def get_queryset(self):
         try:
@@ -41,6 +42,7 @@ class MatchesListView(generic.ListView):
 
 
 class MatchDetailView(generic.DetailView):
+    template_name = 'matches/match_detail.html'
     model = Match
 
 
@@ -65,4 +67,41 @@ class MatchSearchView(generics.ListAPIView):
         if filter_q is not None:
             queryset = queryset.filter(
                 Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+        return queryset
+
+
+class TeamsListView(generic.ListView):
+    template_name = 'matches/team_list.html'
+    paginate_by = 25
+
+    def get_queryset(self):
+        return Team.objects.raw('''
+                    select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+                    from matches_team t
+                    inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+                    inner join matches_videogoal vg on m.id = vg.match_id
+                    group by t.id, name, logo_url, logo_file, name_code
+                    order by matches_count desc
+                ''')
+
+
+class TeamSearchView(generics.ListAPIView):
+    serializer_class = TeamSerializer
+
+    def get_queryset(self):
+        filter_q = self.request.query_params.get('filter', None)
+        query_string = ''' select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+                           from matches_team t
+                           inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+                           inner join matches_videogoal vg on m.id = vg.match_id ''' + (
+                                '' if filter_q is None
+                                else
+                                f''
+                                f'where UPPER(UNACCENT(t.name)::text) '
+                                f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
+                        ) + '''
+                            group by t.id, name, logo_url, logo_file, name_code
+                            order by matches_count desc
+                        '''
+        queryset = Team.objects.raw(query_string)
         return queryset

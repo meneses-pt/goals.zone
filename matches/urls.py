@@ -5,7 +5,9 @@ from . import views
 urlpatterns = [
     path('', views.MatchesListView.as_view(), name='index'),
     path('<slug:slug>', views.MatchDetailView.as_view(), name='match-detail'),
+    path('teams/', views.TeamsListView.as_view(), name='teams-list'),
 
     # api
-    path('api/matches/', views.MatchSearchView.as_view(), name='list-matches'),
+    path('api/matches/', views.MatchSearchView.as_view(), name='api-matches-list'),
+    path('api/teams/', views.TeamSearchView.as_view(), name='api-teams-list'),
 ]
