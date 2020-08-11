@@ -9,6 +9,11 @@
     margin: 5px;
 }
 
+.detail-img-thumb-large {
+    height: 50px;
+    margin: 5px;
+}
+
 .footer {
     position: fixed;
     left: 0;
@@ -234,6 +239,14 @@
 
 .small-margin-bottom {
     margin-bottom: 20px;
+}
+
+.team-a {
+    color: white;
+}
+
+.team-a:hover {
+    color: white;
 }
 
 /*********************************/

@@ -1,6 +1,8 @@
 from datetime import date, timedelta, datetime
+from itertools import chain
 
-from django.db.models import Q
+from django.core.paginator import Paginator
+from django.db.models import Q, Count
 from django.utils import timezone
 from django.views import generic
 from rest_framework import generics
@@ -87,7 +89,21 @@ class TeamsListView(generic.ListView):
 
 class TeamsDetailView(generic.DetailView):
     template_name = 'matches/team_detail.html'
+    paginate_by = 25
     model = Team
+
+    def get_context_data(self, **kwargs):
+        context = super(TeamsDetailView, self).get_context_data(**kwargs)
+        # home_matches = self.object.home_team.all()
+        # away_matches = self.object.away_team.all()
+        home_matches = self.object.home_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
+        away_matches = self.object.away_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
+        team_matches = sorted(chain(home_matches, away_matches), key=lambda instance: instance.datetime, reverse=True)
+        paginator = Paginator(team_matches, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
+        return context
 
 
 class TeamSearchView(generics.ListAPIView):
