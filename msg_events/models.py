@@ -8,6 +8,7 @@ class MessageObject(models.Model):
         Match = 1, 'Match'
         Video = 2, 'Video'
         Mirror = 3, 'Mirror'
+
     include_tournaments = models.ManyToManyField(Tournament,
                                                  related_name='%(class)s_include_tournaments', default=None, blank=True)
     include_categories = models.ManyToManyField(Category,
@@ -19,7 +20,6 @@ class MessageObject(models.Model):
     event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.Match)
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
-
 
     class Meta:
         abstract = True

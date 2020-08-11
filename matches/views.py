@@ -94,8 +94,6 @@ class TeamsDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(TeamsDetailView, self).get_context_data(**kwargs)
-        # home_matches = self.object.home_team.all()
-        # away_matches = self.object.away_team.all()
         home_matches = self.object.home_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
         away_matches = self.object.away_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
         team_matches = sorted(chain(home_matches, away_matches), key=lambda instance: instance.datetime, reverse=True)
