@@ -287,3 +287,39 @@
     background-color: #444;
     color: #fff;
 }
+
+/***************************************/
+/* DateTimePicker theme customizations */
+/***************************************/
+
+.bootstrap-datetimepicker-widget table td.active, .bootstrap-datetimepicker-widget table td.active:hover {
+    background-color: #00bc8c;
+}
+
+.bootstrap-datetimepicker-widget table td.today:before {
+    border-bottom-color: #00bc8c;
+}
+
+.bootstrap-datetimepicker-widget table td.day:hover, .bootstrap-datetimepicker-widget table td.hour:hover, .bootstrap-datetimepicker-widget table td.minute:hover, .bootstrap-datetimepicker-widget table td.second:hover {
+    background-color: #00efb2;
+}
+
+.bootstrap-datetimepicker-widget table thead tr:first-child th:hover {
+    background-color: #00efb2;
+}
+
+.bootstrap-datetimepicker-widget table td span.active {
+    background-color: #00bc8c;
+}
+
+.bootstrap-datetimepicker-widget table td span:hover {
+    background-color: #00efb2;
+}
+
+.glyphicon-chevron-left:before {
+    content: "\2039"
+}
+
+.glyphicon-chevron-right:before {
+    content: "\203A"
+}

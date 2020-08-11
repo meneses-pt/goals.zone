@@ -6,10 +6,17 @@
                 {{ date_prev|date:"d b" }}
             </a>
         </li>
-        <li class="page-item disabled"><a class="page-link"
-                                          href="{% url 'index' %}?date={{ date|date:"Y-m-d" }}">
-            {{ date|date:"d b" }}
-        </a>
+        <li class="page-item disabled">
+            <div class='input-group date' id='datepicker'>
+                <input type='hidden' class="form-control" id="datepickerinput" />
+                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar">
+                            <a class="page-link" href="{% url 'index' %}?date={{ date|date:"Y-m-d" }}">
+                                {{ date|date:"d b" }}
+                            </a>
+                        </span>
+                </span>
+            </div>
         </li>
         {% if date_next %}
             <li class="page-item">

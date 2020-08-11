@@ -127,6 +127,14 @@
                     $(".select2-search__field").focus();
                 }, 20);
             });
+
+            $('#datepicker').datetimepicker({
+                format: 'L',
+                defaultDate: "{{ date|date:"m/d/Y" }}",
+            }).on('dp.change', function (e) {
+                window.location.href = "/?date=" + e.date.format("YYYY-MM-DD");
+            });
+
         });
 
         function formatMatch(match) {
