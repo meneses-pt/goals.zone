@@ -6,8 +6,8 @@ from matches.models import Team
 
 
 def migrate_data_forward(apps, schema_editor):
-    for instance in Team.objects.all():
-        print("Generating slug for %s" % instance)
+    for instance in Team.objects.all().order_by('id'):
+        print(f"Generating slug for team {instance} (id: {instance.id})")
         instance.save()  # Will trigger slug update
 
 

@@ -77,33 +77,75 @@ class Category(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     priority = models.IntegerField(default=None, null=True)
     name = models.CharField(max_length=256, default=None, null=True)
-    slug = models.CharField(max_length=256, default=None, null=True)
+    slug = models.SlugField(max_length=200, unique=True)
     flag = models.CharField(max_length=256, default=None, null=True)
 
     def __str__(self):
         return self.name
+
+    def _get_unique_slug(self):
+        slug = slugify(self.name)
+        unique_slug = slug
+        num = 1
+        while Category.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug == 'to-replace':
+            self.slug = self._get_unique_slug()
+        super().save(*args, **kwargs)
 
 
 class Tournament(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     unique_id = models.IntegerField(default=None, null=True)
     name = models.CharField(max_length=256, default=None, null=True)
-    slug = models.CharField(max_length=256, default=None, null=True)
+    slug = models.SlugField(max_length=200, unique=True)
     unique_name = models.CharField(max_length=256, default=None, null=True)
     category = models.ForeignKey(Category, related_name='category', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return self.name + ((" - " + self.category.name) if self.category is not None else "")
 
+    def _get_unique_slug(self):
+        slug = slugify(self.name + ((" - " + self.category.name) if self.category is not None else ""))
+        unique_slug = slug
+        num = 1
+        while Tournament.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug == 'to-replace':
+            self.slug = self._get_unique_slug()
+        super().save(*args, **kwargs)
+
 
 class Season(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=256, default=None, null=True)
-    slug = models.CharField(max_length=256, default=None, null=True)
+    slug = models.SlugField(max_length=200, unique=True)
     year = models.CharField(max_length=256, default=None, null=True)
 
     def __str__(self):
         return self.name
+
+    def _get_unique_slug(self):
+        slug = slugify(self.name)
+        unique_slug = slug
+        num = 1
+        while Season.objects.filter(slug=unique_slug).exists():
+            unique_slug = '{}-{}'.format(slug, num)
+            num += 1
+        return unique_slug
+
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug == 'to-replace':
+            self.slug = self._get_unique_slug()
+        super().save(*args, **kwargs)
 
 
 class Match(models.Model):
