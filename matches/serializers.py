@@ -6,7 +6,7 @@ from matches.models import Match, Team
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = ['name', 'logo_file']
+        fields = ['name', 'logo_file', 'slug']
 
 
 class MatchSerializer(serializers.ModelSerializer):
