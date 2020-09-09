@@ -204,7 +204,7 @@ class VideoGoal(models.Model):
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     url = models.CharField(max_length=1024, null=True)
     title = models.CharField(max_length=200, null=True)
-    minute = models.CharField(max_length=100, null=True)
+    minute = models.CharField(max_length=12, null=True)
     msg_sent = models.BooleanField(default=False)
     author = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -381,7 +381,7 @@ def _save_found_match(matches_results, minute_str, post):
     videogoal.match = match
     videogoal.url = post['url']
     videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
-    videogoal.minute = minute_str
+    videogoal.minute = minute_str.strip()[:12]
     videogoal.author = post['author']
     videogoal.save()
     _handle_messages_to_send(match, videogoal)
