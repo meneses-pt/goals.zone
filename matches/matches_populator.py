@@ -3,7 +3,6 @@ import os
 import random
 from datetime import date, datetime, timedelta
 
-import brotli as brotli
 import requests
 from background_task import background
 
