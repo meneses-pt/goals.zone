@@ -229,9 +229,9 @@ def _fetch_data_from_sofascore_api(single_date):
             if response.status_code != 200:
                 print("Wrong Status Code: " + str(response.status_code))
                 response = None
-        except:
-            pass
-    if attempts == 10:
+        except Exception as e:
+            print(e)
+    if attempts == 20:
         print("Number of attempts exceeded trying to fetch data: " + str(single_date))
         if not response:
             response = requests.get(

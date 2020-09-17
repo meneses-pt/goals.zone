@@ -107,10 +107,12 @@ class Tournament(models.Model):
     category = models.ForeignKey(Category, related_name='category', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return self.name + ((" - " + self.category.name) if self.category is not None else "")
+        return (self.name if self.name is not None else "(no name)") + (
+            (" - " + self.category.name) if self.category is not None else "")
 
     def _get_unique_slug(self):
-        slug = slugify(self.name + ((" - " + self.category.name) if self.category is not None else ""))
+        slug = slugify((self.name if self.name is not None else "(no name)") + (
+            (" - " + self.category.name) if self.category is not None else ""))
         unique_slug = slug
         num = 1
         while Tournament.objects.filter(slug=unique_slug).exists():
