@@ -3,6 +3,7 @@ import os
 import random
 from datetime import date, datetime, timedelta
 
+import brotli as brotli
 import requests
 from background_task import background
 
@@ -53,7 +54,8 @@ def fetch_matches_from_sofascore(days_ago=0):
         if response is None or response.content is None:
             print(f'No response retrieved')
             continue
-        data = json.loads(response.content)
+        content = response.content
+        data = json.loads(content)
         for tournament in data['sportItem']['tournaments']:
             category_obj = _get_or_create_category_sofascore(tournament["category"])
             tournament_obj = _get_or_create_tournament_sofascore(tournament["tournament"], category_obj)
@@ -144,8 +146,6 @@ def _get_or_create_tournament_sofascore(tournament, category):
             tournament_obj.unique_id = tournament['uniqueId']
         if 'name' in tournament:
             tournament_obj.name = tournament['name']
-        if 'slug' in tournament:
-            tournament_obj.slug = tournament['slug']
         if 'uniqueName' in tournament:
             tournament_obj.unique_name = tournament['uniqueName']
         tournament_obj.category = category
@@ -162,8 +162,6 @@ def _get_or_create_category_sofascore(category):
         category_obj, category_obj_created = Category.objects.get_or_create(id=cid)
         if 'name' in category:
             category_obj.name = category['name']
-        if 'slug' in category:
-            category_obj.slug = category['slug']
         if 'priority' in category:
             category_obj.priority = category['priority']
         if 'flag' in category:
@@ -181,8 +179,6 @@ def _get_or_create_season_sofascore(season):
         season_obj, season_obj_created = Season.objects.get_or_create(id=sid)
         if 'name' in season:
             season_obj.name = season['name']
-        if 'slug' in season:
-            season_obj.slug = season['slug']
         if 'year' in season:
             season_obj.year = season['year']
         season_obj.save()
@@ -224,6 +220,21 @@ def _fetch_data_from_sofascore_api(single_date):
             response = requests.get(
                 f'https://www.sofascore.com/football//{today_str}/json',
                 proxies={"http": proxy, "https": proxy},
+                headers={
+                    'accept': 'text/html,application/xhtml+xml,application/xml;'
+                              'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                    'accept-encoding': 'gzip, deflate',
+                    'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+                    'cache-control': 'no-cache',
+                    'pragma': 'no-cache',
+                    'sec-fetch-dest': 'document',
+                    'sec-fetch-mode': 'navigate',
+                    'sec-fetch-site': 'none',
+                    'sec-fetch-user': '?1',
+                    'upgrade-insecure-requests': '1',
+                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+                },
                 timeout=10
             )
             if response.status_code != 200:
@@ -236,8 +247,26 @@ def _fetch_data_from_sofascore_api(single_date):
         if not response:
             response = requests.get(
                 f'https://www.sofascore.com/football//{today_str}/json',
+                headers={
+                    'accept': 'text/html,application/xhtml+xml,application/xml;'
+                              'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                    'accept-encoding': 'gzip, deflate',
+                    'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+                    'cache-control': 'no-cache',
+                    'pragma': 'no-cache',
+                    'sec-fetch-dest': 'document',
+                    'sec-fetch-mode': 'navigate',
+                    'sec-fetch-site': 'none',
+                    'sec-fetch-user': '?1',
+                    'upgrade-insecure-requests': '1',
+                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+                },
                 timeout=10
             )
+            if response.status_code != 200:
+                print("Wrong Status Code: " + str(response.status_code))
+                response = None
     return response
 
 

@@ -21,7 +21,7 @@ class Team(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def get_absolute_url(self):
         return reverse('match-detail', kwargs={'slug': self.slug})
@@ -70,7 +70,7 @@ class TeamAlias(models.Model):
                              on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.alias + " - Original: " + self.team.name
+        return str(self.alias) + " - Original: " + str(self.team.name)
 
 
 class Category(models.Model):
@@ -81,7 +81,7 @@ class Category(models.Model):
     flag = models.CharField(max_length=256, default=None, null=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def _get_unique_slug(self):
         slug = slugify(self.name)
@@ -107,8 +107,8 @@ class Tournament(models.Model):
     category = models.ForeignKey(Category, related_name='category', null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
-        return (self.name if self.name is not None else "(no name)") + (
-            (" - " + self.category.name) if self.category is not None else "")
+        return str((self.name if self.name is not None else "(no name)") + (
+            (" - " + self.category.name) if self.category is not None else ""))
 
     def _get_unique_slug(self):
         slug = slugify((self.name if self.name is not None else "(no name)") + (
@@ -133,7 +133,7 @@ class Season(models.Model):
     year = models.CharField(max_length=256, default=None, null=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
     def _get_unique_slug(self):
         slug = slugify(self.name)
@@ -180,7 +180,7 @@ class Match(models.Model):
             return splitted[1]
 
     def __str__(self):
-        return self.home_team.name + ' ' + (self.score if self.score else ':') + ' ' + self.away_team.name
+        return str(self.home_team.name) + ' ' + (self.score if self.score else ':') + ' ' + str(self.away_team.name)
 
     def get_absolute_url(self):
         return reverse('match-detail', kwargs={'slug': self.slug})
@@ -222,7 +222,7 @@ class VideoGoal(models.Model):
         return int_value
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class VideoGoalMirror(models.Model):
@@ -233,7 +233,7 @@ class VideoGoalMirror(models.Model):
     author = models.CharField(max_length=200, null=True)
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class AffiliateTerm(models.Model):
@@ -241,4 +241,4 @@ class AffiliateTerm(models.Model):
     is_prefix = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.term
+        return str(self.term)
