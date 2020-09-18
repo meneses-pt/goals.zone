@@ -221,7 +221,7 @@ def _fetch_data_from_sofascore_api(single_date):
         try:
             attempts += 1
             response = requests.get(
-                f'https://www.sofascore.com/football//{today_str}/json',
+                f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}',
                 proxies={"http": proxy, "https": proxy},
                 headers={
                     'accept': 'text/html,application/xhtml+xml,application/xml;'
