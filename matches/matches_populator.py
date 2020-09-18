@@ -54,40 +54,39 @@ def fetch_matches_from_sofascore(days_ago=0):
             continue
         content = response.content
         data = json.loads(content)
-        for tournament in data['sportItem']['tournaments']:
-            category_obj = _get_or_create_category_sofascore(tournament["category"])
-            tournament_obj = _get_or_create_tournament_sofascore(tournament["tournament"], category_obj)
-            if 'season' in tournament and tournament['season'] is not None:
-                season_obj = _get_or_create_season_sofascore(tournament["season"])
+        for fixture in data['events']:
+            category_obj = _get_or_create_category_sofascore(fixture["tournament"]["category"])
+            tournament_obj = _get_or_create_tournament_sofascore(fixture["tournament"], category_obj)
+            if 'season' in fixture and fixture['season'] is not None:
+                season_obj = _get_or_create_season_sofascore(fixture["season"])
             else:
                 season_obj = None
-            for fixture in tournament['events']:
-                home_team = _get_or_create_home_team_sofascore(fixture)
-                away_team = _get_or_create_away_team_sofascore(fixture)
-                if home_team.name_code is None or away_team.name_code is None:
-                    match_details_response = _fetch_sofascore_match_details(fixture['id'])
-                    if home_team.name_code is None:
-                        get_team_name_code(home_team, match_details_response, 'homeTeam')
-                    if away_team.name_code is None:
-                        get_team_name_code(away_team, match_details_response, 'awayTeam')
-                score = None
-                if 'display' in fixture['homeScore'] and 'display' in fixture['awayScore']:
-                    home_goals = fixture['homeScore']['display']
-                    away_goals = fixture['awayScore']['display']
-                    if home_goals is not None and away_goals is not None:
-                        score = f'{home_goals}:{away_goals}'
-                start_timestamp = fixture["startTimestamp"]
-                match_datetime = datetime.fromtimestamp(start_timestamp)
-                print(f'{home_team} - {away_team} | {score} at {match_datetime}')
-                match = Match()
-                match.home_team = home_team
-                match.away_team = away_team
-                match.score = score
-                match.datetime = match_datetime
-                match.tournament = tournament_obj
-                match.category = category_obj
-                match.season = season_obj
-                _save_or_update_match(match)
+            home_team = _get_or_create_home_team_sofascore(fixture)
+            away_team = _get_or_create_away_team_sofascore(fixture)
+            if home_team.name_code is None or away_team.name_code is None:
+                match_details_response = _fetch_sofascore_match_details(fixture['id'])
+                if home_team.name_code is None:
+                    get_team_name_code(home_team, match_details_response, 'homeTeam')
+                if away_team.name_code is None:
+                    get_team_name_code(away_team, match_details_response, 'awayTeam')
+            score = None
+            if 'display' in fixture['homeScore'] and 'display' in fixture['awayScore']:
+                home_goals = fixture['homeScore']['display']
+                away_goals = fixture['awayScore']['display']
+                if home_goals is not None and away_goals is not None:
+                    score = f'{home_goals}:{away_goals}'
+            start_timestamp = fixture["startTimestamp"]
+            match_datetime = datetime.fromtimestamp(start_timestamp)
+            print(f'{home_team} - {away_team} | {score} at {match_datetime}')
+            match = Match()
+            match.home_team = home_team
+            match.away_team = away_team
+            match.score = score
+            match.datetime = match_datetime
+            match.tournament = tournament_obj
+            match.category = category_obj
+            match.season = season_obj
+            _save_or_update_match(match)
         print(f'Ended processing day {single_date}')
     print('Ended processing matches')
 
