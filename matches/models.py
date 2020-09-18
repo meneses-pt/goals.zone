@@ -9,7 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
-from matches.utils import get_proxies
+from matches.utils import get_proxies_sslproxies, get_all_proxies
 
 
 class Team(models.Model):
@@ -42,7 +42,7 @@ class Team(models.Model):
         if self.logo_url and not self.logo_file:
             saved = False
             attempts = 0
-            proxies = get_proxies()
+            proxies = get_all_proxies()
             print(str(len(proxies)) + " proxies returned. Going to fetch team logo.")
             while not saved and attempts < 10:
                 proxy = random.choice(proxies)

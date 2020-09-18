@@ -7,8 +7,7 @@ import requests
 from background_task import background
 
 from .models import Match, Team, Tournament, Category, Season
-from .utils import get_proxies
-
+from .utils import get_all_proxies
 
 @background(schedule=60 * 10)
 def fetch_new_matches():
@@ -113,7 +112,11 @@ def _get_or_create_away_team_sofascore(fixture):
 def get_team_name_code(team, response, team_tag):
     try:
         data = json.loads(response.content)
-        name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
+        try:
+            name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
+        except Exception as e:
+            name_code = ''
+            print(e)
         team.name_code = name_code
         team.save()
     except Exception as e:
@@ -207,11 +210,12 @@ def _fetch_data_from_sofascore_api(single_date):
     :rtype: requests.Response
     """
     response = None
+    max_attempts = 50
     attempts = 0
-    proxies = get_proxies()
+    proxies = get_all_proxies()
     print(str(len(proxies)) + " proxies returned. Going to fetch data.")
     today_str = single_date.strftime("%Y-%m-%d")
-    while response is None and attempts < 20:
+    while response is None and attempts < max_attempts:
         proxy = random.choice(proxies)
         proxies.remove(proxy)
         try:
@@ -234,14 +238,14 @@ def _fetch_data_from_sofascore_api(single_date):
                     'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
                                   'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
                 },
-                timeout=10
+                timeout=5
             )
             if response.status_code != 200:
                 print("Wrong Status Code: " + str(response.status_code))
                 response = None
         except Exception as e:
             print(e)
-    if attempts == 20:
+    if attempts == max_attempts:
         print("Number of attempts exceeded trying to fetch data: " + str(single_date))
         if not response:
             response = requests.get(
@@ -276,10 +280,11 @@ def _fetch_sofascore_match_details(event_id):
     :rtype: requests.Response
     """
     response = None
+    max_attempts = 10
     attempts = 0
-    proxies = get_proxies()
+    proxies = get_all_proxies()
     print(str(len(proxies)) + " proxies returned. Going to fetch match details.")
-    while response is None and attempts < 10:
+    while response is None and attempts < max_attempts:
         proxy = random.choice(proxies)
         proxies.remove(proxy)
         try:
@@ -293,7 +298,7 @@ def _fetch_sofascore_match_details(event_id):
                 raise Exception("Wrong Status Code: " + str(response.status_code))
         except Exception:
             pass
-    if attempts == 10:
+    if attempts == max_attempts:
         print("Number of attempts exceeded trying to fetch event details: " + str(event_id))
     return response
 
