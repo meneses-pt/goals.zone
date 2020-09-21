@@ -227,15 +227,19 @@ def format_event_message(match, videogoal, videogoal_mirror, message):
 def check_conditions(match, msg_obj):
     if msg_obj.include_categories.all().count() > 0 and \
             (match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()):
+        print(f"WEBHOOK - Not included Category [Category]{match.category}")
         return False
     if msg_obj.include_tournaments.all().count() > 0 and \
             (match.tournament is None or not msg_obj.include_tournaments.filter(id=match.tournament.id).exists()):
+        print(f"WEBHOOK - Not included Tournament [Tournament]{match.tournament}")
         return False
     if msg_obj.exclude_categories.all().count() > 0 and \
             (match.category is None or msg_obj.exclude_categories.filter(id=match.category.id).exists()):
+        print(f"WEBHOOK - Excluded Category [Category]{match.category}")
         return False
     if msg_obj.exclude_tournaments.all().count() > 0 and \
             (match.tournament is None or msg_obj.exclude_tournaments.filter(id=match.tournament.id).exists()):
+        print(f"WEBHOOK - Excluded Tournament [Tournament]{match.tournament}")
         return False
     return True
 
@@ -270,6 +274,8 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
                       check_author(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
+                print(f"WEBHOOK - Not to send. "
+                      f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}")
                 return
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
