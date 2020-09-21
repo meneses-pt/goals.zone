@@ -270,6 +270,8 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
                                           event_type=event_filter)
         for wh in webhooks:
+            print(f"WEBHOOK - Checking {str(event_filter)}... "
+                  f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}")
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
                       check_author(wh, videogoal, videogoal_mirror, event_filter)
