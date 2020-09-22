@@ -205,6 +205,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
 
 
 def send_messages(match, videogoal, videogoal_mirror, event_filter):
+    print(f'WEBHOOK - SEND MESSAGES {str(event_filter)}')
     send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
@@ -248,6 +249,7 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack,
                                           event_type=event_filter)
+        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} SLACK WEBHOOKS")
         for wh in webhooks:
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
@@ -269,6 +271,7 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
                                           event_type=event_filter)
+        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} DISCORD WEBHOOKS")
         for wh in webhooks:
             print(f"WEBHOOK - Checking {str(event_filter)}... "
                   f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}")
@@ -398,6 +401,7 @@ def _save_found_match(matches_results, minute_str, post):
 
 
 def _handle_messages_to_send(match, videogoal):
+    print('WEBHOOK - HANDLE MESSAGES TO SEND')
     if not videogoal.msg_sent and \
             match.home_team.name_code is not None and \
             match.away_team.name_code is not None:
