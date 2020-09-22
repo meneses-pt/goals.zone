@@ -255,7 +255,7 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
                       check_author(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
-                return
+                continue
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
                 slack = Slack(url=wh.webhook_url)
@@ -281,7 +281,7 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
             if not to_send:
                 print(f"WEBHOOK - Not to send. "
                       f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}")
-                return
+                continue
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
                 webhook = DiscordWebhook(url=wh.webhook_url, content=message)
@@ -327,7 +327,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                       check_link_regex(tw, videogoal, videogoal_mirror, event_filter) and \
                       check_author(tw, videogoal, videogoal_mirror, event_filter)
             if not to_send:
-                return
+                continue
             try:
                 message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
                 auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
@@ -401,7 +401,6 @@ def _save_found_match(matches_results, minute_str, post):
 
 
 def _handle_messages_to_send(match, videogoal):
-    print('WEBHOOK - HANDLE MESSAGES TO SEND')
     if not videogoal.msg_sent and \
             match.home_team.name_code is not None and \
             match.away_team.name_code is not None:
