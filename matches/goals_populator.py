@@ -234,6 +234,12 @@ def check_conditions(match, msg_obj):
             (match.tournament is None or not msg_obj.include_tournaments.filter(id=match.tournament.id).exists()):
         print(f"WEBHOOK - Not included Tournament [Tournament]{match.tournament}")
         return False
+    if msg_obj.include_teams.all().count() > 0 and \
+            ((match.home_team is None and match.away_team is None) or
+             (not msg_obj.include_teams.filter(id=match.home_team.id).exists() and
+              not msg_obj.include_teams.filter(id=match.away_team.id).exists())):
+        print(f"WEBHOOK - Not included Teams [Home Team]{match.home_team} [Away Team]{match.away_team}")
+        return False
     if msg_obj.exclude_categories.all().count() > 0 and \
             (match.category is None or msg_obj.exclude_categories.filter(id=match.category.id).exists()):
         print(f"WEBHOOK - Excluded Category [Category]{match.category}")
@@ -241,6 +247,12 @@ def check_conditions(match, msg_obj):
     if msg_obj.exclude_tournaments.all().count() > 0 and \
             (match.tournament is None or msg_obj.exclude_tournaments.filter(id=match.tournament.id).exists()):
         print(f"WEBHOOK - Excluded Tournament [Tournament]{match.tournament}")
+        return False
+    if msg_obj.exclude_teams.all().count() > 0 and \
+            ((match.home_team is None and match.away_team is None) or
+             msg_obj.exclude_teams.filter(id=match.home_team.id).exists() or
+             msg_obj.exclude_teams.filter(id=match.away_team.id).exists()):
+        print(f"WEBHOOK - Excluded Teams [Home Team]{match.home_team} [Away Team]{match.away_team}")
         return False
     return True
 

@@ -1,6 +1,6 @@
 from django.db import models
 
-from matches.models import Tournament, Category
+from matches.models import Tournament, Category, Team
 
 
 class MessageObject(models.Model):
@@ -10,13 +10,29 @@ class MessageObject(models.Model):
         Mirror = 3, 'Mirror'
 
     include_tournaments = models.ManyToManyField(Tournament,
-                                                 related_name='%(class)s_include_tournaments', default=None, blank=True)
+                                                 related_name='%(class)s_include_tournaments',
+                                                 default=None,
+                                                 blank=True)
     include_categories = models.ManyToManyField(Category,
-                                                related_name='%(class)s_include_categories', default=None, blank=True)
+                                                related_name='%(class)s_include_categories',
+                                                default=None,
+                                                blank=True)
+    include_teams = models.ManyToManyField(Team,
+                                           related_name='%(class)s_include_teams',
+                                           default=None,
+                                           blank=True)
     exclude_tournaments = models.ManyToManyField(Tournament,
-                                                 related_name='%(class)s_exclude_tournaments', default=None, blank=True)
+                                                 related_name='%(class)s_exclude_tournaments',
+                                                 default=None,
+                                                 blank=True)
     exclude_categories = models.ManyToManyField(Category,
-                                                related_name='%(class)s_exclude_categories', default=None, blank=True)
+                                                related_name='%(class)s_exclude_categories',
+                                                default=None,
+                                                blank=True)
+    exclude_teams = models.ManyToManyField(Category,
+                                           related_name='%(class)s_exclude_teams',
+                                           default=None,
+                                           blank=True)
     event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.Match)
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)

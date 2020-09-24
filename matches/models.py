@@ -9,7 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
-from matches.utils import get_proxies_sslproxies, get_all_proxies
+from matches.utils import get_all_proxies
 
 
 class Team(models.Model):
