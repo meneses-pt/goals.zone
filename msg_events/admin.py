@@ -16,8 +16,10 @@ class WebhookAdminForm(forms.ModelForm):
                   'author_filter',
                   'include_tournaments',
                   'include_categories',
+                  'include_teams',
                   'exclude_tournaments',
-                  'exclude_categories']
+                  'exclude_categories',
+                  'exclude_teams']
         widgets = {
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
         }
@@ -26,8 +28,10 @@ class WebhookAdminForm(forms.ModelForm):
 class WebhookAdmin(admin.ModelAdmin):
     filter_horizontal = ['include_tournaments',
                          'include_categories',
+                         'include_teams',
                          'exclude_tournaments',
-                         'exclude_categories']
+                         'exclude_categories',
+                         'exclude_teams']
     form = WebhookAdminForm
 
 
@@ -45,8 +49,10 @@ class TweetAdminForm(forms.ModelForm):
                   'author_filter',
                   'include_tournaments',
                   'include_categories',
+                  'include_teams',
                   'exclude_tournaments',
-                  'exclude_categories']
+                  'exclude_categories',
+                  'exclude_teams']
         widgets = {
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
         }
