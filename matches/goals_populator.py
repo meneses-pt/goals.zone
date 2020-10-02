@@ -340,16 +340,25 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                       check_author(tw, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 continue
-            try:
-                message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
-                auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
-                auth.set_access_token(tw.access_token_key, tw.access_token_secret)
-                api = tweepy.API(auth)
-                result = api.update_status(status=message)
-                print(result)
-            except Exception as ex:
-                print("Error sending twitter single message", str(ex))
-                send_monitoring_message("*Twitter message not sent!*\n" + str(ex))
+            is_sent = False
+            attempts = 0
+            last_exception_str = ""
+            while not is_sent and attempts < 10:
+                try:
+                    message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
+                    auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
+                    auth.set_access_token(tw.access_token_key, tw.access_token_secret)
+                    api = tweepy.API(auth)
+                    result = api.update_status(status=message)
+                    print(result)
+                    is_sent = True
+                except Exception as ex:
+                    last_exception_str = str(ex)
+                    print("Error sending twitter single message", str(ex))
+                    time.sleep(1)
+                attempts += 1
+            if not is_sent:
+                send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex))
 
