@@ -38,6 +38,23 @@ To run the job that updates the data run the command:
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
+## Webhooks/Twitter
+
+If you want to add variables in your messages, you should use curly brackets and you can use the variables below:
+
+* {vg.match.home_team.name} - Videogoal Home Team Name
+* {vg.match.away_team.name} - Videogoal Away Team Name
+* {vg.match.slug} - Videogoal Match Slug (for the URL)
+* {vg.title} - Videogoal Title
+* {vg.url} - Videogoal URL
+* {vgm.videogoal.title} - Videogoal Mirror Title
+* {vgm.url} - Videogoal Mirror URL
+* {m.home_team.name} - Match Home Team Name
+* {m.away_team.name} - Match Away Team Name
+* {m.home_team.name_code} - Match Home Team Code
+* {m.away_team.name_code} - Match Away Team Code
+* {m.slug} - Match Slug (for the URL)
+
 ## Contributing
 
 Everyone is free to contribute to the project as long as it adds value.
