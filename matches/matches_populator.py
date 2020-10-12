@@ -9,6 +9,7 @@ from background_task import background
 from .models import Match, Team, Tournament, Category, Season
 from .utils import get_all_proxies
 
+
 @background(schedule=60 * 10)
 def fetch_new_matches():
     print('Fetching new matches...')
@@ -54,7 +55,15 @@ def fetch_matches_from_sofascore(days_ago=0):
             continue
         content = response.content
         data = json.loads(content)
-        for fixture in data['events']:
+        events = data['events']
+        inverse_response = _fetch_data_from_sofascore_api(single_date, inverse=True)
+        if inverse_response is None or inverse_response.content is None:
+            print(f'No response retrieved from inverse')
+        else:
+            inverse_content = inverse_response.content
+            inverse_data = json.loads(inverse_content)
+            events += inverse_data['events']
+        for fixture in events:
             category_obj = _get_or_create_category_sofascore(fixture["tournament"]["category"])
             tournament_obj = _get_or_create_tournament_sofascore(fixture["tournament"], category_obj)
             if 'season' in fixture and fixture['season'] is not None:
@@ -203,7 +212,7 @@ def _fetch_data_from_rapidpi_api(single_date):
 
 
 # noinspection PyBroadException
-def _fetch_data_from_sofascore_api(single_date):
+def _fetch_data_from_sofascore_api(single_date, inverse=False):
     r"""
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
@@ -219,26 +228,7 @@ def _fetch_data_from_sofascore_api(single_date):
         proxies.remove(proxy)
         try:
             attempts += 1
-            response = requests.get(
-                f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}',
-                proxies={"http": proxy, "https": proxy},
-                headers={
-                    'accept': 'text/html,application/xhtml+xml,application/xml;'
-                              'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                    'accept-encoding': 'gzip, deflate',
-                    'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
-                    'cache-control': 'no-cache',
-                    'pragma': 'no-cache',
-                    'sec-fetch-dest': 'document',
-                    'sec-fetch-mode': 'navigate',
-                    'sec-fetch-site': 'none',
-                    'sec-fetch-user': '?1',
-                    'upgrade-insecure-requests': '1',
-                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-                },
-                timeout=5
-            )
+            response = make_sofascore_request(today_str, inverse)
             if response.status_code != 200:
                 print("Wrong Status Code: " + str(response.status_code))
                 response = None
@@ -247,28 +237,36 @@ def _fetch_data_from_sofascore_api(single_date):
     if attempts == max_attempts:
         print("Number of attempts exceeded trying to fetch data: " + str(single_date))
         if not response:
-            response = requests.get(
-                f'https://www.sofascore.com/football//{today_str}/json',
-                headers={
-                    'accept': 'text/html,application/xhtml+xml,application/xml;'
-                              'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                    'accept-encoding': 'gzip, deflate',
-                    'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
-                    'cache-control': 'no-cache',
-                    'pragma': 'no-cache',
-                    'sec-fetch-dest': 'document',
-                    'sec-fetch-mode': 'navigate',
-                    'sec-fetch-site': 'none',
-                    'sec-fetch-user': '?1',
-                    'upgrade-insecure-requests': '1',
-                    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-                },
-                timeout=10
-            )
+            response = make_sofascore_request(today_str, inverse)
             if response.status_code != 200:
                 print("Wrong Status Code: " + str(response.status_code))
                 response = None
+    return response
+
+
+def make_sofascore_request(today_str, inverse=False):
+    url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
+    if inverse:
+        url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
+    response = requests.get(
+        url,
+        headers={
+            'accept': 'text/html,application/xhtml+xml,application/xml;'
+                      'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept-encoding': 'gzip, deflate',
+            'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+            'cache-control': 'no-cache',
+            'pragma': 'no-cache',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'none',
+            'sec-fetch-user': '?1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+        },
+        timeout=10
+    )
     return response
 
 
