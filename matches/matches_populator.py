@@ -228,7 +228,7 @@ def _fetch_data_from_sofascore_api(single_date, inverse=False):
         proxies.remove(proxy)
         try:
             attempts += 1
-            response = make_sofascore_request(today_str, inverse)
+            response = make_sofascore_request(today_str, proxy, inverse)
             if response.status_code != 200:
                 print("Wrong Status Code: " + str(response.status_code))
                 response = None
@@ -244,29 +244,51 @@ def _fetch_data_from_sofascore_api(single_date, inverse=False):
     return response
 
 
-def make_sofascore_request(today_str, inverse=False):
+def make_sofascore_request(today_str, proxy=None, inverse=False):
     url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
     if inverse:
         url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
-    response = requests.get(
-        url,
-        headers={
-            'accept': 'text/html,application/xhtml+xml,application/xml;'
-                      'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding': 'gzip, deflate',
-            'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
-            'cache-control': 'no-cache',
-            'pragma': 'no-cache',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'none',
-            'sec-fetch-user': '?1',
-            'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-        },
-        timeout=10
-    )
+    if proxy:
+        response = requests.get(
+            url,
+            proxies={"http": proxy, "https": proxy},
+            headers={
+                'accept': 'text/html,application/xhtml+xml,application/xml;'
+                          'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'accept-encoding': 'gzip, deflate',
+                'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+                'cache-control': 'no-cache',
+                'pragma': 'no-cache',
+                'sec-fetch-dest': 'document',
+                'sec-fetch-mode': 'navigate',
+                'sec-fetch-site': 'none',
+                'sec-fetch-user': '?1',
+                'upgrade-insecure-requests': '1',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+            },
+            timeout=10
+        )
+    else:
+        response = requests.get(
+            url,
+            headers={
+                'accept': 'text/html,application/xhtml+xml,application/xml;'
+                          'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'accept-encoding': 'gzip, deflate',
+                'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+                'cache-control': 'no-cache',
+                'pragma': 'no-cache',
+                'sec-fetch-dest': 'document',
+                'sec-fetch-mode': 'navigate',
+                'sec-fetch-site': 'none',
+                'sec-fetch-user': '?1',
+                'upgrade-insecure-requests': '1',
+                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+            },
+            timeout=10
+        )
     return response
 
 
