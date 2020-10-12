@@ -19,6 +19,8 @@ class Team(models.Model):
     logo_url = models.CharField(max_length=256)
     logo_file = models.ImageField(upload_to='logos', default=None, null=True)
     slug = models.SlugField(max_length=200, unique=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    logo_updated_at = models.DateTimeField(default=datetime.datetime.now)
 
     def __str__(self):
         return str(self.name)
@@ -39,7 +41,10 @@ class Team(models.Model):
     def save(self, *args, **kwargs):
         if not self.slug or self.slug == 'to-replace':
             self.slug = self._get_unique_slug()
-        if self.logo_url and not self.logo_file:
+        if (self.logo_url and not self.logo_file) or \
+                datetime.datetime.now().replace(tzinfo=None) - self.logo_updated_at.replace(tzinfo=None) > \
+                datetime.timedelta(days=90):
+            print(f'Going to update team logo: {self.name}')
             saved = False
             attempts = 0
             proxies = get_all_proxies()

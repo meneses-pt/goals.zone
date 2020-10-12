@@ -72,7 +72,13 @@ def fetch_matches_from_sofascore(days_ago=0):
                 season_obj = None
             home_team = _get_or_create_home_team_sofascore(fixture)
             away_team = _get_or_create_away_team_sofascore(fixture)
-            if home_team.name_code is None or away_team.name_code is None:
+            if home_team.name_code is None or \
+                    away_team.name_code is None or \
+                    datetime.now().replace(tzinfo=None) - home_team.updated_at.replace(tzinfo=None) \
+                    > timedelta(days=30) or \
+                    datetime.now().replace(tzinfo=None) - away_team.updated_at.replace(tzinfo=None) \
+                    > timedelta(days=30):
+                print(f'Going to fetch match details (update team code)')
                 match_details_response = _fetch_sofascore_match_details(fixture['id'])
                 if home_team.name_code is None:
                     get_team_name_code(home_team, match_details_response, 'homeTeam')
@@ -125,8 +131,9 @@ def get_team_name_code(team, response, team_tag):
         except Exception as e:
             name_code = ''
             print(e)
-        team.name_code = name_code
-        team.save()
+        if team.name_code is None or name_code != '':
+            team.name_code = name_code
+            team.save()
     except Exception as e:
         print(e)
 
