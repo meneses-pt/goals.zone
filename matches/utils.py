@@ -28,7 +28,7 @@ def get_proxies_sslproxies():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies')
+        print(f'Connection error getting proxies ({url})')
         return list()
     parser = fromstring(response.text)
     proxies = list()
@@ -46,7 +46,7 @@ def get_proxies_freeproxycz():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies')
+        print(f'Connection error getting proxies ({url})')
         return list()
     parser = fromstring(response.text)
     proxies = list()
@@ -70,7 +70,7 @@ def get_proxies_proxyscrape():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies')
+        print(f'Connection error getting proxies ({url})')
         return list()
     proxies = response.text.splitlines()[:20]
     return proxies
@@ -82,7 +82,7 @@ def get_proxies_freeproxylists():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies')
+        print(f'Connection error getting proxies ({url})')
         return list()
     parser = fromstring(response.text)
     proxies = list()
@@ -107,7 +107,7 @@ def get_proxies_proxylist():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies')
+        print(f'Connection error getting proxies ({url})')
         return list()
     res = json.loads(response.text)
     proxies = list()
@@ -121,7 +121,7 @@ def get_proxies_proxynova():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies')
+        print(f'Connection error getting proxies ({url})')
         return list()
     parser = fromstring(response.text)
     proxies = list()
