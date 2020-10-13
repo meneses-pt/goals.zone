@@ -5,7 +5,9 @@
     "fields": {
       "name": "Darmstadt 98",
       "logo_url": "https://media.api-football.com/teams/5409.png",
-      "slug": "darmstadt-98"
+      "slug": "darmstadt-98",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -14,7 +16,9 @@
     "fields": {
       "name": "FC St. Pauli",
       "logo_url": "https://media.api-football.com/teams/5409.png",
-      "slug": "st-pauli"
+      "slug": "st-pauli",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -23,7 +27,9 @@
     "fields": {
       "name": "PWD",
       "logo_url": "https://media.api-football.com/teams/5409.png",
-      "slug": "pwd"
+      "slug": "pwd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -32,7 +38,9 @@
     "fields": {
       "name": "Al Sadd",
       "logo_url": "https://media.api-football.com/teams/2895.png",
-      "slug": "al-sadd"
+      "slug": "al-sadd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -41,7 +49,9 @@
     "fields": {
       "name": "Salam Zgharta",
       "logo_url": "https://media.api-football.com/teams/4574.png",
-      "slug": "salam"
+      "slug": "salam",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -50,7 +60,9 @@
     "fields": {
       "name": "Wadi Degla",
       "logo_url": "https://media.api-football.com/teams/1046.png",
-      "slug": "wadi"
+      "slug": "wadi",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -59,7 +71,9 @@
     "fields": {
       "name": "Paris Saint Germain",
       "logo_url": "https://media.api-football.com/teams/85.png",
-      "slug": "1"
+      "slug": "1",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -68,7 +82,9 @@
     "fields": {
       "name": "Al-Ansar",
       "logo_url": "https://media.api-football.com/teams/2954.png",
-      "slug": "12"
+      "slug": "12",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -77,7 +93,9 @@
     "fields": {
       "name": "Herentals",
       "logo_url": "https://media.api-football.com/teams/5223.png",
-      "slug": "123"
+      "slug": "123",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -86,7 +104,9 @@
     "fields": {
       "name": "Manica Diamonds",
       "logo_url": "https://media.api-football.com/teams/5227.png",
-      "slug": "1234"
+      "slug": "1234",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -95,7 +115,9 @@
     "fields": {
       "name": "Platinum",
       "logo_url": "https://media.api-football.com/teams/5230.png",
-      "slug": "12345"
+      "slug": "12345",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -104,7 +126,9 @@
     "fields": {
       "name": "Ngezi Platinum",
       "logo_url": "https://media.api-football.com/teams/5229.png",
-      "slug": "123456"
+      "slug": "123456",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -113,7 +137,9 @@
     "fields": {
       "name": "TelOne",
       "logo_url": "https://media.api-football.com/teams/5231.png",
-      "slug": "1234567"
+      "slug": "1234567",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -122,7 +148,9 @@
     "fields": {
       "name": "Dynamos",
       "logo_url": "https://media.api-football.com/teams/5221.png",
-      "slug": "12345678"
+      "slug": "12345678",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -131,7 +159,9 @@
     "fields": {
       "name": "Highlanders",
       "logo_url": "https://media.api-football.com/teams/5224.png",
-      "slug": "123456789"
+      "slug": "123456789",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -140,7 +170,9 @@
     "fields": {
       "name": "Dinamo Zagreb U19",
       "logo_url": "https://media.api-football.com/teams/7896.png",
-      "slug": "a"
+      "slug": "a",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -149,7 +181,9 @@
     "fields": {
       "name": "Club Brugge U19",
       "logo_url": "https://media.api-football.com/teams/7893.png",
-      "slug": "aq"
+      "slug": "aq",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -158,7 +192,9 @@
     "fields": {
       "name": "Bayer Leverkusen U19",
       "logo_url": "https://media.api-football.com/teams/7886.png",
-      "slug": "aqw"
+      "slug": "aqw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -167,7 +203,9 @@
     "fields": {
       "name": "Security Systems",
       "logo_url": "https://media.api-football.com/teams/5429.png",
-      "slug": "aqwe"
+      "slug": "aqwe",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -176,7 +214,9 @@
     "fields": {
       "name": "Atlético Madrid U19",
       "logo_url": "https://media.api-football.com/teams/7884.png",
-      "slug": "aqwed"
+      "slug": "aqwed",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -185,7 +225,9 @@
     "fields": {
       "name": "Miscellaneous",
       "logo_url": "https://media.api-football.com/teams/5423.png",
-      "slug": "aqweds"
+      "slug": "aqweds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -194,7 +236,9 @@
     "fields": {
       "name": "PSG U19",
       "logo_url": "https://media.api-football.com/teams/7921.png",
-      "slug": "aqwedsa"
+      "slug": "aqwedsa",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -203,7 +247,9 @@
     "fields": {
       "name": "Bayern München U19",
       "logo_url": "https://media.api-football.com/teams/7887.png",
-      "slug": "aqwedsaq"
+      "slug": "aqwedsaq",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -212,7 +258,9 @@
     "fields": {
       "name": "Shakhtar Donetsk U19",
       "logo_url": "https://media.api-football.com/teams/7929.png",
-      "slug": "aqwedsaqw"
+      "slug": "aqwedsaqw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -221,7 +269,9 @@
     "fields": {
       "name": "Olympiakos Piraeus U19",
       "logo_url": "https://media.api-football.com/teams/7918.png",
-      "slug": "aqwedsaqwe"
+      "slug": "aqwedsaqwe",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -230,7 +280,9 @@
     "fields": {
       "name": "BR Highlanders",
       "logo_url": "https://media.api-football.com/teams/5417.png",
-      "slug": "aqwedsaqwed"
+      "slug": "aqwedsaqwed",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -239,7 +291,9 @@
     "fields": {
       "name": "South Korea",
       "logo_url": "https://media.api-football.com/teams/17.png",
-      "slug": "aqwedsaqweds"
+      "slug": "aqwedsaqweds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -248,7 +302,9 @@
     "fields": {
       "name": "Vita Club",
       "logo_url": "https://media.api-football.com/teams/6437.png",
-      "slug": "aqwedsaqwedsa"
+      "slug": "aqwedsaqwedsa",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -257,7 +313,9 @@
     "fields": {
       "name": "Kariba",
       "logo_url": "https://media.api-football.com/teams/5226.png",
-      "slug": "aqwedsaqwedsas"
+      "slug": "aqwedsaqwedsas",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -266,7 +324,9 @@
     "fields": {
       "name": "Al Khartoum",
       "logo_url": "https://media.api-football.com/teams/5238.png",
-      "slug": "aqwedsaqwedsasd"
+      "slug": "aqwedsaqwedsasd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -275,7 +335,9 @@
     "fields": {
       "name": "Chemelil Sugar",
       "logo_url": "https://media.api-football.com/teams/2461.png",
-      "slug": "aqwedsaqwedsasdwe"
+      "slug": "aqwedsaqwedsasdwe",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -284,7 +346,9 @@
     "fields": {
       "name": "Wazito FC",
       "logo_url": "https://media.api-football.com/teams/2478.png",
-      "slug": "aqwedsaqwedsasdwes"
+      "slug": "aqwedsaqwedsasdwes",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -293,7 +357,9 @@
     "fields": {
       "name": "Western Stima",
       "logo_url": "https://media.api-football.com/teams/2471.png",
-      "slug": "aqwedsaqwedsasdwesa"
+      "slug": "aqwedsaqwedsasdwesa",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -302,7 +368,9 @@
     "fields": {
       "name": "Etoile DU Sahel",
       "logo_url": "https://media.api-football.com/teams/990.png",
-      "slug": "aqwedsaqwedsasdwesas"
+      "slug": "aqwedsaqwedsasdwesas",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -311,7 +379,9 @@
     "fields": {
       "name": "Club Brugge KV",
       "logo_url": "https://media.api-football.com/teams/569.png",
-      "slug": "aqwedsaqwedsasdwesasd"
+      "slug": "aqwedsaqwedsasdwesasd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -320,7 +390,9 @@
     "fields": {
       "name": "Mamelodi Sundowns",
       "logo_url": "https://media.api-football.com/teams/2699.png",
-      "slug": "aqwedsaqwedsasdwesasdf"
+      "slug": "aqwedsaqwedsasdwesasdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -329,7 +401,9 @@
     "fields": {
       "name": "Juventus U23",
       "logo_url": "https://media.api-football.com/teams/1715.png",
-      "slug": "aqwedsaqwedsasdwesasdfa"
+      "slug": "aqwedsaqwedsasdwesasdfa",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -338,7 +412,9 @@
     "fields": {
       "name": "Pontedera",
       "logo_url": "https://media.api-football.com/teams/1591.png",
-      "slug": "h"
+      "slug": "h",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -347,7 +423,9 @@
     "fields": {
       "name": "Atletico Madrid",
       "logo_url": "https://media.api-football.com/teams/530.png",
-      "slug": "hg"
+      "slug": "hg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -356,7 +434,9 @@
     "fields": {
       "name": "Shakhtar Donetsk",
       "logo_url": "https://media.api-football.com/teams/550.png",
-      "slug": "hgf"
+      "slug": "hgf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -365,7 +445,9 @@
     "fields": {
       "name": "Bayer Leverkusen",
       "logo_url": "https://media.api-football.com/teams/168.png",
-      "slug": "hgfd"
+      "slug": "hgfd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -374,7 +456,9 @@
     "fields": {
       "name": "Olympiakos Piraeus",
       "logo_url": "https://media.api-football.com/teams/553.png",
-      "slug": "hgfds"
+      "slug": "hgfds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -383,7 +467,9 @@
     "fields": {
       "name": "Dorogi FC",
       "logo_url": "https://media.api-football.com/teams/2401.png",
-      "slug": "hgfdsa"
+      "slug": "hgfdsa",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -392,7 +478,9 @@
     "fields": {
       "name": "Raja Casablanca",
       "logo_url": "https://media.api-football.com/teams/976.png",
-      "slug": "hgfdsaz"
+      "slug": "hgfdsaz",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -401,7 +489,9 @@
     "fields": {
       "name": "Dinamo Zagreb",
       "logo_url": "https://media.api-football.com/teams/620.png",
-      "slug": "hgfdsazx"
+      "slug": "hgfdsazx",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -410,7 +500,9 @@
     "fields": {
       "name": "Paganese",
       "logo_url": "https://media.api-football.com/teams/890.png",
-      "slug": "hgfdsazxc"
+      "slug": "hgfdsazxc",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -419,7 +511,9 @@
     "fields": {
       "name": "Club Destroyers",
       "logo_url": "https://media.api-football.com/teams/3703.png",
-      "slug": "hgfdsazxcv"
+      "slug": "hgfdsazxcv",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -428,7 +522,9 @@
     "fields": {
       "name": "Guastatoya",
       "logo_url": "https://media.api-football.com/teams/3662.png",
-      "slug": "hgfdsazxcvb"
+      "slug": "hgfdsazxcvb",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -437,7 +533,9 @@
     "fields": {
       "name": "Pusamania Borneo",
       "logo_url": "https://media.api-football.com/teams/2442.png",
-      "slug": "hgfdsazxcvbn"
+      "slug": "hgfdsazxcvbn",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -446,7 +544,9 @@
     "fields": {
       "name": "Jeddah Club",
       "logo_url": "https://media.api-football.com/teams/2947.png",
-      "slug": "hgfdsazxcvbnh"
+      "slug": "hgfdsazxcvbnh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -455,7 +555,9 @@
     "fields": {
       "name": "Notwane",
       "logo_url": "https://media.api-football.com/teams/5424.png",
-      "slug": "hgfdsazxcvbnhg"
+      "slug": "hgfdsazxcvbnhg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -464,7 +566,9 @@
     "fields": {
       "name": "Al Shoalah",
       "logo_url": "https://media.api-football.com/teams/2957.png",
-      "slug": "hgfdsazxcvbnhgf"
+      "slug": "hgfdsazxcvbnhgf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -473,7 +577,9 @@
     "fields": {
       "name": "Al Ain",
       "logo_url": "https://media.api-football.com/teams/2865.png",
-      "slug": "hgfdsazxcvbnhgfd"
+      "slug": "hgfdsazxcvbnhgfd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -482,7 +588,9 @@
     "fields": {
       "name": "Shabab Al Ahli Dubai",
       "logo_url": "https://media.api-football.com/teams/2870.png",
-      "slug": "hgfdsazxcvbnhgfds"
+      "slug": "hgfdsazxcvbnhgfds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -491,7 +599,9 @@
     "fields": {
       "name": "Galaxy",
       "logo_url": "https://media.api-football.com/teams/5422.png",
-      "slug": "hgfdsazxcvbnhgfdss"
+      "slug": "hgfdsazxcvbnhgfdss",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -500,7 +610,9 @@
     "fields": {
       "name": "Hatta SC",
       "logo_url": "https://media.api-football.com/teams/2869.png",
-      "slug": "hgfdsazxcvbnhgfdssc"
+      "slug": "hgfdsazxcvbnhgfdssc",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -509,7 +621,9 @@
     "fields": {
       "name": "Guernsey",
       "logo_url": "https://media.api-football.com/teams/7230.png",
-      "slug": "hgfdsazxcvbnhgfdsscv"
+      "slug": "hgfdsazxcvbnhgfdsscv",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -518,7 +632,9 @@
     "fields": {
       "name": "Persela Lamongan",
       "logo_url": "https://media.api-football.com/teams/2450.png",
-      "slug": "hgfdsazxcvbnhgfdsscvbn"
+      "slug": "hgfdsazxcvbnhgfdsscvbn",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -527,7 +643,9 @@
     "fields": {
       "name": "Al-Wasl FC",
       "logo_url": "https://media.api-football.com/teams/2872.png",
-      "slug": "hgfdsazxcvbnhgfdsscvbnn"
+      "slug": "hgfdsazxcvbnhgfdsscvbnn",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -536,7 +654,9 @@
     "fields": {
       "name": "Olympique Khouribga",
       "logo_url": "https://media.api-football.com/teams/972.png",
-      "slug": "hgfdsazxcvbnhgfdsscvbnnm"
+      "slug": "hgfdsazxcvbnhgfdsscvbnnm",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -545,7 +665,9 @@
     "fields": {
       "name": "Al Shorta",
       "logo_url": "https://media.api-football.com/teams/5242.png",
-      "slug": "hgfdsazxcvbnhgfdsscvbnnmd"
+      "slug": "hgfdsazxcvbnhgfdsscvbnnmd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -554,7 +676,9 @@
     "fields": {
       "name": "Vibonese",
       "logo_url": "https://media.api-football.com/teams/1681.png",
-      "slug": "hgfdsazxcvbnhgfdsscvbnnmds"
+      "slug": "hgfdsazxcvbnhgfdsscvbnnmds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -563,7 +687,9 @@
     "fields": {
       "name": "Ismaily SC",
       "logo_url": "https://media.api-football.com/teams/1030.png",
-      "slug": "hgfdsazxcvbnhgfdsscvbnnmdsw"
+      "slug": "hgfdsazxcvbnhgfdsscvbnnmdsw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -572,7 +698,9 @@
     "fields": {
       "name": "Penarol",
       "logo_url": "https://media.api-football.com/teams/2348.png",
-      "slug": "2"
+      "slug": "2",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -581,7 +709,9 @@
     "fields": {
       "name": "Digenis Morphou",
       "logo_url": "https://media.api-football.com/teams/3423.png",
-      "slug": "2e"
+      "slug": "2e",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -590,7 +720,9 @@
     "fields": {
       "name": "Bayern Munich",
       "logo_url": "https://media.api-football.com/teams/157.png",
-      "slug": "2ew"
+      "slug": "2ew",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -599,7 +731,9 @@
     "fields": {
       "name": "Swansea",
       "logo_url": "https://media.api-football.com/teams/76.png",
-      "slug": "2ews"
+      "slug": "2ews",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -608,7 +742,9 @@
     "fields": {
       "name": "Derby",
       "logo_url": "https://media.api-football.com/teams/69.png",
-      "slug": "2ewsd"
+      "slug": "2ewsd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -617,7 +753,9 @@
     "fields": {
       "name": "Barnsley",
       "logo_url": "https://media.api-football.com/teams/747.png",
-      "slug": "2ewsdf"
+      "slug": "2ewsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -626,7 +764,9 @@
     "fields": {
       "name": "Birmingham",
       "logo_url": "https://media.api-football.com/teams/54.png",
-      "slug": "2ewsdfg"
+      "slug": "2ewsdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -635,7 +775,9 @@
     "fields": {
       "name": "Brentford",
       "logo_url": "https://media.api-football.com/teams/55.png",
-      "slug": "2ewsdfgh"
+      "slug": "2ewsdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -644,7 +786,9 @@
     "fields": {
       "name": "Wigan",
       "logo_url": "https://media.api-football.com/teams/61.png",
-      "slug": "2ewsdfghv"
+      "slug": "2ewsdfghv",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -653,7 +797,9 @@
     "fields": {
       "name": "FK Mladost Podgorica",
       "logo_url": "https://media.api-football.com/teams/643.png",
-      "slug": "2ewsdfghvv"
+      "slug": "2ewsdfghvv",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -662,7 +808,9 @@
     "fields": {
       "name": "Buducnost Podgorica",
       "logo_url": "https://media.api-football.com/teams/579.png",
-      "slug": "2ewsdfghvvx"
+      "slug": "2ewsdfghvvx",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -671,7 +819,9 @@
     "fields": {
       "name": "Mohun Bagan",
       "logo_url": "https://media.api-football.com/teams/3467.png",
-      "slug": "2ewsdfghvvxs"
+      "slug": "2ewsdfghvvxs",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -680,7 +830,9 @@
     "fields": {
       "name": "Green Eagles",
       "logo_url": "https://media.api-football.com/teams/5200.png",
-      "slug": "2ewsdfghvvxsd"
+      "slug": "2ewsdfghvvxsd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -689,7 +841,9 @@
     "fields": {
       "name": "Barito Putera",
       "logo_url": "https://media.api-football.com/teams/2453.png",
-      "slug": "2ewsdfghvvxsdf"
+      "slug": "2ewsdfghvvxsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -698,7 +852,9 @@
     "fields": {
       "name": "Haras El Hodood",
       "logo_url": "https://media.api-football.com/teams/1576.png",
-      "slug": "2ewsdfghvvxsdfg"
+      "slug": "2ewsdfghvvxsdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -707,7 +863,9 @@
     "fields": {
       "name": "Akademija Pandev",
       "logo_url": "https://media.api-football.com/teams/4194.png",
-      "slug": "2ewsdfghvvxsdfgh"
+      "slug": "2ewsdfghvvxsdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -716,7 +874,9 @@
     "fields": {
       "name": "Odisha",
       "logo_url": "https://media.api-football.com/teams/7177.png",
-      "slug": "2ewsdfghvvxsdfghj"
+      "slug": "2ewsdfghvvxsdfghj",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -725,7 +885,9 @@
     "fields": {
       "name": "Al Nejmeh",
       "logo_url": "https://media.api-football.com/teams/4570.png",
-      "slug": "2ewsdfghvvxsdfghjk"
+      "slug": "2ewsdfghvvxsdfghjk",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -734,7 +896,9 @@
     "fields": {
       "name": "Blooming",
       "logo_url": "https://media.api-football.com/teams/3701.png",
-      "slug": "2ewsdfghvvxsdfghjkfg"
+      "slug": "2ewsdfghvvxsdfghjkfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -743,7 +907,9 @@
     "fields": {
       "name": "UD Logroñés",
       "logo_url": "https://media.api-football.com/teams/5280.png",
-      "slug": "2ewsdfghvvxsdfghjkfgd"
+      "slug": "2ewsdfghvvxsdfghjkfgd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -752,7 +918,9 @@
     "fields": {
       "name": "Al Khaleej Saihat",
       "logo_url": "https://media.api-football.com/teams/2928.png",
-      "slug": "2ewsdfghvvxsdfghjkfgds"
+      "slug": "2ewsdfghvvxsdfghjkfgds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -761,7 +929,9 @@
     "fields": {
       "name": "Hilal El-Fasher",
       "logo_url": "https://media.api-football.com/teams/5551.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsd"
+      "slug": "2ewsdfghvvxsdfghjkfgdsd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -770,7 +940,9 @@
     "fields": {
       "name": "Al Jabalain",
       "logo_url": "https://media.api-football.com/teams/2958.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdf"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -779,7 +951,9 @@
     "fields": {
       "name": "Havant & Wville",
       "logo_url": "https://media.api-football.com/teams/1843.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfg"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -788,7 +962,9 @@
     "fields": {
       "name": "Tivoli Gardens",
       "logo_url": "https://media.api-football.com/teams/3445.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfgh"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -797,7 +973,9 @@
     "fields": {
       "name": "Tiverton Town",
       "logo_url": "https://media.api-football.com/teams/7753.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghf"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -806,7 +984,9 @@
     "fields": {
       "name": "Homeboyz",
       "logo_url": "https://media.api-football.com/teams/2462.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfd"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -815,7 +995,9 @@
     "fields": {
       "name": "FK Crvena Zvezda",
       "logo_url": "https://media.api-football.com/teams/598.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfds"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -824,7 +1006,9 @@
     "fields": {
       "name": "Molynes United",
       "logo_url": "https://media.api-football.com/teams/6407.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdc"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdc",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -833,7 +1017,9 @@
     "fields": {
       "name": "Hyderabad",
       "logo_url": "https://media.api-football.com/teams/7763.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcd"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -842,7 +1028,9 @@
     "fields": {
       "name": "Al Ahly",
       "logo_url": "https://media.api-football.com/teams/1577.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcds"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -851,7 +1039,9 @@
     "fields": {
       "name": "TRAU",
       "logo_url": "https://media.api-football.com/teams/9261.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsd-2"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsd-2",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -860,7 +1050,9 @@
     "fields": {
       "name": "Kansanshi Dynamos",
       "logo_url": "https://media.api-football.com/teams/7455.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsd"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -869,7 +1061,9 @@
     "fields": {
       "name": "Al Najoom",
       "logo_url": "https://media.api-football.com/teams/2946.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdf"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -878,7 +1072,9 @@
     "fields": {
       "name": "Al Nahdha",
       "logo_url": "https://media.api-football.com/teams/2960.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfs"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfs",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -887,7 +1083,9 @@
     "fields": {
       "name": "Ulinzi Stars",
       "logo_url": "https://media.api-football.com/teams/2474.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsd"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -896,7 +1094,9 @@
     "fields": {
       "name": "Al Taqdom",
       "logo_url": "https://media.api-football.com/teams/6257.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdf"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -905,7 +1105,9 @@
     "fields": {
       "name": "Black Rhinos",
       "logo_url": "https://media.api-football.com/teams/5216.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfg"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -914,7 +1116,9 @@
     "fields": {
       "name": "Harare City",
       "logo_url": "https://media.api-football.com/teams/5222.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgd"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -923,7 +1127,9 @@
     "fields": {
       "name": "QPR",
       "logo_url": "https://media.api-football.com/teams/72.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgds"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -932,7 +1138,9 @@
     "fields": {
       "name": "Hwange",
       "logo_url": "https://media.api-football.com/teams/5225.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdsw"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdsw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -941,7 +1149,9 @@
     "fields": {
       "name": "Bulawayo Chiefs",
       "logo_url": "https://media.api-football.com/teams/5217.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdswe"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdswe",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -950,7 +1160,9 @@
     "fields": {
       "name": "Mushowani Stars",
       "logo_url": "https://media.api-football.com/teams/5228.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdswer"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdswer",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -959,7 +1171,9 @@
     "fields": {
       "name": "Chicken Inn",
       "logo_url": "https://media.api-football.com/teams/5220.png",
-      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdswert"
+      "slug": "2ewsdfghvvxsdfghjkfgdsdfghfdsdcdsdfsdfgdswert",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -968,7 +1182,9 @@
     "fields": {
       "name": "Chapungu United",
       "logo_url": "https://media.api-football.com/teams/5219.png",
-      "slug": "p"
+      "slug": "p",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -977,7 +1193,9 @@
     "fields": {
       "name": "Atalanta U19",
       "logo_url": "https://media.api-football.com/teams/7883.png",
-      "slug": "po"
+      "slug": "po",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -986,7 +1204,9 @@
     "fields": {
       "name": "Juventus U19",
       "logo_url": "https://media.api-football.com/teams/7904.png",
-      "slug": "poi"
+      "slug": "poi",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -995,7 +1215,9 @@
     "fields": {
       "name": "Gilport Lions",
       "logo_url": "https://media.api-football.com/teams/5596.png",
-      "slug": "poiu"
+      "slug": "poiu",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1004,7 +1226,9 @@
     "fields": {
       "name": "Galatasaray U19",
       "logo_url": "https://media.api-football.com/teams/7900.png",
-      "slug": "poiuy"
+      "slug": "poiuy",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1013,7 +1237,9 @@
     "fields": {
       "name": "Molepolole City Stars",
       "logo_url": "https://media.api-football.com/teams/6385.png",
-      "slug": "poiuyt"
+      "slug": "poiuyt",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1022,7 +1248,9 @@
     "fields": {
       "name": "Lokomotiv Moskva U19",
       "logo_url": "https://media.api-football.com/teams/7910.png",
-      "slug": "poiuytr"
+      "slug": "poiuytr",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1031,7 +1259,9 @@
     "fields": {
       "name": "Real Madrid U19",
       "logo_url": "https://media.api-football.com/teams/7926.png",
-      "slug": "poiuytrr"
+      "slug": "poiuytrr",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1040,7 +1270,9 @@
     "fields": {
       "name": "Manchester City U19",
       "logo_url": "https://media.api-football.com/teams/7914.png",
-      "slug": "poiuytrrdfg"
+      "slug": "poiuytrrdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1049,7 +1281,9 @@
     "fields": {
       "name": "Tottenham Hotspur U19",
       "logo_url": "https://media.api-football.com/teams/7937.png",
-      "slug": "poiuytrrdfgh"
+      "slug": "poiuytrrdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1058,7 +1292,9 @@
     "fields": {
       "name": "Crvena Zvezda U19",
       "logo_url": "https://media.api-football.com/teams/7894.png",
-      "slug": "poiuytrrdfghbn"
+      "slug": "poiuytrrdfghbn",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1067,7 +1303,9 @@
     "fields": {
       "name": "Gaborone United",
       "logo_url": "https://media.api-football.com/teams/5421.png",
-      "slug": "poiuytrrdfghbnv"
+      "slug": "poiuytrrdfghbnv",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1076,7 +1314,9 @@
     "fields": {
       "name": "CAPS United",
       "logo_url": "https://media.api-football.com/teams/5218.png",
-      "slug": "poiuytrrdfghbnvc"
+      "slug": "poiuytrrdfghbnvc",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1085,7 +1325,9 @@
     "fields": {
       "name": "PSS Sleman",
       "logo_url": "https://media.api-football.com/teams/3882.png",
-      "slug": "poiuytrrdfghbnvcs"
+      "slug": "poiuytrrdfghbnvcs",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1094,7 +1336,9 @@
     "fields": {
       "name": "Prisons XI",
       "logo_url": "https://media.api-football.com/teams/5427.png",
-      "slug": "poiuytrrdfghbnvcsdf"
+      "slug": "poiuytrrdfghbnvcsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1103,7 +1347,9 @@
     "fields": {
       "name": "Sutjeska",
       "logo_url": "https://media.api-football.com/teams/673.png",
-      "slug": "poiuytrrdfghbnvcsdfg"
+      "slug": "poiuytrrdfghbnvcsdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1112,7 +1358,9 @@
     "fields": {
       "name": "Bandari",
       "logo_url": "https://media.api-football.com/teams/2460.png",
-      "slug": "poiuytrrdfghbnvcsdfgh"
+      "slug": "poiuytrrdfghbnvcsdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1121,7 +1369,9 @@
     "fields": {
       "name": "Cardiff",
       "logo_url": "https://media.api-football.com/teams/43.png",
-      "slug": "poiuytrrdfghbnvcsdfghj"
+      "slug": "poiuytrrdfghbnvcsdfghj",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1130,7 +1380,9 @@
     "fields": {
       "name": "Shkendija",
       "logo_url": "https://media.api-football.com/teams/609.png",
-      "slug": "poiuytrrdfghbnvcsdfghjk"
+      "slug": "poiuytrrdfghbnvcsdfghjk",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1139,7 +1391,9 @@
     "fields": {
       "name": "Zoo Kericho",
       "logo_url": "https://media.api-football.com/teams/2473.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkg"
+      "slug": "poiuytrrdfghbnvcsdfghjkg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1148,7 +1402,9 @@
     "fields": {
       "name": "PSM Makassar",
       "logo_url": "https://media.api-football.com/teams/2441.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgd"
+      "slug": "poiuytrrdfghbnvcsdfghjkgd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1157,7 +1413,9 @@
     "fields": {
       "name": "CS Hammam-Lif",
       "logo_url": "https://media.api-football.com/teams/1191.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgds"
+      "slug": "poiuytrrdfghbnvcsdfghjkgds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1166,7 +1424,9 @@
     "fields": {
       "name": "Hong Kong",
       "logo_url": "https://media.api-football.com/teams/4460.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdss"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdss",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1175,7 +1435,9 @@
     "fields": {
       "name": "Township Rollers",
       "logo_url": "https://media.api-football.com/teams/5431.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfff"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfff",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1184,7 +1446,9 @@
     "fields": {
       "name": "Catanzaro",
       "logo_url": "https://media.api-football.com/teams/1687.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffg"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1193,7 +1457,9 @@
     "fields": {
       "name": "Atalanta",
       "logo_url": "https://media.api-football.com/teams/499.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghj"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghj",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1202,7 +1468,9 @@
     "fields": {
       "name": "Lecco",
       "logo_url": "https://media.api-football.com/teams/6379.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjf"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1211,7 +1479,9 @@
     "fields": {
       "name": "Panthère",
       "logo_url": "https://media.api-football.com/teams/5564.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdf"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1220,7 +1490,9 @@
     "fields": {
       "name": "Debreceni VSC",
       "logo_url": "https://media.api-football.com/teams/2392.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfd"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1229,7 +1501,9 @@
     "fields": {
       "name": "Ethnikos Achna",
       "logo_url": "https://media.api-football.com/teams/3412.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfds"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1238,7 +1512,9 @@
     "fields": {
       "name": "Lokomotiv Moscow",
       "logo_url": "https://media.api-football.com/teams/597.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfdss"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfdss",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1247,7 +1523,9 @@
     "fields": {
       "name": "Catania",
       "logo_url": "https://media.api-football.com/teams/1580.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfdssw"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfdssw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1256,7 +1534,9 @@
     "fields": {
       "name": "Manchester City",
       "logo_url": "https://media.api-football.com/teams/50.png",
-      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfdssww"
+      "slug": "poiuytrrdfghbnvcsdfghjkgdssfffghjfdfdssww",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1265,7 +1545,9 @@
     "fields": {
       "name": "Comunicaciones",
       "logo_url": "https://media.api-football.com/teams/3658.png",
-      "slug": "y"
+      "slug": "y",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1274,7 +1556,9 @@
     "fields": {
       "name": "Gozzano",
       "logo_url": "https://media.api-football.com/teams/1714.png",
-      "slug": "yh"
+      "slug": "yh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1283,7 +1567,9 @@
     "fields": {
       "name": "Real Potosí",
       "logo_url": "https://media.api-football.com/teams/3708.png",
-      "slug": "yhg"
+      "slug": "yhg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1292,7 +1578,9 @@
     "fields": {
       "name": "Club Nacional",
       "logo_url": "https://media.api-football.com/teams/2356.png",
-      "slug": "yhgf"
+      "slug": "yhgf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1301,7 +1589,9 @@
     "fields": {
       "name": "Juventus",
       "logo_url": "https://media.api-football.com/teams/496.png",
-      "slug": "yhgfd"
+      "slug": "yhgfd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1310,7 +1600,9 @@
     "fields": {
       "name": "Al Fallah",
       "logo_url": "https://media.api-football.com/teams/7456.png",
-      "slug": "yhgfds"
+      "slug": "yhgfds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1319,7 +1611,9 @@
     "fields": {
       "name": "Persib Bandung",
       "logo_url": "https://media.api-football.com/teams/2445.png",
-      "slug": "yhgfdsd"
+      "slug": "yhgfdsd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1328,7 +1622,9 @@
     "fields": {
       "name": "Al Nasr",
       "logo_url": "https://media.api-football.com/teams/2878.png",
-      "slug": "yhgfdsdf"
+      "slug": "yhgfdsdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1337,7 +1633,9 @@
     "fields": {
       "name": "Al-Jazira",
       "logo_url": "https://media.api-football.com/teams/2871.png",
-      "slug": "yhgfdsdfg"
+      "slug": "yhgfdsdfg",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1346,7 +1644,9 @@
     "fields": {
       "name": "Al Wahda FC",
       "logo_url": "https://media.api-football.com/teams/2875.png",
-      "slug": "yhgfdsdfgh"
+      "slug": "yhgfdsdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1355,7 +1655,9 @@
     "fields": {
       "name": "Stellenbosch",
       "logo_url": "https://media.api-football.com/teams/4905.png",
-      "slug": "yhgfdsdfghj"
+      "slug": "yhgfdsdfghj",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1364,7 +1666,9 @@
     "fields": {
       "name": "Slough Town",
       "logo_url": "https://media.api-football.com/teams/4685.png",
-      "slug": "yhgfdsdfghjh"
+      "slug": "yhgfdsdfghjh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1373,7 +1677,9 @@
     "fields": {
       "name": "Tusker",
       "logo_url": "https://media.api-football.com/teams/2475.png",
-      "slug": "yhgfdsdfghjhf"
+      "slug": "yhgfdsdfghjhf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1382,7 +1688,9 @@
     "fields": {
       "name": "Hienghène Sport",
       "logo_url": "https://media.api-football.com/teams/8002.png",
-      "slug": "yhgfdsdfghjhfs"
+      "slug": "yhgfdsdfghjhfs",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1391,7 +1699,9 @@
     "fields": {
       "name": "Al Taee",
       "logo_url": "https://media.api-football.com/teams/2942.png",
-      "slug": "yhgfdsdfghjhfss"
+      "slug": "yhgfdsdfghjhfss",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1400,7 +1710,9 @@
     "fields": {
       "name": "Whitstable Town",
       "logo_url": "https://media.api-football.com/teams/7680.png",
-      "slug": "yhgfdsdfghjhfsss"
+      "slug": "yhgfdsdfghjhfsss",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1409,7 +1721,9 @@
     "fields": {
       "name": "Masr",
       "logo_url": "https://media.api-football.com/teams/7520.png",
-      "slug": "yhgfdsdfghjhfsssd"
+      "slug": "yhgfdsdfghjhfsssd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1418,7 +1732,9 @@
     "fields": {
       "name": "Wydad AC",
       "logo_url": "https://media.api-football.com/teams/968.png",
-      "slug": "yhgfdsdfghjhfsssdf"
+      "slug": "yhgfdsdfghjhfsssdf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1427,7 +1743,9 @@
     "fields": {
       "name": "Al Fujairah SC",
       "logo_url": "https://media.api-football.com/teams/2880.png",
-      "slug": "yhgfdsdfghjhfsssdfgh"
+      "slug": "yhgfdsdfghjhfsssdfgh",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1436,7 +1754,9 @@
     "fields": {
       "name": "Galatasaray",
       "logo_url": "https://media.api-football.com/teams/645.png",
-      "slug": "yhgfdsdfghjhfsssdfghj"
+      "slug": "yhgfdsdfghjhfsssdfghj",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1445,7 +1765,9 @@
     "fields": {
       "name": "Tottenham",
       "logo_url": "https://media.api-football.com/teams/47.png",
-      "slug": "yhgfdsdfghjhfsssdfghjf"
+      "slug": "yhgfdsdfghjhfsssdfghjf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1454,7 +1776,9 @@
     "fields": {
       "name": "Chesham United",
       "logo_url": "https://media.api-football.com/teams/4702.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfs"
+      "slug": "yhgfdsdfghjhfsssdfghjfs",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1463,7 +1787,9 @@
     "fields": {
       "name": "Rudar Velenje",
       "logo_url": "https://media.api-football.com/teams/2258.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfss"
+      "slug": "yhgfdsdfghjhfsssdfghjfss",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1472,7 +1798,9 @@
     "fields": {
       "name": "Reading",
       "logo_url": "https://media.api-football.com/teams/53.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssd"
+      "slug": "yhgfdsdfghjhfsssdfghjfssd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1481,7 +1809,9 @@
     "fields": {
       "name": "Al Hilal Omdurman",
       "logo_url": "https://media.api-football.com/teams/5237.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdc"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdc",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1490,7 +1820,9 @@
     "fields": {
       "name": "Always Ready",
       "logo_url": "https://media.api-football.com/teams/3700.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcv"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcv",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1499,7 +1831,9 @@
     "fields": {
       "name": "Real Madrid",
       "logo_url": "https://media.api-football.com/teams/541.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvb"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvb",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1508,7 +1842,9 @@
     "fields": {
       "name": "Misr EL Makasa",
       "logo_url": "https://media.api-football.com/teams/1038.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbn"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbn",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1517,7 +1853,9 @@
     "fields": {
       "name": "Maniema Union",
       "logo_url": "https://media.api-football.com/teams/8064.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnm"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnm",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1526,7 +1864,9 @@
     "fields": {
       "name": "Al Ahly Shendi",
       "logo_url": "https://media.api-football.com/teams/5235.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmf"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmf",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1535,7 +1875,9 @@
     "fields": {
       "name": "Al Ahed",
       "logo_url": "https://media.api-football.com/teams/4567.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfd"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1544,7 +1886,9 @@
     "fields": {
       "name": "Bourj",
       "logo_url": "https://media.api-football.com/teams/7516.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfds"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfds",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1553,7 +1897,9 @@
     "fields": {
       "name": "Marino de Luanco",
       "logo_url": "https://media.api-football.com/teams/9401.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdsw"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdsw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1562,7 +1908,9 @@
     "fields": {
       "name": "Al Bukayriyah",
       "logo_url": "https://media.api-football.com/teams/2966.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswe"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswe",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1571,7 +1919,9 @@
     "fields": {
       "name": "Blackburn",
       "logo_url": "https://media.api-football.com/teams/67.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswer"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswer",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1580,7 +1930,9 @@
     "fields": {
       "name": "Sheffield Wednesday",
       "logo_url": "https://media.api-football.com/teams/74.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswert"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswert",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1589,7 +1941,9 @@
     "fields": {
       "name": "Moghreb Tetouan",
       "logo_url": "https://media.api-football.com/teams/965.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswerty"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswerty",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1598,7 +1952,9 @@
     "fields": {
       "name": "West Brom",
       "logo_url": "https://media.api-football.com/teams/60.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyu"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyu",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1607,7 +1963,9 @@
     "fields": {
       "name": "Ajax",
       "logo_url": "https://media.api-football.com/teams/3000.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyui"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyui",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1616,7 +1974,9 @@
     "fields": {
       "name": "Utrecht",
       "logo_url": "https://media.api-football.com/teams/3001.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuif"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuif",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1625,7 +1985,9 @@
     "fields": {
       "name": "Jong Ajax",
       "logo_url": "https://media.api-football.com/teams/3002.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuifd"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuifd",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   },
   {
@@ -1634,7 +1996,9 @@
     "fields": {
       "name": "Jong Utrecht",
       "logo_url": "https://media.api-football.com/teams/3003.png",
-      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuifdsw"
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuifdsw",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
     }
   }
 ]
