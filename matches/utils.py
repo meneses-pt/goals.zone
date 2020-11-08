@@ -30,13 +30,17 @@ def get_proxies_sslproxies():
     except requests.exceptions.ConnectionError:
         print(f'Connection error getting proxies ({url})')
         return list()
-    parser = fromstring(response.text)
-    proxies = list()
-    for i in parser.xpath('//tbody/tr')[:20]:
-        if i.xpath('.//td[7][contains(text(),"yes")]'):
-            # Grabbing IP and corresponding PORT
-            proxy = ":".join([i.xpath('.//td[1]/text()')[0], i.xpath('.//td[2]/text()')[0]])
-            proxies.append(proxy)
+    try:
+        parser = fromstring(response.text)
+        proxies = list()
+        for i in parser.xpath('//tbody/tr')[:20]:
+            if i.xpath('.//td[7][contains(text(),"yes")]'):
+                # Grabbing IP and corresponding PORT
+                proxy = ":".join([i.xpath('.//td[1]/text()')[0], i.xpath('.//td[2]/text()')[0]])
+                proxies.append(proxy)
+    except Exception as e:
+        print(f'Error getting proxies ({url}): {e}')
+        return list()
     return proxies
 
 
@@ -48,19 +52,23 @@ def get_proxies_freeproxycz():
     except requests.exceptions.ConnectionError:
         print(f'Connection error getting proxies ({url})')
         return list()
-    parser = fromstring(response.text)
-    proxies = list()
-    for i in parser.xpath("//table[@id='proxy_list']/tbody/tr")[:20]:
-        if not i.xpath('.//td[@colspan="11"]'):
-            # Grabbing IP and corresponding PORT
-            ip_script = i.xpath('./td[1]/script/text()')[0]
-            p = re.compile("\"(.*)\"")
-            res = p.search(ip_script)
-            ip_base64 = res.group(1)
-            ip = base64.b64decode(ip_base64).decode("utf-8")
-            port = i.xpath('./td[2]/span/text()')[0]
-            proxy = ":".join([ip, port])
-            proxies.append(proxy)
+    try:
+        parser = fromstring(response.text)
+        proxies = list()
+        for i in parser.xpath("//table[@id='proxy_list']/tbody/tr")[:20]:
+            if not i.xpath('.//td[@colspan="11"]'):
+                # Grabbing IP and corresponding PORT
+                ip_script = i.xpath('./td[1]/script/text()')[0]
+                p = re.compile("\"(.*)\"")
+                res = p.search(ip_script)
+                ip_base64 = res.group(1)
+                ip = base64.b64decode(ip_base64).decode("utf-8")
+                port = i.xpath('./td[2]/span/text()')[0]
+                proxy = ":".join([ip, port])
+                proxies.append(proxy)
+    except Exception as e:
+        print(f'Error getting proxies ({url}): {e}')
+        return list()
     return proxies
 
 
@@ -72,7 +80,11 @@ def get_proxies_proxyscrape():
     except requests.exceptions.ConnectionError:
         print(f'Connection error getting proxies ({url})')
         return list()
-    proxies = response.text.splitlines()[:20]
+    try:
+        proxies = response.text.splitlines()[:20]
+    except Exception as e:
+        print(f'Error getting proxies ({url}): {e}')
+        return list()
     return proxies
 
 
@@ -84,21 +96,25 @@ def get_proxies_freeproxylists():
     except requests.exceptions.ConnectionError:
         print(f'Connection error getting proxies ({url})')
         return list()
-    parser = fromstring(response.text)
-    proxies = list()
-    for i in parser.xpath("//table/tr[@class='Odd']|//table/tr[@class='Even']")[:20]:
-        # Grabbing IP and corresponding PORT
-        ip_script = i.xpath('./td[1]/script/text()')[0]
-        p = re.compile("\"(.*)\"")
-        res = p.search(ip_script)
-        if res is None:
-            continue
-        ip_encoded = res.group(1)
-        ip_el = parse.unquote(ip_encoded)
-        ip = fromstring(ip_el).xpath('//text()')[0]
-        port = i.xpath('./td[2]/text()')[0]
-        proxy = ":".join([ip, port])
-        proxies.append(proxy)
+    try:
+        parser = fromstring(response.text)
+        proxies = list()
+        for i in parser.xpath("//table/tr[@class='Odd']|//table/tr[@class='Even']")[:20]:
+            # Grabbing IP and corresponding PORT
+            ip_script = i.xpath('./td[1]/script/text()')[0]
+            p = re.compile("\"(.*)\"")
+            res = p.search(ip_script)
+            if res is None:
+                continue
+            ip_encoded = res.group(1)
+            ip_el = parse.unquote(ip_encoded)
+            ip = fromstring(ip_el).xpath('//text()')[0]
+            port = i.xpath('./td[2]/text()')[0]
+            proxy = ":".join([ip, port])
+            proxies.append(proxy)
+    except Exception as e:
+        print(f'Error getting proxies ({url}): {e}')
+        return list()
     return proxies
 
 
@@ -109,10 +125,14 @@ def get_proxies_proxylist():
     except requests.exceptions.ConnectionError:
         print(f'Connection error getting proxies ({url})')
         return list()
-    res = json.loads(response.text)
-    proxies = list()
-    for p in res[0]['LISTA']:
-        proxies.append(":".join([p["IP"], p["PORT"]]))
+    try:
+        proxies = list()
+        res = json.loads(response.text)
+        for p in res[0]['LISTA']:
+            proxies.append(":".join([p["IP"], p["PORT"]]))
+    except Exception as e:
+        print(f'Error getting proxies ({url}): {e}')
+        return list()
     return proxies[:20]
 
 
@@ -123,22 +143,26 @@ def get_proxies_proxynova():
     except requests.exceptions.ConnectionError:
         print(f'Connection error getting proxies ({url})')
         return list()
-    parser = fromstring(response.text)
-    proxies = list()
-    for i in parser.xpath('//tbody/tr')[:20]:
-        ip_script = i.xpath('./td[1]/abbr/script/text()')
-        if len(ip_script) > 0:
-            ip_script = ip_script[0]
-        else:
-            continue
-        p = re.compile("\'(.*)\'")
-        res = p.search(ip_script)
-        if res is None:
-            continue
-        ip = res.group(1)
-        # Grabbing IP and corresponding PORT
-        proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())])
-        proxies.append(proxy)
+    try:
+        parser = fromstring(response.text)
+        proxies = list()
+        for i in parser.xpath('//tbody/tr')[:20]:
+            ip_script = i.xpath('./td[1]/abbr/script/text()')
+            if len(ip_script) > 0:
+                ip_script = ip_script[0]
+            else:
+                continue
+            p = re.compile("\'(.*)\'")
+            res = p.search(ip_script)
+            if res is None:
+                continue
+            ip = res.group(1)
+            # Grabbing IP and corresponding PORT
+            proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())])
+            proxies.append(proxy)
+    except Exception as e:
+        print(f'Error getting proxies ({url}): {e}')
+        return list()
     return proxies
 
 

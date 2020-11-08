@@ -2000,5 +2000,27 @@
       "updated_at": "2020-10-13 09:21:00",
       "logo_updated_at": "2020-10-13 09:21:00"
     }
+  },
+  {
+    "model": "matches.team",
+    "pk": 2836,
+    "fields": {
+      "name": "Atlético Madrid",
+      "logo_url": "https://media.api-football.com/teams/2836.png",
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuifdswatl",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
+    }
+  },
+  {
+    "model": "matches.team",
+    "pk": 4488,
+    "fields": {
+      "name": "Cádiz",
+      "logo_url": "https://media.api-football.com/teams/4488.png",
+      "slug": "yhgfdsdfghjhfsssdfghjfssdcvbnmfdswertyuifdswcad",
+      "updated_at": "2020-10-13 09:21:00",
+      "logo_updated_at": "2020-10-13 09:21:00"
+    }
   }
 ]

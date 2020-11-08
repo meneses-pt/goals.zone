@@ -304,3 +304,12 @@ class AffiliateTeamsTestCase(TestCase):
         assert len(matches) > 0
         match_id = matches.first().id
         assert match_id == 8376
+
+    @staticmethod
+    def test_senior_match_30():
+        title = "Atlético Madrid 1-0 Cadiz - Joao Felix 8'"
+        home, away, minute = extract_names_from_title(title)
+        matches = find_match(home, away, from_date=datetime.datetime(2019, 12, 11))
+        assert len(matches) > 0
+        match_id = matches.first().id
+        assert match_id == 8604

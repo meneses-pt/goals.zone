@@ -999,5 +999,16 @@
       "datetime": "2019-12-11T23:30:00Z",
       "slug": "jong-ajax-jong-utrecht-20191211"
     }
+  },
+  {
+    "model": "matches.match",
+    "pk": 8604,
+    "fields": {
+      "home_team": 2836,
+      "away_team": 4488,
+      "score": null,
+      "datetime": "2019-12-11T23:30:00Z",
+      "slug": "atl-cad-20191211"
+    }
   }
 ]
