@@ -387,7 +387,9 @@ def send_monitoring_message(message, disable_notification=False):
         print("Error sending monitoring message: " + str(ex))
 
 
-def find_and_store_videogoal(post, title, match_date=date.today()):
+def find_and_store_videogoal(post, title, match_date=None):
+    if match_date is None:
+        match_date = date.today()
     home_team, away_team, minute_str = extract_names_from_title(title)
     if home_team is None or away_team is None:
         return
@@ -480,7 +482,9 @@ def extract_names_from_title(title):
     return None, None, None
 
 
-def find_match(home_team, away_team, from_date=date.today()):
+def find_match(home_team, away_team, from_date=None):
+    if from_date is None:
+        from_date = date.today()
     suffix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=False).values_list('term', flat=True)
     suffix_regex_string = r'( ' + r'| '.join(suffix_affiliate_terms) + r')$'
     prefix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=True).values_list('term', flat=True)
