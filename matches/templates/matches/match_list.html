@@ -130,7 +130,7 @@
 
             $('#datepicker').datetimepicker({
                 format: 'L',
-                defaultDate: "{{ date|date:"m/d/Y" }}",
+                defaultDate: "{{ date|date:"Y-m-d" }}",
             }).on('dp.change', function (e) {
                 window.location.href = "/?date=" + e.date.format("YYYY-MM-DD");
             });
