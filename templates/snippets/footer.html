@@ -30,7 +30,6 @@
                                 </button>
                             </h5>
                         </div>
-
                         <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
                              data-parent="#accordion">
                             <div class="card-body">
@@ -80,14 +79,31 @@
                     <div class="card">
                         <div class="card-header" id="headingThree">
                             <h5 class="mb-0">
+                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"
+                                        aria-expanded="false" aria-controls="collapseThree">
+                                    Cookies Declaration
+                                </button>
+                            </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                            <div class="card-body">
+                                <script id="CookieDeclaration"
+                                        src="https://consent.cookiebot.com/70f56156-f528-4c70-af29-f0191b91adc5/cd.js"
+                                        type="text/javascript" async></script>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingFour">
+                            <h5 class="mb-0">
                                 <button class="btn btn-link collapsed" data-toggle="collapse"
-                                        data-target="#collapseThree" aria-expanded="false"
-                                        aria-controls="collapseThree">
+                                        data-target="#collapseFour" aria-expanded="false"
+                                        aria-controls="collapseFour">
                                     Donate
                                 </button>
                             </h5>
                         </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour"
                              data-parent="#accordion">
                             <div class="card-body">
                                 <p>
@@ -100,7 +116,6 @@
                                 <p>
                                     If you want to get rid of the ads, please donate.
                                 </p>
-                                <p>
                                 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
                                     <input type="hidden" name="cmd" value="_donations"/>
                                     <input type="hidden" name="business" value="BUUD7DZH6FZWS"/>
@@ -111,7 +126,6 @@
                                            name="submit" title="PayPal - The safer, easier way to pay online!"
                                            alt="Donate with PayPal button"/>
                                 </form>
-                                </p>
                             </div>
                         </div>
                     </div>
