@@ -2,7 +2,7 @@
 
 |Test|Deploy|
 |---|---|
-|[![Test](https://travis-matrix-badges.herokuapp.com/repos/meneses-pt/goals.zone/branches/master/1)](https://travis-ci.org/meneses-pt/goals.zone)|[![Deploy](https://travis-matrix-badges.herokuapp.com/repos/meneses-pt/goals.zone/branches/master/2)](https://travis-ci.org/meneses-pt/goals.zone)|
+|[![Test](https://travis-matrix-badges.herokuapp.com/repos/meneses-pt/goals.zone/branches/master/1)](https://travis-ci.com/meneses-pt/goals.zone)|[![Deploy](https://travis-matrix-badges.herokuapp.com/repos/meneses-pt/goals.zone/branches/master/2)](https://travis-ci.com/meneses-pt/goals.zone)|
 
 The aim of this project is to make a website available where one could easily search for videos of goals in footbal (soccer), matches posted to reddit.com (/r/soccer)
 
