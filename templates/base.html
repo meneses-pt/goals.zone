@@ -5,8 +5,31 @@
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="en">
-    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="70f56156-f528-4c70-af29-f0191b91adc5"
-            data-blockingmode="auto" type="text/javascript"></script>
+
+    <!-- Cookie Consent by CookieBot -->
+    {#    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="70f56156-f528-4c70-af29-f0191b91adc5"#}
+    {#            data-blockingmode="auto" type="text/javascript"></script>#}
+
+    <!-- Cookie Consent by https://www.FreePrivacyPolicy.com -->
+    {#    <script type="text/javascript"#}
+    {#            src="//www.freeprivacypolicy.com/public/cookie-consent/3.1.0/cookie-consent.js"></script>#}
+    {#    <script type="text/javascript">#}
+    {#        document.addEventListener('DOMContentLoaded', function () {#}
+    {#            cookieconsent.run({#}
+    {#                "notice_banner_type": "simple",#}
+    {#                "consent_type": "express",#}
+    {#                "palette": "dark",#}
+    {#                "language": "en",#}
+    {#                "website_name": "goals.zone"#}
+    {#            });#}
+    {#        });#}
+    {#    </script>#}
+    {##}
+    {#    <noscript>Cookie Consent by <a href="https://www.FreePrivacyPolicy.com/free-cookie-consent/"#}
+    {#                                   rel="nofollow noopener">FreePrivacyPolicy.com</a></noscript>#}
+    {#    <!-- End Cookie Consent -->#}
+
+
     {% if not debug %}
         {% include "snippets/analytics.html" %}
     {% endif %}
@@ -16,7 +39,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- AdSense -->
-    <script data-ad-client="ca-pub-8520909641604027" async
+    <script async
+            cookie-consent="targeting"
+            type="text/plain"
+            data-cookie-if="marketing"
+            data-ad-client="ca-pub-8520909641604027"
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
     <!-- REMOVE THESE ADS IF IT IS BEING TOO INTRUSIVE -->
@@ -64,5 +91,24 @@
 {#    </iframe>#}
 {#</div>#}
 {% include "snippets/footer.html" %}
+<!-- Cookie Consent by https://eucookie.eu -->
+<script src="//www.eucookie.eu/public/gdpr-cookie-consent.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var cookieConsent = new cookieConsent({
+        clientId: '3e43c7ad-93a4-45b2-bf7b-1de317a67da0', // Your Client ID
+        backgroundColor  : '#303030',
+        fontFamily: 'Lato',
+        fontSize: '',
+        fontColor: '#fff',
+        position: 'bottomLeft', // bottomLeft, bottomRight, topLeft, topRight
+        linkColor: '#00bc8c',
+        buttonBackground: 'transparent',
+        buttonTextColor: '#00bc8c',
+        border: '#00bc8c',
+        language: 'en', // en, de, sk, cz, or any language code you setup in My Texts
+	precheck: true // automatically pre-check or not pre-check consent checkboxes
+    });
+    cookieConsent.run();
+</script>
 </body>
 </html>

@@ -76,20 +76,38 @@
                             </div>
                         </div>
                     </div>
+                    {#                    <div class="card">#}
+                    {#                        <div class="card-header" id="headingThree">#}
+                    {#                            <h5 class="mb-0">#}
+                    {#                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"#}
+                    {#                                        aria-expanded="false" aria-controls="collapseThree">#}
+                    {#                                    Cookies Declaration#}
+                    {#                                </button>#}
+                    {#                            </h5>#}
+                    {#                        </div>#}
+                    {#                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">#}
+                    {#                            <div class="card-body">#}
+                    {#                                <script id="CookieDeclaration"#}
+                    {#                                        src="https://consent.cookiebot.com/70f56156-f528-4c70-af29-f0191b91adc5/cd.js"#}
+                    {#                                        type="text/javascript" async></script>#}
+                    {#                            </div>#}
+                    {#                        </div>#}
+                    {#                    </div>#}
+
                     <div class="card">
                         <div class="card-header" id="headingThree">
                             <h5 class="mb-0">
-                                <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree"
+                                <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseThree"
                                         aria-expanded="false" aria-controls="collapseThree">
-                                    Cookies Declaration
+                                    Cookies Settings
                                 </button>
                             </h5>
                         </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree"
+                             data-parent="#accordion">
                             <div class="card-body">
-                                <script id="CookieDeclaration"
-                                        src="https://consent.cookiebot.com/70f56156-f528-4c70-af29-f0191b91adc5/cd.js"
-                                        type="text/javascript" async></script>
+                                <a href="javascript:cookieConsent.changeConsent();">Change cookies settings</a>
                             </div>
                         </div>
                     </div>
