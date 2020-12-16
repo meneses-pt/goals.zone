@@ -2,57 +2,23 @@
 <!doctype html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
     <meta name="google" content="notranslate">
     <meta http-equiv="Content-Language" content="en">
-
-    <!-- Cookie Consent by CookieBot -->
-    {#    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="70f56156-f528-4c70-af29-f0191b91adc5"#}
-    {#            data-blockingmode="auto" type="text/javascript"></script>#}
-
-    <!-- Cookie Consent by https://www.FreePrivacyPolicy.com -->
-    {#    <script type="text/javascript"#}
-    {#            src="//www.freeprivacypolicy.com/public/cookie-consent/3.1.0/cookie-consent.js"></script>#}
-    {#    <script type="text/javascript">#}
-    {#        document.addEventListener('DOMContentLoaded', function () {#}
-    {#            cookieconsent.run({#}
-    {#                "notice_banner_type": "simple",#}
-    {#                "consent_type": "express",#}
-    {#                "palette": "dark",#}
-    {#                "language": "en",#}
-    {#                "website_name": "goals.zone"#}
-    {#            });#}
-    {#        });#}
-    {#    </script>#}
-    {##}
-    {#    <noscript>Cookie Consent by <a href="https://www.FreePrivacyPolicy.com/free-cookie-consent/"#}
-    {#                                   rel="nofollow noopener">FreePrivacyPolicy.com</a></noscript>#}
-    {#    <!-- End Cookie Consent -->#}
-
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     {% if not debug %}
         {% include "snippets/analytics.html" %}
     {% endif %}
     {% include "snippets/favicon.html" %}
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- AdSense -->
     <script async
-            cookie-consent="targeting"
             type="text/plain"
             data-cookie-if="marketing"
             data-ad-client="ca-pub-8520909641604027"
             src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-
-    <!-- REMOVE THESE ADS IF IT IS BEING TOO INTRUSIVE -->
-    <!-- POPUNDER -->
-    <!--<script type='text/javascript' src='//kbugxeslbjc8.com/da/ea/29/daea297ec7781cbcc1279f9ef68d983e.js'></script>-->
-
-    <!-- REMOVE THESE ADS IF IT IS BEING TOO INTRUSIVE -->
-    <!-- SOCIAL BAR -->
-    {#<script type='text/javascript' src='//kbugxeslbjc8.com/3d/6e/2f/3d6e2f75c0e9140f3c1c2feaa409654d.js'></script>#}
 
     <title>{% block head_title %}goals.zone{% endblock %}</title>
     <meta name="description"
@@ -83,32 +49,27 @@
         {% endblock customjs %}
     </div>
 </div>
-{#<div class="right-ad desktop">#}
-{#    <iframe id="right_ad_iframe_adsterra"#}
-{#            class="side-iframe"#}
-{#            sandbox="allow-top-navigation-by-user-activation allow-scripts allow-same-origin allow-popups"#}
-{#            src="{% static 'html/side_ad_adsterra.html' %}">#}
-{#    </iframe>#}
-{#</div>#}
 {% include "snippets/footer.html" %}
+
 <!-- Cookie Consent by https://eucookie.eu -->
 <script src="//www.eucookie.eu/public/gdpr-cookie-consent.js" type="text/javascript"></script>
 <script type="text/javascript">
     var cookieConsent = new cookieConsent({
         clientId: '3e43c7ad-93a4-45b2-bf7b-1de317a67da0', // Your Client ID
-        backgroundColor  : '#303030',
+        backgroundColor: '#303030',
         fontFamily: 'Lato',
         fontSize: '',
         fontColor: '#fff',
         position: 'bottomLeft', // bottomLeft, bottomRight, topLeft, topRight
         linkColor: '#00bc8c',
-        buttonBackground: 'transparent',
-        buttonTextColor: '#00bc8c',
-        border: '#00bc8c',
+        buttonBackground: '#00bc8c',
+        buttonTextColor: '#fff',
+        border: '',
         language: 'en', // en, de, sk, cz, or any language code you setup in My Texts
-	precheck: true // automatically pre-check or not pre-check consent checkboxes
+        precheck: true // automatically pre-check or not pre-check consent checkboxes
     });
     cookieConsent.run();
 </script>
+
 </body>
 </html>
