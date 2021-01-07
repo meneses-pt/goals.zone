@@ -24,7 +24,7 @@ idna-ssl==1.1.0
 importlib-metadata==1.7.0
 ipaddress==1.0.23
 ipapi==1.0.4
-lxml==4.5.2
+lxml==4.6.2
 Markdown==3.2.2
 maxminddb==2.0.2
 multidict==4.7.6
