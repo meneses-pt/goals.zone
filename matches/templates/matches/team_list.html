@@ -81,7 +81,7 @@
                 return team.text;
             }
 
-            const $container = $(
+            return $(
                 `<a class="list-group-item list-group-item-action list-group-flex"` +
                 `   href="/teams/${team.slug}">` +
                 `    <div class="list-match-result">` +
@@ -95,8 +95,6 @@
                 `    <b>${team.name}</b>` +
                 `    </div>` +
                 `</a>`);
-
-            return $container;
         }
 
     </script>

@@ -60,7 +60,7 @@ class Team(models.Model):
                                             timeout=10)
                     fp = BytesIO()
                     fp.write(response.content)
-                    self.logo_file.save(os.path.basename(self.logo_url), File(fp), save=True)
+                    self.logo_file.save(os.path.basename(self.logo_url), File(fp))
                     self.logo_updated_at = datetime.datetime.now()
                     saved = True
                 except Exception:

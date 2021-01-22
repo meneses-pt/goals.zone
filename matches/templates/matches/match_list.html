@@ -143,7 +143,7 @@
                 return match.text;
             }
 
-            const $container = $(
+            return $(
                 `<div class="mobile">` +
                 `    <a class="list-group-item list-group-item-action list-group-flex"` +
                 `        href="/${match.slug}">` +
@@ -208,8 +208,6 @@
                 `        </div>` +
                 `    </a>` +
                 `</div>`);
-
-            return $container;
         }
 
         function formatDateToHourString(date) {
