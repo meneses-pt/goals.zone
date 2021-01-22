@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 def migrate_data_forward(apps, schema_editor):
     # for instance in Team.objects.all().order_by('id'):
-    #     print(f"Generating slug for team {instance} (id: {instance.id})")
+    #     print(f"Generating slug for team {instance} (id: {instance.id})", flush=True)
     #     instance.save()  # Will trigger slug update
     pass
 

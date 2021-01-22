@@ -11,7 +11,7 @@ from .proxy_request import ProxyRequest
 
 @background(schedule=60 * 10)
 def fetch_new_matches():
-    print('Fetching new matches...')
+    print('Fetching new matches...', flush=True)
     fetch_matches_from_sofascore()
     # How to get historic data
     # fetch_matches_from_sofascore(days_ago=2)
@@ -23,7 +23,7 @@ def fetch_matches_from_rapidapi(days_ago=2):
         response = _fetch_data_from_rapidpi_api(single_date)
         data = json.loads(response.content)
         results = data['api']['results']
-        print(f'{results} matches fetched...')
+        print(f'{results} matches fetched...', flush=True)
         for fixture in data['api']['fixtures']:
             home_team = _get_or_create_home_team_rapidapi(fixture)
             away_team = _get_or_create_away_team_rapidapi(fixture)
@@ -34,15 +34,15 @@ def fetch_matches_from_rapidapi(days_ago=2):
                 score = f'{home_goals}:{away_goals}'
             datetime_str = _get_datetime_string(fixture['event_date'])
             match_datetime = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S%z')
-            print(f'{home_team} - {away_team} | {score} at {match_datetime}')
+            print(f'{home_team} - {away_team} | {score} at {match_datetime}', flush=True)
             match = Match()
             match.home_team = home_team
             match.away_team = away_team
             match.score = score
             match.datetime = match_datetime
             _save_or_update_match(match)
-        print(f'Ended processing day {single_date}')
-    print('Ended processing matches')
+        print(f'Ended processing day {single_date}', flush=True)
+    print('Ended processing matches', flush=True)
 
 
 def fetch_matches_from_sofascore(days_ago=0):
@@ -50,14 +50,14 @@ def fetch_matches_from_sofascore(days_ago=0):
     for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
         response = _fetch_data_from_sofascore_api(single_date)
         if response is None or response.content is None:
-            print(f'No response retrieved')
+            print(f'No response retrieved', flush=True)
             continue
         content = response.content
         data = json.loads(content)
         events = data['events']
         inverse_response = _fetch_data_from_sofascore_api(single_date, inverse=True)
         if inverse_response is None or inverse_response.content is None:
-            print(f'No response retrieved from inverse')
+            print(f'No response retrieved from inverse', flush=True)
         else:
             inverse_content = inverse_response.content
             inverse_data = json.loads(inverse_content)
@@ -77,7 +77,7 @@ def fetch_matches_from_sofascore(days_ago=0):
                     > timedelta(days=30) or \
                     datetime.now().replace(tzinfo=None) - away_team.updated_at.replace(tzinfo=None) \
                     > timedelta(days=30):
-                print(f'Going to fetch match details (update team code)')
+                print(f'Going to fetch match details (update team code)', flush=True)
                 match_details_response = _fetch_sofascore_match_details(fixture['id'])
                 if home_team.name_code is None:
                     get_team_name_code(home_team, match_details_response, 'homeTeam')
@@ -91,7 +91,7 @@ def fetch_matches_from_sofascore(days_ago=0):
                     score = f'{home_goals}:{away_goals}'
             start_timestamp = fixture["startTimestamp"]
             match_datetime = datetime.fromtimestamp(start_timestamp)
-            print(f'{home_team} - {away_team} | {score} at {match_datetime}')
+            print(f'{home_team} - {away_team} | {score} at {match_datetime}', flush=True)
             match = Match()
             match.home_team = home_team
             match.away_team = away_team
@@ -101,8 +101,8 @@ def fetch_matches_from_sofascore(days_ago=0):
             match.category = category_obj
             match.season = season_obj
             _save_or_update_match(match)
-        print(f'Ended processing day {single_date}')
-    print('Ended processing matches')
+        print(f'Ended processing day {single_date}', flush=True)
+    print('Ended processing matches', flush=True)
 
 
 def _get_or_create_away_team_rapidapi(fixture):
@@ -130,12 +130,12 @@ def get_team_name_code(team, response, team_tag):
                 name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
             except Exception as e:
                 name_code = ''
-                print(e)
+                print(e, flush=True)
             if team.name_code is None or name_code != '':
                 team.name_code = name_code
                 team.save()
     except Exception as e:
-        print(e)
+        print(e, flush=True)
 
 
 def _get_or_create_home_team_rapidapi(fixture):
@@ -169,7 +169,7 @@ def _get_or_create_tournament_sofascore(tournament, category):
         tournament_obj.save()
         return tournament_obj
     except Exception as e:
-        print("An exception as occurred getting or creating tournament", e)
+        print("An exception as occurred getting or creating tournament", e, flush=True)
         return None
 
 
@@ -186,7 +186,7 @@ def _get_or_create_category_sofascore(category):
         category_obj.save()
         return category_obj
     except Exception as e:
-        print("An exception as occurred getting or creating category", e)
+        print("An exception as occurred getting or creating category", e, flush=True)
         return None
 
 
@@ -201,7 +201,7 @@ def _get_or_create_season_sofascore(season):
         season_obj.save()
         return season_obj
     except Exception as e:
-        print("An exception as occurred getting or creating season", e)
+        print("An exception as occurred getting or creating season", e, flush=True)
         return None
 
 

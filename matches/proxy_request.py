@@ -35,11 +35,11 @@ class ProxyRequest:
         proxies = None
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             if attempts > 0 or not self.current_proxy:
-                print(f"Proxy {self.current_proxy} | Attempt {attempts+1}")
+                print(f"Proxy {self.current_proxy} | Attempt {attempts+1}", flush=True)
                 if not proxies:
-                    print("Getting proxies")
+                    print("Getting proxies", flush=True)
                     proxies = get_all_proxies()
-                    print(str(len(proxies)) + " proxies returned. Going to fetch url.")
+                    print(str(len(proxies)) + " proxies returned. Going to fetch url.", flush=True)
                 self.current_proxy = random.choice(proxies)
                 proxies.remove(self.current_proxy)
             try:
@@ -60,8 +60,8 @@ class ProxyRequest:
                 if response.status_code != 200:
                     raise Exception("Wrong Status Code: " + str(response.status_code))
             except Exception as e:
-                print(f"Exception making ProxyRequest ({attempts+1}/{max_attempts}): {str(e)}")
+                print(f"Exception making ProxyRequest ({attempts+1}/{max_attempts}): {str(e)}", flush=True)
                 pass
         if attempts == max_attempts:
-            print("Number of attempts exceeded trying to make request: " + str(url))
+            print("Number of attempts exceeded trying to make request: " + str(url), flush=True)
         return response

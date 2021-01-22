@@ -28,7 +28,7 @@ def get_proxies_sslproxies():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})')
+        print(f'Connection error getting proxies ({url})', flush=True)
         return list()
     try:
         parser = fromstring(response.text)
@@ -39,7 +39,7 @@ def get_proxies_sslproxies():
                 proxy = ":".join([i.xpath('.//td[1]/text()')[0], i.xpath('.//td[2]/text()')[0]])
                 proxies.append(proxy)
     except Exception as e:
-        print(f'Error getting proxies ({url}): {e}')
+        print(f'Error getting proxies ({url}): {e}', flush=True)
         return list()
     return proxies
 
@@ -50,7 +50,7 @@ def get_proxies_freeproxycz():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})')
+        print(f'Connection error getting proxies ({url})', flush=True)
         return list()
     try:
         parser = fromstring(response.text)
@@ -67,7 +67,7 @@ def get_proxies_freeproxycz():
                 proxy = ":".join([ip, port])
                 proxies.append(proxy)
     except Exception as e:
-        print(f'Error getting proxies ({url}): {e}')
+        print(f'Error getting proxies ({url}): {e}', flush=True)
         return list()
     return proxies
 
@@ -78,12 +78,12 @@ def get_proxies_proxyscrape():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})')
+        print(f'Connection error getting proxies ({url})', flush=True)
         return list()
     try:
         proxies = response.text.splitlines()[:20]
     except Exception as e:
-        print(f'Error getting proxies ({url}): {e}')
+        print(f'Error getting proxies ({url}): {e}', flush=True)
         return list()
     return proxies
 
@@ -94,7 +94,7 @@ def get_proxies_freeproxylists():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})')
+        print(f'Connection error getting proxies ({url})', flush=True)
         return list()
     try:
         parser = fromstring(response.text)
@@ -113,7 +113,7 @@ def get_proxies_freeproxylists():
             proxy = ":".join([ip, port])
             proxies.append(proxy)
     except Exception as e:
-        print(f'Error getting proxies ({url}): {e}')
+        print(f'Error getting proxies ({url}): {e}', flush=True)
         return list()
     return proxies
 
@@ -123,7 +123,7 @@ def get_proxies_proxylist():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})')
+        print(f'Connection error getting proxies ({url})', flush=True)
         return list()
     try:
         proxies = list()
@@ -131,7 +131,7 @@ def get_proxies_proxylist():
         for p in res[0]['LISTA']:
             proxies.append(":".join([p["IP"], p["PORT"]]))
     except Exception as e:
-        print(f'Error getting proxies ({url}): {e}')
+        print(f'Error getting proxies ({url}): {e}', flush=True)
         return list()
     return proxies[:20]
 
@@ -141,7 +141,7 @@ def get_proxies_proxynova():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})')
+        print(f'Connection error getting proxies ({url})', flush=True)
         return list()
     try:
         parser = fromstring(response.text)
@@ -161,7 +161,7 @@ def get_proxies_proxynova():
             proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())])
             proxies.append(proxy)
     except Exception as e:
-        print(f'Error getting proxies ({url}): {e}')
+        print(f'Error getting proxies ({url}): {e}', flush=True)
         return list()
     return proxies
 

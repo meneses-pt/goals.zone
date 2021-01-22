@@ -32,7 +32,7 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
 @background(schedule=60)
 def fetch_videogoals():
-    print('Fetching new goals')
+    print('Fetching new goals', flush=True)
     _fetch_reddit_goals()
     # How to get historic data
     # _fetch_reddit_goals_from_date(days_ago=2)
@@ -42,17 +42,17 @@ def _fetch_reddit_goals():
     i = 0
     after = None
     while i < 10:
-        print(f"Fetching Reddit Goals {i + 1}/{10}")
+        print(f"Fetching Reddit Goals {i + 1}/{10}", flush=True)
         response = _fetch_data_from_reddit_api(after)
         if response is None or response.content is None:
-            print(f'No response retrieved')
+            print(f'No response retrieved', flush=True)
             continue
         data = json.loads(response.content)
         if 'data' not in data.keys():
-            print(f'No data in response: {response.content}')
+            print(f'No data in response: {response.content}', flush=True)
             return
         results = data['data']['dist']
-        print(f'{results} posts fetched...')
+        print(f'{results} posts fetched...', flush=True)
         for post in data['data']['children']:
             post = post['data']
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
@@ -60,7 +60,7 @@ def _fetch_reddit_goals():
                 find_and_store_videogoal(post, title)
         after = data['data']['after']
         i += 1
-    print('Finished fetching goals')
+    print('Finished fetching goals', flush=True)
 
 
 def _fetch_reddit_goals_from_date(days_ago=2):
@@ -69,16 +69,16 @@ def _fetch_reddit_goals_from_date(days_ago=2):
         response = _fetch_historic_data_from_reddit_api(single_date)
         data = json.loads(response.content)
         if 'data' not in data.keys():
-            print(f'No data in response: {response.content}')
+            print(f'No data in response: {response.content}', flush=True)
             return
         results = len(data['data'])
-        print(f'{results} posts fetched...')
+        print(f'{results} posts fetched...', flush=True)
         for post in data['data']:
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
                 title = post['title']
                 find_and_store_videogoal(post, title, single_date)
-        print(f'Ended processing day {single_date}')
-    print('Finished fetching goals')
+        print(f'Ended processing day {single_date}', flush=True)
+    print('Finished fetching goals', flush=True)
 
 
 def calculate_next_mirrors_check(videogoal):
@@ -129,10 +129,10 @@ def find_mirrors(videogoal):
                             _parse_reply_for_mirrors(reply, videogoal)
         except Exception as e:
             tb = traceback.format_exc()
-            print(tb)
-            print(e)
+            print(tb, flush=True)
+            print(e, flush=True)
     except Exception as e:
-        print("An exception as occurred trying to find mirrors", e)
+        print("An exception as occurred trying to find mirrors", e, flush=True)
 
 
 def _parse_reply_for_mirrors(reply, videogoal):
@@ -143,8 +143,8 @@ def _parse_reply_for_mirrors(reply, videogoal):
         doc = ETree.fromstring(markdown.markdown(stripped_body))
     except Exception as e:
         tb = traceback.format_exc()
-        print(tb)
-        print(e)
+        print(tb, flush=True)
+        print(e, flush=True)
     else:
         links = doc.findall('.//a')
         if len(links) > 0:
@@ -206,7 +206,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
 
 
 def send_messages(match, videogoal, videogoal_mirror, event_filter):
-    print(f'WEBHOOK - SEND MESSAGES {str(event_filter)}')
+    print(f'WEBHOOK - SEND MESSAGES {str(event_filter)}', flush=True)
     send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
@@ -229,31 +229,31 @@ def format_event_message(match, videogoal, videogoal_mirror, message):
 def check_conditions(match, msg_obj):
     if msg_obj.include_categories.all().count() > 0 and \
             (match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()):
-        print(f"WEBHOOK - Not included Category [Category]{match.category}")
+        print(f"WEBHOOK - Not included Category [Category]{match.category}", flush=True)
         return False
     if msg_obj.include_tournaments.all().count() > 0 and \
             (match.tournament is None or not msg_obj.include_tournaments.filter(id=match.tournament.id).exists()):
-        print(f"WEBHOOK - Not included Tournament [Tournament]{match.tournament}")
+        print(f"WEBHOOK - Not included Tournament [Tournament]{match.tournament}", flush=True)
         return False
     if msg_obj.include_teams.all().count() > 0 and \
             ((match.home_team is None and match.away_team is None) or
              (not msg_obj.include_teams.filter(id=match.home_team.id).exists() and
               not msg_obj.include_teams.filter(id=match.away_team.id).exists())):
-        print(f"WEBHOOK - Not included Teams [Home Team]{match.home_team} [Away Team]{match.away_team}")
+        print(f"WEBHOOK - Not included Teams [Home Team]{match.home_team} [Away Team]{match.away_team}", flush=True)
         return False
     if msg_obj.exclude_categories.all().count() > 0 and \
             (match.category is None or msg_obj.exclude_categories.filter(id=match.category.id).exists()):
-        print(f"WEBHOOK - Excluded Category [Category]{match.category}")
+        print(f"WEBHOOK - Excluded Category [Category]{match.category}", flush=True)
         return False
     if msg_obj.exclude_tournaments.all().count() > 0 and \
             (match.tournament is None or msg_obj.exclude_tournaments.filter(id=match.tournament.id).exists()):
-        print(f"WEBHOOK - Excluded Tournament [Tournament]{match.tournament}")
+        print(f"WEBHOOK - Excluded Tournament [Tournament]{match.tournament}", flush=True)
         return False
     if msg_obj.exclude_teams.all().count() > 0 and \
             ((match.home_team is None and match.away_team is None) or
              msg_obj.exclude_teams.filter(id=match.home_team.id).exists() or
              msg_obj.exclude_teams.filter(id=match.away_team.id).exists()):
-        print(f"WEBHOOK - Excluded Teams [Home Team]{match.home_team} [Away Team]{match.away_team}")
+        print(f"WEBHOOK - Excluded Teams [Home Team]{match.home_team} [Away Team]{match.away_team}", flush=True)
         return False
     return True
 
@@ -262,7 +262,7 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack,
                                           event_type=event_filter)
-        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} SLACK WEBHOOKS")
+        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} SLACK WEBHOOKS", flush=True)
         for wh in webhooks:
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
@@ -273,37 +273,37 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
             try:
                 slack = Slack(url=wh.webhook_url)
                 response = slack.post(text=message)
-                print(response)
+                print(response, flush=True)
             except Exception as ex:
-                print("Error sending webhook single message: " + str(ex))
+                print("Error sending webhook single message: " + str(ex), flush=True)
     except Exception as ex:
-        print("Error sending webhook messages: " + str(ex))
+        print("Error sending webhook messages: " + str(ex), flush=True)
 
 
 def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
                                           event_type=event_filter)
-        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} DISCORD WEBHOOKS")
+        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} DISCORD WEBHOOKS", flush=True)
         for wh in webhooks:
             print(f"WEBHOOK - Checking {str(event_filter)}... "
-                  f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}")
+                  f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}", flush=True)
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
                       check_author(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
                 print(f"WEBHOOK - Not to send. "
-                      f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}")
+                      f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}", flush=True)
                 continue
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
                 webhook = DiscordWebhook(url=wh.webhook_url, content=message)
                 response = webhook.execute()
-                print(response)
+                print(response, flush=True)
             except Exception as ex:
-                print("Error sending webhook single message: " + str(ex))
+                print("Error sending webhook single message: " + str(ex), flush=True)
     except Exception as ex:
-        print("Error sending webhook messages: " + str(ex))
+        print("Error sending webhook messages: " + str(ex), flush=True)
 
 
 def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):
@@ -351,17 +351,17 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     auth.set_access_token(tw.access_token_key, tw.access_token_secret)
                     api = tweepy.API(auth)
                     result = api.update_status(status=message)
-                    print(result)
+                    print(result, flush=True)
                     is_sent = True
                 except Exception as ex:
                     last_exception_str = str(ex)
-                    print("Error sending twitter single message", str(ex))
+                    print("Error sending twitter single message", str(ex), flush=True)
                     time.sleep(1)
                 attempts += 1
             if not is_sent:
                 send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
     except Exception as ex:
-        print("Error sending twitter messages: " + str(ex))
+        print("Error sending twitter messages: " + str(ex), flush=True)
 
 
 def send_telegram_message(bot_key, user_id, message, disable_notification=False):
@@ -374,9 +374,9 @@ def send_telegram_message(bot_key, user_id, message, disable_notification=False)
             "disable_notification": disable_notification
         }
         resp = requests.post(url, data=msg_obj)
-        print(resp)
+        print(resp, flush=True)
     except Exception as ex:
-        print("Error sending monitoring message: " + str(ex))
+        print("Error sending monitoring message: " + str(ex), flush=True)
 
 
 def send_monitoring_message(message, disable_notification=False):
@@ -385,7 +385,7 @@ def send_monitoring_message(message, disable_notification=False):
         for ma in monitoring_accounts:
             send_telegram_message(ma.telegram_bot_key, ma.telegram_user_id, message, disable_notification)
     except Exception as ex:
-        print("Error sending monitoring message: " + str(ex))
+        print("Error sending monitoring message: " + str(ex), flush=True)
 
 
 def find_and_store_videogoal(post, title, match_date=None):
@@ -401,12 +401,12 @@ def find_and_store_videogoal(post, title, match_date=None):
         try:
             _handle_not_found_match(away_team, home_team, post)
         except Exception as ex:
-            print("Exception in monitoring: " + str(ex))
+            print("Exception in monitoring: " + str(ex), flush=True)
 
 
 def _save_found_match(matches_results, minute_str, post):
     match = matches_results.first()
-    # print(f'Match {match} found for: {title}')
+    # print(f'Match {match} found for: {title}', flush=True)
     try:
         videogoal = VideoGoal.objects.get(permalink__exact=post['permalink'])
     except VideoGoal.DoesNotExist:
@@ -421,7 +421,7 @@ def _save_found_match(matches_results, minute_str, post):
     videogoal.save()
     _handle_messages_to_send(match, videogoal)
     find_mirrors(videogoal)
-    # print('Saved: ' + title)
+    # print('Saved: ' + title, flush=True)
 
 
 def _handle_messages_to_send(match, videogoal):
@@ -474,13 +474,13 @@ def extract_names_from_title(title):
                 minute_str = minute[-1].strip()
             else:
                 minute_str = ''
-                # print(f'Minute not found for: {title}')
+                # print(f'Minute not found for: {title}', flush=True)
             return home_team, away_team, minute_str
         else:
-            # print('Failed away: ' + title)
+            # print('Failed away: ' + title, flush=True)
             pass
     else:
-        # print('Failed home and away: ' + title)
+        # print('Failed home and away: ' + title, flush=True)
         pass
     return None, None, None
 
