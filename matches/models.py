@@ -9,6 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
+from matches.proxy_request import ProxyRequest
 from matches.utils import get_all_proxies
 
 
@@ -45,28 +46,13 @@ class Team(models.Model):
                 datetime.datetime.now().replace(tzinfo=None) - self.logo_updated_at.replace(tzinfo=None) > \
                 datetime.timedelta(days=90):
             print(f'Going to update team logo: {self.name}')
-            saved = False
-            attempts = 0
-            proxies = get_all_proxies()
-            print(str(len(proxies)) + " proxies returned. Going to fetch team logo.")
-            while not saved and attempts < 10:
-                proxy = random.choice(proxies)
-                proxies.remove(proxy)
-                try:
-                    attempts += 1
-                    response = requests.get(self.logo_url,
-                                            proxies={"http": proxy, "https": proxy},
-                                            stream=True,
-                                            timeout=10)
-                    fp = BytesIO()
-                    fp.write(response.content)
-                    self.logo_file.save(os.path.basename(self.logo_url), File(fp))
-                    self.logo_updated_at = datetime.datetime.now()
-                    saved = True
-                except Exception:
-                    pass
-            if attempts == 10:
-                print("Number of attempts exceeded trying to fetch team logo: " + str(self.name))
+            response = ProxyRequest.get_instance().make_request(url=self.logo_url,
+                                                                max_attempts=10)
+            if response:
+                fp = BytesIO()
+                fp.write(response.content)
+                self.logo_file.save(os.path.basename(self.logo_url), File(fp), save=False)
+                self.logo_updated_at = datetime.datetime.now()
         super().save(*args, **kwargs)
 
 

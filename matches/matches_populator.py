@@ -1,13 +1,12 @@
 import json
 import os
-import random
 from datetime import date, datetime, timedelta
 
 import requests
 from background_task import background
 
 from .models import Match, Team, Tournament, Category, Season
-from .utils import get_all_proxies
+from .proxy_request import ProxyRequest
 
 
 @background(schedule=60 * 10)
@@ -225,30 +224,16 @@ def _fetch_data_from_sofascore_api(single_date, inverse=False):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = None
-    max_attempts = 50
-    attempts = 0
-    proxies = get_all_proxies()
-    print(str(len(proxies)) + " proxies returned. Going to fetch data.")
     today_str = single_date.strftime("%Y-%m-%d")
-    while response is None and attempts < max_attempts:
-        proxy = random.choice(proxies)
-        proxies.remove(proxy)
-        try:
-            attempts += 1
-            response = make_sofascore_request(today_str, proxy, inverse)
-            if response.status_code != 200:
-                print("Wrong Status Code: " + str(response.status_code))
-                response = None
-        except Exception as e:
-            print(e)
-    if attempts == max_attempts:
-        print("Number of attempts exceeded trying to fetch data: " + str(single_date))
-        if not response:
-            response = make_sofascore_request(today_str, inverse)
-            if response.status_code != 200:
-                print("Wrong Status Code: " + str(response.status_code))
-                response = None
+    url, headers = get_sofascore_url_and_headers(today_str, inverse)
+    response = ProxyRequest.get_instance().make_request(url=url,
+                                                        headers=headers,
+                                                        max_attempts=50)
+    if not response:
+        response = ProxyRequest.get_instance().make_request(url=url,
+                                                            headers=headers,
+                                                            max_attempts=1,
+                                                            use_proxy=False)
     return response
 
 
@@ -300,34 +285,52 @@ def make_sofascore_request(today_str, proxy=None, inverse=False):
     return response
 
 
+def get_sofascore_url_and_headers(today_str, proxy=None, inverse=False):
+    url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
+    if inverse:
+        url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
+    if proxy:
+        headers = {
+            'accept': 'text/html,application/xhtml+xml,application/xml;'
+                      'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept-encoding': 'gzip, deflate',
+            'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+            'cache-control': 'no-cache',
+            'pragma': 'no-cache',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'none',
+            'sec-fetch-user': '?1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+        }
+    else:
+        headers = {
+            'accept': 'text/html,application/xhtml+xml,application/xml;'
+                      'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept-encoding': 'gzip, deflate',
+            'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
+            'cache-control': 'no-cache',
+            'pragma': 'no-cache',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'none',
+            'sec-fetch-user': '?1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
+                          'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
+        }
+    return url, headers
+
+
 # noinspection PyBroadException
 def _fetch_sofascore_match_details(event_id):
     r"""
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = None
-    max_attempts = 10
-    attempts = 0
-    proxies = get_all_proxies()
-    print(str(len(proxies)) + " proxies returned. Going to fetch match details.")
-    while response is None and attempts < max_attempts:
-        proxy = random.choice(proxies)
-        proxies.remove(proxy)
-        try:
-            attempts += 1
-            response = requests.get(
-                f'https://api.sofascore.com/mobile/v4/event/{event_id}/details',
-                proxies={"http": proxy, "https": proxy},
-                timeout=10
-            )
-            if response.status_code != 200:
-                raise Exception("Wrong Status Code: " + str(response.status_code))
-        except Exception:
-            pass
-    if attempts == max_attempts:
-        print("Number of attempts exceeded trying to fetch event details: " + str(event_id))
-    return response
+    return ProxyRequest.get_instance().make_request(f'https://api.sofascore.com/mobile/v4/event/{event_id}/details')
 
 
 def _save_or_update_match(match):

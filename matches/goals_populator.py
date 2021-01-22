@@ -42,6 +42,7 @@ def _fetch_reddit_goals():
     i = 0
     after = None
     while i < 10:
+        print(f"Fetching Reddit Goals {i + 1}/{10}")
         response = _fetch_data_from_reddit_api(after)
         if response is None or response.content is None:
             print(f'No response retrieved')
@@ -473,12 +474,14 @@ def extract_names_from_title(title):
                 minute_str = minute[-1].strip()
             else:
                 minute_str = ''
-                print(f'Minute not found for: {title}')
+                # print(f'Minute not found for: {title}')
             return home_team, away_team, minute_str
         else:
-            print('Failed away: ' + title)
+            # print('Failed away: ' + title)
+            pass
     else:
-        print('Failed home and away: ' + title)
+        # print('Failed home and away: ' + title)
+        pass
     return None, None, None
 
 
