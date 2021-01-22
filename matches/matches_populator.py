@@ -125,15 +125,16 @@ def _get_or_create_away_team_sofascore(fixture):
 
 def get_team_name_code(team, response, team_tag):
     try:
-        data = json.loads(response.content)
-        try:
-            name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
-        except Exception as e:
-            name_code = ''
-            print(e)
-        if team.name_code is None or name_code != '':
-            team.name_code = name_code
-            team.save()
+        if response is not None and response.status_code == 200:
+            data = json.loads(response.content)
+            try:
+                name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
+            except Exception as e:
+                name_code = ''
+                print(e)
+            if team.name_code is None or name_code != '':
+                team.name_code = name_code
+                team.save()
     except Exception as e:
         print(e)
 

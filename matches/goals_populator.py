@@ -176,7 +176,7 @@ def _extract_links_from_comment(author, links, videogoal):
         try:
             val(link.get('href'))
             text = link.text
-            if 'http' in text and link.tail is not None and len(link.tail) > 0:
+            if link and text and 'http' in text and link.tail is not None and len(link.tail) > 0:
                 text = link.tail
             _insert_or_update_mirror(videogoal, text, link.get('href'), author)
         except ValidationError:
@@ -190,7 +190,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
         mirror = VideoGoalMirror()
         mirror.url = url
         mirror.videogoal = videogoal
-    if len(re.sub(r"[\r\n\t\s]*", "", text)) == 0:
+    if text and len(re.sub(r"[\r\n\t\s]*", "", text)) == 0:
         text = None
     if text is not None:
         mirror.title = (text[:195] + '..') if len(text) > 195 else text
