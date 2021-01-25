@@ -60,7 +60,7 @@ class ProxyRequest:
                 if response.status_code != 200:
                     raise Exception("Wrong Status Code: " + str(response.status_code))
             except Exception as e:
-                print(f"Exception making ProxyRequest ({attempts+1}/{max_attempts}): {str(e)}", flush=True)
+                print(f"Exception making ProxyRequest ({attempts}/{max_attempts}): {str(e)}", flush=True)
                 pass
         if attempts == max_attempts:
             print("Number of attempts exceeded trying to make request: " + str(url), flush=True)
