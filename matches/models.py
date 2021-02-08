@@ -61,6 +61,11 @@ class TeamAlias(models.Model):
     team = models.ForeignKey(Team, related_name="alias",
                              on_delete=models.CASCADE)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['alias', 'team'], name='unique_team_alias'),
+        ]
+
     def __str__(self):
         return str(self.alias) + " - Original: " + str(self.team.name)
 
