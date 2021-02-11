@@ -57,7 +57,8 @@ def _fetch_reddit_goals():
             post = post['data']
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
                 title = post['title']
-                find_and_store_videogoal(post, title)
+                post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
+                find_and_store_videogoal(post, title, post_created_date)
         after = data['data']['after']
         i += 1
     print('Finished fetching goals', flush=True)
@@ -76,7 +77,8 @@ def _fetch_reddit_goals_from_date(days_ago=2):
         for post in data['data']:
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
                 title = post['title']
-                find_and_store_videogoal(post, title, single_date)
+                post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
+                find_and_store_videogoal(post, title, post_created_date, single_date)
         print(f'Ended processing day {single_date}', flush=True)
     print('Finished fetching goals', flush=True)
 
@@ -388,13 +390,13 @@ def send_monitoring_message(message, disable_notification=False):
         print("Error sending monitoring message: " + str(ex), flush=True)
 
 
-def find_and_store_videogoal(post, title, match_date=None):
+def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     if match_date is None:
         match_date = date.today()
     home_team, away_team, minute_str = extract_names_from_title(title)
     if home_team is None or away_team is None:
         return
-    matches_results = find_match(home_team, away_team, from_date=match_date)
+    matches_results = find_match(home_team, away_team, to_date=max_match_date, from_date=match_date)
     if matches_results.exists():
         _save_found_match(matches_results, minute_str, post)
     else:
@@ -485,7 +487,7 @@ def extract_names_from_title(title):
     return None, None, None
 
 
-def find_match(home_team, away_team, from_date=None):
+def find_match(home_team, away_team, to_date, from_date=None):
     if from_date is None:
         from_date = date.today()
     suffix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=False).values_list('term', flat=True)
@@ -500,7 +502,8 @@ def find_match(home_team, away_team, from_date=None):
                                    Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
                                    Q(away_team__name__unaccent__trigram_similar=away_team) |
                                    Q(away_team__alias__alias__unaccent__trigram_similar=away_team),
-                                   datetime__gte=(from_date - timedelta(days=2)))
+                                   datetime__gte=(from_date - timedelta(days=2)),
+                                   datetime__lte=to_date)
     if len(suffix_affiliate_home) > 0:
         matches = matches.filter(home_team__name__endswith=suffix_affiliate_home[0])
     else:
