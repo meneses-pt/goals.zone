@@ -55,13 +55,16 @@ def fetch_matches_from_sofascore(days_ago=0):
         content = response.content
         data = json.loads(content)
         events = data['events']
+        print(f'Fetched {len(events)} events!', flush=True)
         inverse_response = _fetch_data_from_sofascore_api(single_date, inverse=True)
         if inverse_response is None or inverse_response.content is None:
             print(f'No response retrieved from inverse', flush=True)
         else:
             inverse_content = inverse_response.content
             inverse_data = json.loads(inverse_content)
+            print(f'Fetched {len(events)} inverse events!', flush=True)
             events += inverse_data['events']
+            print(f'Fetched {len(events)} total events!', flush=True)
         for fixture in events:
             category_obj = _get_or_create_category_sofascore(fixture["tournament"]["category"])
             tournament_obj = _get_or_create_tournament_sofascore(fixture["tournament"], category_obj)
