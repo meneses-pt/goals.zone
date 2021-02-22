@@ -141,3 +141,6 @@ dmypy.json
 
 #Other Data
 /data/
+
+#DS_Store
+**/.DS_Store
