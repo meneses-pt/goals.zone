@@ -62,7 +62,7 @@ def fetch_matches_from_sofascore(days_ago=0):
         else:
             inverse_content = inverse_response.content
             inverse_data = json.loads(inverse_content)
-            print(f'Fetched {len(events)} inverse events!', flush=True)
+            print(f'Fetched {len(inverse_data["events"])} inverse events!', flush=True)
             events += inverse_data['events']
             print(f'Fetched {len(events)} total events!', flush=True)
         for fixture in events:
