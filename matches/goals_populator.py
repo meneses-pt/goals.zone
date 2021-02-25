@@ -59,12 +59,9 @@ def _fetch_reddit_goals():
             if post['url'] is not None and \
                     post['link_flair_text'] is not None and \
                     (post['link_flair_text'].lower() == 'media' or post['link_flair_text'].lower() == 'mirror'):
-                print("VALID", post['title'])
                 title = post['title']
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
                 find_and_store_videogoal(post, title, post_created_date)
-            else:
-                print("NOT VALID", post['url'] is not None, post['link_flair_text'], post['title'])
         after = data['data']['after']
         i += 1
     print('Finished fetching goals', flush=True)
