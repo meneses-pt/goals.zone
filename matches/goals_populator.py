@@ -56,7 +56,10 @@ def _fetch_reddit_goals():
         print(f'{results} posts fetched...', flush=True)
         for post in data['data']['children']:
             post = post['data']
-            if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
+            if post['url'] is not None and \
+                    post['is_video'] is True and \
+                    post['link_flair_text'] is not None and \
+                    (post['link_flair_text'].lower() == 'media' or post['link_flair_text'].lower() == 'mirror'):
                 title = post['title']
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
                 find_and_store_videogoal(post, title, post_created_date)
