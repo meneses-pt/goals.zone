@@ -396,7 +396,6 @@ def send_monitoring_message(message, disable_notification=False):
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     if match_date is None:
         match_date = date.today()
-    _save_title_to_file(title)
     home_team, away_team, minute_str = extract_names_from_title(title)
     if home_team is None or away_team is None:
         return
@@ -408,13 +407,6 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
             _handle_not_found_match(away_team, home_team, post)
         except Exception as ex:
             print("Exception in monitoring: " + str(ex), flush=True)
-
-
-def _save_title_to_file(title):
-    with open(os.path.join(settings.MEDIA_ROOT, 'titles.log'), 'a+') as f:
-        f.seek(0)
-        if not any(title == x.rstrip('\r\n') for x in f):
-            f.write(title + '\n')
 
 
 def _save_found_match(matches_results, minute_str, post):
