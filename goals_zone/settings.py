@@ -47,8 +47,10 @@ INSTALLED_APPS = [
     'matches.apps.MatchesConfig',
     'msg_events.apps.MsgEventsConfig',
     'monitoring.apps.MonitoringConfig',
+    'ner.apps.NerConfig',
     'background_task',
-    'rest_framework'
+    'rest_framework',
+    'rangefilter'
 ]
 
 MIDDLEWARE = [
@@ -146,6 +148,8 @@ STATIC_ROOT = os.environ.get('STATIC_ROOT')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+NER_MODEL_FOLDER = os.path.join(BASE_DIR, "ner/goals_zone_model")
 
 if os.environ.get('SECRET_KEY') is not None:
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'

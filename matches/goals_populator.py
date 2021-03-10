@@ -14,7 +14,6 @@ import requests
 import tweepy
 from background_task import background
 from discord_webhook import DiscordWebhook
-from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
@@ -24,6 +23,8 @@ from slack_webhook import Slack
 from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team
 from monitoring.models import MatchNotFound, MonitoringAccount
 from msg_events.models import Webhook, Tweet, MessageObject
+from ner.models import NerLog
+from ner.utils import extract_names_from_title_ner
 
 TWITTER_CONSUMER_KEY = os.environ.get('TWITTER_CONSUMER_KEY')
 TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
@@ -393,18 +394,34 @@ def send_monitoring_message(message, disable_notification=False):
         print("Error sending monitoring message: " + str(ex), flush=True)
 
 
+def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team):
+    if not regex_home_team and not regex_away_team and not ner_home_team and not ner_away_team:
+        return
+    if NerLog.objects.filter(title=title).exists():
+        return
+    log = NerLog()
+    log.title = title
+    log.regex_home_team = regex_home_team
+    log.regex_away_team = regex_away_team
+    log.ner_home_team = ner_home_team
+    log.ner_away_team = ner_away_team
+    log.save()
+
+
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     if match_date is None:
         match_date = date.today()
-    home_team, away_team, minute_str = extract_names_from_title(title)
-    if home_team is None or away_team is None:
+    regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
+    ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
+    save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
+    if regex_home_team is None or regex_away_team is None:
         return
-    matches_results = find_match(home_team, away_team, to_date=max_match_date, from_date=match_date)
+    matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
     if matches_results.exists():
-        _save_found_match(matches_results, minute_str, post)
+        _save_found_match(matches_results, regex_minute, post)
     else:
         try:
-            _handle_not_found_match(away_team, home_team, post)
+            _handle_not_found_match(regex_away_team, regex_home_team, post)
         except Exception as ex:
             print("Exception in monitoring: " + str(ex), flush=True)
 
@@ -464,7 +481,7 @@ def _handle_not_found_match(away_team, home_team, post):
                     f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
 
 
-def extract_names_from_title(title):
+def extract_names_from_title_regex(title):
     # Maybe later we should consider the format
     # HOME_TEAM - AWAY_TEAM HOME_SCORE-AWAY_SCORE
     home = re.findall(r'\[?\]?\s?((\w|\s|\.|-)+)((\d|\[\d\])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d\])', title)
