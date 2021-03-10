@@ -1,16 +1,13 @@
 import datetime
 import os
-import random
 from io import BytesIO
 
-import requests
 from django.core.files import File
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
 
 from matches.proxy_request import ProxyRequest
-from matches.utils import get_all_proxies
 
 
 class Team(models.Model):
