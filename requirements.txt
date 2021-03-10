@@ -46,7 +46,6 @@ pipreqs==0.4.10
 preshed==3.0.5
 psycopg2==2.8.6
 psycopg2-binary==2.8.6
-pydantic==1.8.1
 pyparsing==2.4.7
 PySocks==1.7.1
 pytz==2021.1
@@ -56,8 +55,6 @@ scandir==1.10.0
 sh==1.14.1
 six==1.15.0
 slack-webhook==1.0.5
-smart-open==4.2.0
-smmap==4.0.0
 smmap2==3.0.1
 soupsieve==2.2
 spacy==3.0.5
