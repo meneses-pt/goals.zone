@@ -127,12 +127,18 @@ def find_mirrors(videogoal):
                 if 'author' in child['data'] and child['data']['author'] == 'AutoModerator':
                     children_url = main_comments_link + child['data']['id']
                     children_response = _make_reddit_api_request(children_url)
-                    children = json.loads(children_response.content)
-                    if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
-                            children[1]['data']['children'][0]['data']['replies'], dict):
-                        replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
-                        for reply in replies:
-                            _parse_reply_for_mirrors(reply, videogoal)
+                    try:
+                        children = json.loads(children_response.content)
+                        if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
+                                children[1]['data']['children'][0]['data']['replies'], dict):
+                            replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
+                            for reply in replies:
+                                _parse_reply_for_mirrors(reply, videogoal)
+                    except Exception as e:
+                        tb = traceback.format_exc()
+                        print(tb, flush=True)
+                        print(e, flush=True)
+                        print(children_response.content, flush=True)
         except Exception as e:
             tb = traceback.format_exc()
             print(tb, flush=True)

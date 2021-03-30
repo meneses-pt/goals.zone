@@ -26,7 +26,7 @@ class MatchesListView(generic.ListView):
         start_date = timezone.get_current_timezone().localize(start_date)
         end_date = timezone.get_current_timezone().localize(end_date)
         return Match.objects.order_by('datetime').filter(datetime__gte=start_date,
-                                                         datetime__lte=end_date,
+                                                         datetime__lt=end_date,
                                                          videogoal__isnull=False).distinct()
 
     def get_context_data(self, **kwargs):
