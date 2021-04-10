@@ -6,7 +6,6 @@ jobs:
   - stage: test
     script:
     - pip install -r requirements.txt
-    - python manage.py collectstatic
     - python manage.py test --noinput
   - stage: deploy
     script:
