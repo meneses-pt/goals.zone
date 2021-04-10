@@ -13,7 +13,7 @@ Cython==0.29.22
 discord-webhook==0.13.0
 dj-database-url==0.5.0
 Django==3.2
-django-admin-rangefilter==0.8.0
+django-admin-rangefilter==0.7.0
 django-appconf==1.0.4
 django-background-tasks==1.2.5
 django-compat==1.0.15
