@@ -153,7 +153,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 NER_MODEL_FOLDER = os.path.join(BASE_DIR, "ner/goals_zone_model")
 
-if os.environ.get('SECRET_KEY') is not None and os.environ.get('TRAVIS_BUILD_STAGE_NAME').upper() != "TEST":
+build_stage = os.environ.get('TRAVIS_BUILD_STAGE_NAME')
+if os.environ.get('SECRET_KEY') is not None and \
+        (not build_stage or build_stage.upper() != "TEST"):
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 GEOIP_PATH = os.path.join(STATICFILES_DIRS[0] if DEBUG else STATIC_ROOT, "geoip2/GeoLite2-City.mmdb")
