@@ -5,7 +5,7 @@ from django.contrib import admin
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import F, Q
 from django.http import HttpResponse
-from rangefilter.filter import DateRangeFilter
+from rangefilter.filters import DateRangeFilter
 
 from ner.models import NerLog
 
