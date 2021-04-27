@@ -433,9 +433,14 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
             matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
     if matches_results and matches_results.exists():
         _save_found_match(matches_results, regex_minute, post)
-    else:
+    elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
         try:
-            _handle_not_found_match(regex_away_team, regex_home_team, post)
+            home_team = regex_home_team
+            away_team = regex_away_team
+            if not regex_home_team or not regex_away_team:
+                home_team = ner_home_team
+                away_team = ner_away_team
+            _handle_not_found_match(home_team, away_team, post)
         except Exception as ex:
             print("Exception in monitoring: " + str(ex), flush=True)
 
