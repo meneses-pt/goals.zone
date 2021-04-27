@@ -69,7 +69,7 @@ def _fetch_reddit_goals():
 
 
 def _fetch_reddit_goals_from_date(days_ago=2):
-    start_date = date.today() - timedelta(days=days_ago)
+    start_date = datetime.datetime.utcnow() - timedelta(days=days_ago)
     for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
         response = _fetch_historic_data_from_reddit_api(single_date)
         data = json.loads(response.content)
@@ -418,14 +418,20 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
 
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     if match_date is None:
-        match_date = date.today()
+        match_date = datetime.datetime.utcnow()
     regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
     ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
     save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
-    if regex_home_team is None or regex_away_team is None:
-        return
-    matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
-    if matches_results.exists():
+    matches_results = None
+    if regex_home_team and regex_away_team:
+        matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
+        if not matches_results.exists():
+            matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
+    if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
+        matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
+        if not matches_results.exists():
+            matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
+    if matches_results and matches_results.exists():
         _save_found_match(matches_results, regex_minute, post)
     else:
         try:
@@ -530,7 +536,7 @@ def find_match(home_team, away_team, to_date, from_date=None):
                                    Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
                                    Q(away_team__name__unaccent__trigram_similar=away_team) |
                                    Q(away_team__alias__alias__unaccent__trigram_similar=away_team),
-                                   datetime__gte=(from_date - timedelta(days=2)),
+                                   datetime__gte=(from_date - timedelta(hours=72)),
                                    datetime__lte=to_date)
     if len(suffix_affiliate_home) > 0:
         matches = matches.filter(home_team__name__endswith=suffix_affiliate_home[0])
