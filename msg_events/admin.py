@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib import admin
 
-from .models import Webhook, Tweet
+from .models import Webhook, Tweet, CustomMessage
 
 
 class WebhookAdminForm(forms.ModelForm):
@@ -35,6 +35,23 @@ class WebhookAdmin(admin.ModelAdmin):
     form = WebhookAdminForm
 
 
+class CustomMessageAdminForm(forms.ModelForm):
+    class Meta:
+        model = CustomMessage
+        fields = ['message',
+                  'webhooks',
+                  'result']
+        widgets = {
+            'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
+            'result': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
+        }
+
+
+class CustomMessageAdmin(admin.ModelAdmin):
+    filter_horizontal = ['webhooks']
+    form = CustomMessageAdminForm
+
+
 class TweetAdminForm(forms.ModelForm):
     class Meta:
         model = Tweet
@@ -63,4 +80,5 @@ class TweetAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Webhook, WebhookAdmin)
+admin.site.register(CustomMessage, CustomMessageAdmin)
 admin.site.register(Tweet, TweetAdmin)

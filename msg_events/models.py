@@ -1,4 +1,8 @@
+from discord_webhook import DiscordWebhook
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from slack_webhook import Slack
 
 from matches.models import Tournament, Category, Team
 
@@ -65,3 +69,42 @@ class Webhook(MessageObject):
 
     def __str__(self):
         return f"[{self.get_destination_display()}] {self.title}"
+
+
+class CustomMessage(models.Model):
+    id = models.BigAutoField(unique=True, primary_key=True)
+    message = models.CharField(max_length=2000)
+    webhooks = models.ManyToManyField(Webhook,
+                                      related_name='%(class)s_webhooks',
+                                      default=None,
+                                      blank=True)
+    result = models.CharField(max_length=2000, default=None, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.created_at)
+
+
+@receiver(post_save, sender=CustomMessage)
+def send_message(sender, instance, **kwargs):
+    result = ''
+    for wh in instance.webhooks.all():
+        if wh.destination == Webhook.WebhookDestinations.Discord:
+            try:
+                webhook = DiscordWebhook(url=wh.webhook_url, content=instance.message)
+                response = webhook.execute()
+                result += wh.title + "\n" + str(response.content) + "\n\n"
+                print(response.content, flush=True)
+            except Exception as ex:
+                print("Error sending webhook single message: " + str(ex), flush=True)
+                result += wh.title + "\n" + str(ex) + "\n\n"
+        elif wh.destination == Webhook.WebhookDestinations.Slack:
+            try:
+                slack = Slack(url=wh.webhook_url)
+                response = slack.post(text=instance.message)
+                print(response, flush=True)
+                result += wh.title + "\n" + str(response) + "\n\n"
+            except Exception as ex:
+                print("Error sending webhook single message: " + str(ex), flush=True)
+                result += wh.title + "\n" + str(ex) + "\n\n"
+    CustomMessage.objects.filter(id=instance.id).update(result=result)
