@@ -423,16 +423,19 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
     save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
     matches_results = None
+    minute_str = None
     if regex_home_team and regex_away_team:
+        minute_str = regex_minute
         matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
         if not matches_results.exists():
             matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
     if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
+        minute_str = ner_minute
         matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
         if not matches_results.exists():
             matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
     if matches_results and matches_results.exists():
-        _save_found_match(matches_results, regex_minute, post)
+        _save_found_match(matches_results, minute_str, post)
     elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
         try:
             home_team = regex_home_team
