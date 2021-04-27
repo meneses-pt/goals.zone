@@ -13,6 +13,7 @@ import markdown as markdown
 import requests
 import tweepy
 from background_task import background
+from background_task.models import CompletedTask
 from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
@@ -43,8 +44,12 @@ def fetch_videogoals():
 def _fetch_reddit_goals():
     i = 0
     after = None
-    while i < 10:
-        print(f"Fetching Reddit Goals {i + 1}/{10}", flush=True)
+    completed = CompletedTask.objects.filter(task_name='matches.goals_populator.fetch_videogoals').count()
+    iterations = 1
+    if completed % 60 == 0:
+        iterations = 10
+    while i < iterations:
+        print(f"Fetching Reddit Goals {i + 1}/{iterations}", flush=True)
         response = _fetch_data_from_reddit_api(after)
         if response is None or response.content is None:
             print(f'No response retrieved', flush=True)
@@ -577,7 +582,7 @@ def _fetch_data_from_reddit_api(after):
     headers = {
         "User-agent": "Goals Populator 0.1"
     }
-    response = requests.get(f'http://api.reddit.com/r/soccer/new?limit=100&after={after}',
+    response = requests.get(f'https://api.reddit.com/r/soccer/new?limit=100&after={after}',
                             headers=headers)
     return response
 
