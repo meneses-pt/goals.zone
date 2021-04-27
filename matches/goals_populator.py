@@ -197,7 +197,7 @@ def _extract_links_from_comment(author, links, videogoal):
 
 
 def _insert_or_update_mirror(videogoal, text, url, author):
-    if text.startswith("^"):
+    if text and text.startswith("^"):
         return
     try:
         mirror = VideoGoalMirror.objects.get(url__exact=url, videogoal__exact=videogoal)
@@ -462,6 +462,8 @@ def _save_found_match(matches_results, minute_str, post):
     videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
     if minute_str:
         videogoal.minute = minute_str.strip()[:12]
+    else:
+        videogoal.minute = ''
     videogoal.author = post['author']
     videogoal.save()
     _handle_messages_to_send(match, videogoal)
