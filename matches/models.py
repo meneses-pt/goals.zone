@@ -209,10 +209,11 @@ class VideoGoal(models.Model):
     @property
     def minute_int(self):
         int_value = float('inf')
-        try:
-            int_value = int(self.minute)
-        except ValueError:
-            print('Not a valid minute', flush=True)
+        if self.minute:
+            try:
+                int_value = int(self.minute)
+            except ValueError:
+                print('Not a valid minute', flush=True)
         return int_value
 
     def __str__(self):
