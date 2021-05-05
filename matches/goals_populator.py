@@ -66,6 +66,7 @@ def _fetch_reddit_goals():
                     post['link_flair_text'] is not None and \
                     (post['link_flair_text'].lower() == 'media' or post['link_flair_text'].lower() == 'mirror'):
                 title = post['title']
+                title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
                 find_and_store_videogoal(post, title, post_created_date)
         after = data['data']['after']
@@ -86,6 +87,7 @@ def _fetch_reddit_goals_from_date(days_ago=2):
         for post in data['data']:
             if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
                 title = post['title']
+                title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
                 find_and_store_videogoal(post, title, post_created_date, single_date)
         print(f'Ended processing day {single_date}', flush=True)
@@ -606,3 +608,9 @@ def _fetch_historic_data_from_reddit_api(from_date):
         f'?subreddit=soccer&sort=desc&sort_type=created_utc&after={after}&before={before}&size=1000',
         headers=headers)
     return response
+
+
+def _fix_title(title):
+    if title:
+        title = title.replace('&amp;', '&')
+    return title
