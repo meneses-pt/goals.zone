@@ -47,7 +47,7 @@ Pillow==8.2.0
 preshed==3.0.5
 psycopg2==2.8.6
 psycopg2-binary==2.8.6
-pydantic==1.7.3
+pydantic==1.7.4
 pyparsing==2.4.7
 PySocks==1.7.1
 pytz==2021.1
