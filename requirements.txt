@@ -71,7 +71,7 @@ tqdm==4.60.0
 tweepy==3.10.0
 typer==0.3.2
 typing-extensions==3.7.4.3
-urllib3==1.26.4
+urllib3==1.26.5
 wasabi==0.8.2
 websockets==8.1
 whitenoise==5.2.0
