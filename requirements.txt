@@ -12,7 +12,7 @@ cymem==2.0.5
 Cython==0.29.22
 discord-webhook==0.13.0
 dj-database-url==0.5.0
-Django==3.2
+Django==3.2.1
 django-admin-rangefilter==0.8.1
 django-appconf==1.0.4
 django-background-tasks==1.2.5
