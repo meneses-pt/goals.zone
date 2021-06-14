@@ -158,18 +158,18 @@ def _parse_reply_for_mirrors(reply, videogoal):
     body = reply['data']['body']
     author = reply['data']['author']
     stripped_body = os.linesep.join([s for s in body.splitlines() if s])
+    links = []
     try:
         doc = ETree.fromstring(markdown.markdown(stripped_body))
     except Exception as e:
-        tb = traceback.format_exc()
-        print(tb, flush=True)
-        print(e, flush=True)
+        print(stripped_body + '|' + str(e), flush=True)
     else:
         links = doc.findall('.//a')
-        if len(links) > 0:
-            _extract_links_from_comment(author, links, videogoal)
-        else:
-            _extract_urls_from_comment(author, body, videogoal)
+
+    if len(links) > 0:
+        _extract_links_from_comment(author, links, videogoal)
+    else:
+        _extract_urls_from_comment(author, body, videogoal)
 
 
 def _extract_urls_from_comment(author, body, videogoal):
@@ -185,6 +185,9 @@ def _extract_urls_from_comment(author, body, videogoal):
                     text = line.replace(url, '')
                     if ':' in text:
                         text = text.split(':', 1)[0]
+                    if text.endswith('(') and url.endswith(')'):
+                        text = text[:-1]
+                        url = url[:-1]
                     _insert_or_update_mirror(videogoal, text, url, author)
                 except ValidationError:
                     pass
