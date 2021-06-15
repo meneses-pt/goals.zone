@@ -162,7 +162,10 @@ def _parse_reply_for_mirrors(reply, videogoal):
     try:
         doc = ETree.fromstring(markdown.markdown(stripped_body))
     except Exception as e:
-        print(stripped_body + '|' + str(e), flush=True)
+        if 'junk after document element' not in str(e):
+            tb = traceback.format_exc()
+            print(tb, flush=True)
+            print(e, flush=True)
     else:
         links = doc.findall('.//a')
 
