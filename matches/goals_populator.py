@@ -210,7 +210,7 @@ def _extract_links_from_comment(author, links, videogoal):
 
 
 def _insert_or_update_mirror(videogoal, text, url, author):
-    if text and text.startswith("^"):
+    if text and text.lower().startswith(("^", "contact us", "redditvideodl")):
         return
     try:
         mirror = VideoGoalMirror.objects.get(url__exact=url, videogoal__exact=videogoal)
