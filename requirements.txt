@@ -63,7 +63,7 @@ smmap2==3.0.1
 soupsieve==2.2.1
 spacy==3.0.6
 spacy-legacy==3.0.5
-sqlparse==0.4.1
+sqlparse==0.4.2
 srsly==2.4.1
 thinc==8.0.4
 toml==0.10.2
