@@ -43,9 +43,24 @@ class MatchesListView(generic.ListView):
         return context
 
 
+class MatchesAltListView(generic.ListView):
+    model = Match
+    template_name = 'matches/match_list_alt.html'
+    context_object_name = 'match_list'
+    paginate_by = 20
+
+    def get_queryset(self):
+        return Match.objects.order_by('-datetime').filter(videogoal__isnull=False).distinct()
+
+
 class MatchDetailView(generic.DetailView):
     template_name = 'matches/match_detail.html'
     model = Match
+
+
+class MatchApiListView(generics.ListAPIView):
+    queryset = Match.objects.all().order_by('datetime').filter(videogoal__isnull=False)
+    serializer_class = MatchSerializer
 
 
 class MatchSearchView(generics.ListAPIView):
@@ -66,6 +81,21 @@ class MatchSearchView(generics.ListAPIView):
         queryset = Match.objects.order_by('datetime').filter(datetime__gte=start_date,
                                                              datetime__lte=end_date,
                                                              videogoal__isnull=False).distinct()
+        if filter_q is not None:
+            queryset = queryset.filter(
+                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+        return queryset
+
+
+class MatchAltSearchView(generics.ListAPIView):
+    serializer_class = MatchSerializer
+
+    def get_queryset(self):
+        filter_q = self.request.query_params.get('filter', None)
+        start_date = datetime.combine(datetime.today(), datetime.min.time()) - timedelta(days=7)
+        start_date = timezone.get_current_timezone().localize(start_date)
+        queryset = Match.objects.order_by('-datetime').filter(datetime__gte=start_date,
+                                                              videogoal__isnull=False).distinct()
         if filter_q is not None:
             queryset = queryset.filter(
                 Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
