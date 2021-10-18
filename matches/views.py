@@ -47,7 +47,7 @@ class MatchesAltListView(generic.ListView):
     model = Match
     template_name = 'matches/match_list_alt.html'
     context_object_name = 'match_list'
-    paginate_by = 20
+    paginate_by = 50
 
     def get_queryset(self):
         return Match.objects.order_by('-datetime').filter(videogoal__isnull=False).distinct()
