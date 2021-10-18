@@ -3,45 +3,66 @@
 {% load tz %}
 
 {% block content %}
-    <div class="mobile">
-        <h2 class="small-header mobile">{{ date|date:"D, d F" }}</h2>
-    </div>
-    <div class="desktop">
-        <h2 class="small-header">{{ date|date:"l, d F Y" }}</h2>
-    </div>
-
-    {% include "snippets/date_nav.html" %}
-
-    {% if match_list %}
-        <div class="row">
-            <div class="col-12">
-
-                <label for="select-match" class="select2-el-label">
-                    <select id="select-match" class="select2-el">
-                    </select>
-                </label>
-
-                <ul class="list-group">
-                    {% for match in match_list %}
-                        {% include 'matches/partials/match_list_item.html' with match=match %}
-                    {% endfor %}
-                </ul>
+    <label for="select-match" class="select2-el-label" style="margin-bottom: 0; margin-top: 20px">
+        <select id="select-match" class="select2-el">
+        </select>
+    </label>
+    <ul class="list-group infinite-container">
+        {% for match in match_list %}
+            <div class="infinite-item">
+                {% ifchanged match.datetime.date %}
+                    <div data-date="{{ match.datetime|date:"Ymd" }}" style="margin-top: 40px; margin-bottom: 20px">
+                        <div class="mobile">
+                            <h2 class="small-header mobile">{{ match.datetime|date:"D, d F" }}</h2>
+                        </div>
+                        <div class="desktop">
+                            <h2 class="small-header">{{ match.datetime|date:"l, d F Y" }}</h2>
+                        </div>
+                    </div>
+                {% endifchanged %}
+                {% include 'matches/partials/match_list_item.html' with match=match %}
             </div>
+        {% endfor %}
+    </ul>
+    <div class="loading" style="margin: 0 auto; width: 75px">
+        <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
         </div>
-    {% else %}
-        <p>No matches found.</p>
+    </div>
+    {% if page_obj.has_next %}
+        <a class="infinite-more-link" href="?page={{ page_obj.next_page_number }}" style="display: none">More</a>
     {% endif %}
-
 {% endblock content %}
 {% block customjs %}
     <script>
+        const infinite = new Waypoint.Infinite({
+            element: $('.infinite-container')[0],
+            onBeforePageLoad: function () {
+                $('.loading').show();
+            },
+            onAfterPageLoad: function ($items) {
+                $('.loading').hide();
+                $.each($items, (i, v) => {
+                    if ($(v).find('[data-date]').length > 0) {
+                        if ($("div").find(`[data-date='${$($(v).find('[data-date]')[0]).attr('data-date')}']`).length > 1) {
+                            $(v).find('[data-date]').remove();
+                            console.log($(v))
+                        }
+                    }
+                });
+            }
+        });
+
+
         $(document).ready(function () {
             $('#select-match').select2({
                 ajax: {
-                    url: '/api/matches/',
+                    url: '/api/matches-week/',
                     data: function (params) {
                         return {
-                            date: new URLSearchParams(window.location.search).get('date') ?? null,
                             filter: params.term,
                             format: 'json'
                         };
@@ -52,7 +73,7 @@
                         };
                     },
                 },
-                placeholder: 'Search for a match...',
+                placeholder: 'Search for a match from the last week...',
                 minimumInputLength: 1,
                 templateResult: formatMatch
             }).focus(function () {
@@ -61,13 +82,6 @@
                 setTimeout(function () {
                     $(".select2-search__field").focus();
                 }, 20);
-            });
-
-            $('#datepicker').datetimepicker({
-                format: 'L',
-                defaultDate: "{{ date|date:"Y-m-d" }}",
-            }).on('dp.change', function (e) {
-                window.location.href = "/?date=" + e.date.format("YYYY-MM-DD");
             });
 
         });

@@ -1,7 +1,7 @@
 <nav aria-label="Date Navigation">
     <ul class="pagination">
         <li class="page-item">
-            <a class="page-link" href="{% url 'index' %}?date={{ date_prev|date:"Y-m-d" }}">
+            <a class="page-link" href="{% url 'history' %}?date={{ date_prev|date:"Y-m-d" }}">
                 <span aria-hidden="true">&laquo;</span>
                 {{ date_prev|date:"d b" }}
             </a>
@@ -11,7 +11,7 @@
                 <input type='hidden' class="form-control" id="datepickerinput" />
                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar">
-                            <a class="page-link" href="{% url 'index' %}?date={{ date|date:"Y-m-d" }}">
+                            <a class="page-link" href="{% url 'history' %}?date={{ date|date:"Y-m-d" }}">
                                 {{ date|date:"d b" }}
                             </a>
                         </span>
@@ -20,7 +20,7 @@
         </li>
         {% if date_next %}
             <li class="page-item">
-                <a class="page-link" href="{% url 'index' %}?date={{ date_next|date:"Y-m-d" }}">
+                <a class="page-link" href="{% url 'history' %}?date={{ date_next|date:"Y-m-d" }}">
                     {{ date_next|date:"d b" }}
                     <span aria-hidden="true">&raquo;</span>
                 </a>

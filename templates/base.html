@@ -9,8 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Start cookieyes banner -->
-    <script id="cookieyes" type="text/javascript"
-            src="https://cdn-cookieyes.com/client_data/c9ff20011eb0e4e70653a5c3.js"></script>
+    <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/c9ff20011eb0e4e70653a5c3/script.js"></script>
     <!-- End cookieyes banner -->
 
     {% if not debug %}
@@ -19,27 +18,28 @@
     {% include "snippets/favicon.html" %}
 
     <!-- AdSense -->
-    <script data-ad-client="ca-pub-8520909641604027" async
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-
-    <!-- AdSense adireto -->
-    {#    <script async src="//js.adireto.com/adireto.js?id=3560303714"></script>#}
+    <script data-ad-client="ca-pub-8520909641604027" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
 
     <title>{% block head_title %}goals.zone{% endblock %}</title>
-    <meta name="description"
-          content="This is the place where you can watch videos of the latest goals of football matches."/>
+    <meta name="description" content="This is the place where you can watch videos of the latest goals of football matches."/>
     {% include "snippets/css.html" %}
 </head>
 
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'index' %}">
-        <img src="{% static 'goals_zone/original_icon_w200.png' %}" width="40" class="d-inline-block align-top" alt="">
+        <img src="{% static 'goals_zone/original_icon_w200.png' %}" width="40" class="d-inline-block align-top" alt=""/>
         &nbsp;goals.zone
     </a>
     <div class="form-inline">
-        <a id="teamsButton" class="btn btn-outline-success small-margin-right" href="{% url 'teams-list' %}">Teams</a>
-        <button id="moreButton" class="btn btn-outline-success" data-toggle="modal" data-target="#aboutModal">More
+        <a id="historyButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="History"  href="{% url 'history' %}">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+        </a>
+        <a id="teamsButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="Teams" href="{% url 'teams-list' %}">
+            <i class="fa fa-shield" aria-hidden="true"></i>
+        </a>
+        <button id="moreButton" class="btn btn-success small-btn" data-toggle="modal" data-target="#aboutModal" title="Info">
+            <i class="fa fa-info" aria-hidden="true"></i>
         </button>
     </div>
 </nav>

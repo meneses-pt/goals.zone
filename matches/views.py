@@ -11,8 +11,8 @@ from .models import Match, Team
 from .serializers import MatchSerializer, TeamSerializer
 
 
-class MatchesListView(generic.ListView):
-    template_name = 'matches/match_list.html'
+class MatchesHistoryListView(generic.ListView):
+    template_name = 'matches/match_history_list.html'
 
     def get_queryset(self):
         try:
@@ -30,7 +30,7 @@ class MatchesListView(generic.ListView):
                                                          videogoal__isnull=False).distinct()
 
     def get_context_data(self, **kwargs):
-        context = super(MatchesListView, self).get_context_data(**kwargs)
+        context = super(MatchesHistoryListView, self).get_context_data(**kwargs)
         try:
             query_date_str = self.request.GET.get('date')
             query_date_obj = datetime.strptime(query_date_str, '%Y-%m-%d')
@@ -43,9 +43,9 @@ class MatchesListView(generic.ListView):
         return context
 
 
-class MatchesAltListView(generic.ListView):
+class MatchesListView(generic.ListView):
     model = Match
-    template_name = 'matches/match_list_alt.html'
+    template_name = 'matches/match_list.html'
     context_object_name = 'match_list'
     paginate_by = 50
 
@@ -56,11 +56,6 @@ class MatchesAltListView(generic.ListView):
 class MatchDetailView(generic.DetailView):
     template_name = 'matches/match_detail.html'
     model = Match
-
-
-class MatchApiListView(generics.ListAPIView):
-    queryset = Match.objects.all().order_by('datetime').filter(videogoal__isnull=False)
-    serializer_class = MatchSerializer
 
 
 class MatchSearchView(generics.ListAPIView):
@@ -87,7 +82,7 @@ class MatchSearchView(generics.ListAPIView):
         return queryset
 
 
-class MatchAltSearchView(generics.ListAPIView):
+class MatchWeekSearchView(generics.ListAPIView):
     serializer_class = MatchSerializer
 
     def get_queryset(self):
