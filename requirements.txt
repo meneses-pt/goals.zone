@@ -1,4 +1,4 @@
-aiohttp==3.7.4.post0
+aiohttp>3.7.4
 appnope==0.1.2
 asgiref==3.4.1
 async-timeout==3.0.1
