@@ -10,7 +10,7 @@
     <ul class="list-group infinite-container">
         {% for match in match_list %}
             <div class="infinite-item">
-                {% ifchanged match.datetime.date %}
+                {% ifchanged match.datetime|date:"Ymd" %}
                     <div data-date="{{ match.datetime|date:"Ymd" }}" style="margin-top: 40px; margin-bottom: 20px">
                         <div class="mobile">
                             <h2 class="small-header mobile">{{ match.datetime|date:"D, d F" }}</h2>
