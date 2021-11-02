@@ -59,7 +59,7 @@
     {% if object.videogoal_set.all.count > 0 %}
         <ul id="goals-list" class="list-group">
             {% for goal in object.videogoal_set.all|dictsort:"minute_int" %}
-                <div class="list-group-item no-padding list-group-item-action">
+                <div id="video{{ forloop.counter }}" class="list-group-item no-padding list-group-item-action" data-permalink="{{ goal.simple_permalink }}">
                     <button class="btn btn-link list-group-item-left-link" data-toggle="collapse"
                             data-target="#collapse{{ forloop.counter }}">
                         {{ goal.title }}
@@ -101,3 +101,18 @@
         </li>
     </ul>
 {% endblock content %}
+{% block customjs %}
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const product = urlParams.get('video')
+        const mainDiv = $(`div[data-permalink='${product}']`)
+        $([document.documentElement, document.body]).animate({
+            scrollTop: mainDiv.offset().top
+        }, 'fast');
+        let collapseId = mainDiv.attr('id')
+        collapseId = collapseId.replace('video', 'collapse')
+        console.log(collapseId)
+        $(`#${collapseId}`).collapse('show')
+    </script>
+{% endblock %}

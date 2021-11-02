@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 from io import BytesIO
 
 from django.core.files import File
@@ -215,6 +216,11 @@ class VideoGoal(models.Model):
             except ValueError:
                 print('Not a valid minute', flush=True)
         return int_value
+
+    @property
+    def simple_permalink(self):
+        result = re.search(r'[^/]+(?=/$|$)', self.permalink)
+        return result[0] if result else None
 
     def __str__(self):
         return str(self.title)
