@@ -105,7 +105,7 @@
     <script>
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
-        const product = urlParams.get('video')
+        const product = urlParams.get('v')
         const mainDiv = $(`div[data-permalink='${product}']`)
         $([document.documentElement, document.body]).animate({
             scrollTop: mainDiv.offset().top

@@ -219,7 +219,7 @@ class VideoGoal(models.Model):
 
     @property
     def simple_permalink(self):
-        result = re.search(r'[^/]+(?=/$|$)', self.permalink)
+        result = re.search(r'[^/]+(?=/[^/]+/?$)', self.permalink)
         return result[0] if result else None
 
     def __str__(self):
