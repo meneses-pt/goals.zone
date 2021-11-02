@@ -103,16 +103,23 @@
 {% endblock content %}
 {% block customjs %}
     <script>
+        $(".collapse").on('show.bs.collapse', function () {
+            $(this).prev().addClass('collapse-open');
+        });
+        $(".collapse").on('hide.bs.collapse', function () {
+            $(this).prev().removeClass('collapse-open');
+        });
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const product = urlParams.get('v')
-        const mainDiv = $(`div[data-permalink='${product}']`)
-        $([document.documentElement, document.body]).animate({
-            scrollTop: mainDiv.offset().top
-        }, 'fast');
-        let collapseId = mainDiv.attr('id')
-        collapseId = collapseId.replace('video', 'collapse')
-        console.log(collapseId)
-        $(`#${collapseId}`).collapse('show')
+        if(product) {
+            const mainDiv = $(`div[data-permalink='${product}']`)
+            $([document.documentElement, document.body]).animate({
+                scrollTop: mainDiv.offset().top
+            }, 'fast');
+            let collapseId = mainDiv.attr('id');
+            collapseId = collapseId.replace('video', 'collapse');
+            $(`#${collapseId}`).collapse('show');
+        }
     </script>
 {% endblock %}

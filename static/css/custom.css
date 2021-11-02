@@ -419,3 +419,11 @@
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+.collapse-open {
+    background-color: #666;
+}
+
+.collapse-open:hover {
+    background-color: #888;
+}
