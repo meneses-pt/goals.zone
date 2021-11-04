@@ -45,7 +45,7 @@ hypothesis==6.24.1
 identify==2.3.3
 idna==3.3
 idna-ssl==1.1.0
-importlib-metadata==4.8.1
+importlib-metadata==4.2.0
 importlib-resources==5.4.0
 iniconfig==1.1.1
 ipaddress==1.0.23
