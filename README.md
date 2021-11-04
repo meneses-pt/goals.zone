@@ -46,6 +46,7 @@ If you want to add variables in your messages, you should use curly brackets and
 * {vg.match.slug} - Videogoal Match Slug (for the URL)
 * {vg.title} - Videogoal Title
 * {vg.url} - Videogoal URL
+* {vg.simple_permalink} - Unique identifier of a Video
 * {vgm.videogoal.title} - Videogoal Mirror Title
 * {vgm.url} - Videogoal Mirror URL
 * {m.home_team.name} - Match Home Team Name
