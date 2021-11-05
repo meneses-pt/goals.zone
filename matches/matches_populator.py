@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta
 import requests
 from background_task import background
 
+from .goals_populator import _handle_messages_to_send
 from .models import Match, Team, Tournament, Category, Season
 from .proxy_request import ProxyRequest
 
@@ -92,7 +93,8 @@ def fetch_matches_from_sofascore(days_ago=0):
                 away_goals = fixture['awayScore']['display']
                 if home_goals is not None and away_goals is not None:
                     score = f'{home_goals}:{away_goals}'
-            start_timestamp = fixture["startTimestamp"]
+            start_timestamp = fixture['startTimestamp']
+            status = fixture['status']['type']
             match_datetime = datetime.fromtimestamp(start_timestamp)
             print(f'{home_team} - {away_team} | {score} at {match_datetime}', flush=True)
             match = Match()
@@ -103,6 +105,7 @@ def fetch_matches_from_sofascore(days_ago=0):
             match.tournament = tournament_obj
             match.category = category_obj
             match.season = season_obj
+            match.status = status
             _save_or_update_match(match)
         print(f'Ended processing day {single_date}', flush=True)
     print('Ended processing matches', flush=True)
@@ -330,8 +333,17 @@ def _save_or_update_match(match):
                        tournament=match.tournament,
                        category=match.category,
                        season=match.season)
+        for i_match in matches:
+            if not i_match.highlights_msg_sent and \
+                    i_match.status.lower() == 'finished' and \
+                    i_match.videogoal_set.count() == 0:
+                i_match.highlights_msg_sent = True
+                i_match.save()
     else:
+        if match.videogoal_set.count() == 0 and match.status.lower() == 'finished':
+            match.highlights_msg_sent = True
         match.save()
+    _handle_messages_to_send(match)
 
 
 def _get_datetime_string(datetime_str):

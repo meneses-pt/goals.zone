@@ -237,8 +237,8 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter):
     send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
-    if MessageObject.MessageEventType.Match == event_filter and match is not None:
-        match.msg_sent = True
+    if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
+        match.first_msg_sent = True
         match.save()
     if MessageObject.MessageEventType.Video == event_filter and videogoal is not None:
         videogoal.msg_sent = True
@@ -246,6 +246,9 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter):
     if MessageObject.MessageEventType.Mirror == event_filter and videogoal_mirror is not None:
         videogoal_mirror.msg_sent = True
         videogoal_mirror.save()
+    if MessageObject.MessageEventType.MatchHighlights == event_filter and match is not None:
+        match.highlights_msg_sent = True
+        match.save()
 
 
 def format_event_message(match, videogoal, videogoal_mirror, message):
@@ -484,16 +487,24 @@ def _save_found_match(matches_results, minute_str, post):
     # print('Saved: ' + title, flush=True)
 
 
-def _handle_messages_to_send(match, videogoal):
-    if not videogoal.msg_sent and \
-            match.home_team.name_code is not None and \
-            match.away_team.name_code is not None:
-        send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
-    if match.videogoal_set.count() > 0 and \
-            not match.msg_sent and \
-            match.home_team.name_code is not None and \
-            match.away_team.name_code is not None:
-        send_messages(match, None, None, MessageObject.MessageEventType.Match)
+def _handle_messages_to_send(match, videogoal=None):
+    if videogoal:
+        if not videogoal.msg_sent and \
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
+            send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
+        if match.videogoal_set.count() > 0 and \
+                not match.first_msg_sent and \
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchFirstVideo)
+    else:
+        if match.videogoal_set.count() > 0 and \
+                not match.highlights_msg_sent and \
+                match.status.lower() == 'finished' and \
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights)
 
 
 def _handle_not_found_match(away_team, home_team, post):

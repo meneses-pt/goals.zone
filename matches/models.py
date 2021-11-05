@@ -146,17 +146,17 @@ class Season(models.Model):
 
 
 class Match(models.Model):
-    home_team = models.ForeignKey(
-        Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
-    away_team = models.ForeignKey(
-        Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
+    home_team = models.ForeignKey(Team, related_name='home_team', null=True, on_delete=models.SET_NULL)
+    away_team = models.ForeignKey(Team, related_name='away_team', null=True, on_delete=models.SET_NULL)
     tournament = models.ForeignKey(Tournament, related_name='tournament', null=True, on_delete=models.SET_NULL)
     category = models.ForeignKey(Category, related_name='match_category', null=True, on_delete=models.SET_NULL)
     season = models.ForeignKey(Season, related_name='season', null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
     slug = models.SlugField(max_length=200, unique=True)
-    msg_sent = models.BooleanField(default=False)
+    first_msg_sent = models.BooleanField(default=False)
+    highlights_msg_sent = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, default='finished')
 
     @property
     def home_team_score(self):

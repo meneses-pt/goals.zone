@@ -9,9 +9,10 @@ from matches.models import Tournament, Category, Team
 
 class MessageObject(models.Model):
     class MessageEventType(models.IntegerChoices):
-        Match = 1, 'Match'
+        MatchFirstVideo = 1, 'MatchFirstVideo'
         Video = 2, 'Video'
         Mirror = 3, 'Mirror'
+        MatchHighlights = 4, 'MatchHighlights'
 
     include_tournaments = models.ManyToManyField(Tournament,
                                                  related_name='%(class)s_include_tournaments',
@@ -37,7 +38,7 @@ class MessageObject(models.Model):
                                            related_name='%(class)s_exclude_teams',
                                            default=None,
                                            blank=True)
-    event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.Match)
+    event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.MatchFirstVideo)
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
 
@@ -47,10 +48,10 @@ class MessageObject(models.Model):
 
 class Tweet(MessageObject):
     title = models.CharField(max_length=100, unique=True)
-    consumer_key = models.CharField(max_length=100, unique=True)
-    consumer_secret = models.CharField(max_length=100, unique=True)
-    access_token_key = models.CharField(max_length=100, unique=True)
-    access_token_secret = models.CharField(max_length=100, unique=True)
+    consumer_key = models.CharField(max_length=100)
+    consumer_secret = models.CharField(max_length=100)
+    access_token_key = models.CharField(max_length=100)
+    access_token_secret = models.CharField(max_length=100)
     message = models.CharField(max_length=2000)
 
     def __str__(self):
