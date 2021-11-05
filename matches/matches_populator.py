@@ -334,16 +334,10 @@ def _save_or_update_match(match):
                        category=match.category,
                        season=match.season)
         for i_match in matches:
-            if not i_match.highlights_msg_sent and \
-                    i_match.status.lower() == 'finished' and \
-                    i_match.videogoal_set.count() == 0:
-                i_match.highlights_msg_sent = True
-                i_match.save()
+            _handle_messages_to_send(i_match)
     else:
-        if match.videogoal_set.count() == 0 and match.status.lower() == 'finished':
-            match.highlights_msg_sent = True
         match.save()
-    _handle_messages_to_send(match)
+        _handle_messages_to_send(match)
 
 
 def _get_datetime_string(datetime_str):
