@@ -506,7 +506,7 @@ def _handle_messages_to_send(match, videogoal=None):
                 match.home_team.name_code is not None and \
                 match.away_team.name_code is not None:
             print(f'MatchHighlights | ################## SEND ################## {match.slug}', flush=True)
-            send_messages(match, None, None, MessageObject.MessageEventType.print('Fetching new matches...', flush=True))
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights)
 
 
 def _handle_not_found_match(away_team, home_team, post):
