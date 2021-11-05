@@ -13,7 +13,8 @@
     "width":0,
     "vectors":0,
     "keys":0,
-    "name":null
+    "name":null,
+    "mode":"default"
   },
   "labels":{
     "ner":[
