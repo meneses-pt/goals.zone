@@ -332,7 +332,8 @@ def _save_or_update_match(match):
                        score=match.score,
                        tournament=match.tournament,
                        category=match.category,
-                       season=match.season)
+                       season=match.season,
+                       status=match.status)
         for i_match in matches:
             _handle_messages_to_send(i_match)
     else:
