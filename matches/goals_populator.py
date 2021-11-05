@@ -71,6 +71,7 @@ def _fetch_reddit_goals():
                 find_and_store_videogoal(post, title, post_created_date)
         after = data['data']['after']
         i += 1
+        print(f'{results} posts processed...', flush=True)
     print('Finished fetching goals', flush=True)
 
 
