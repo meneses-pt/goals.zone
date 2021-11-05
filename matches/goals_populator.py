@@ -499,13 +499,11 @@ def _handle_messages_to_send(match, videogoal=None):
                 match.away_team.name_code is not None:
             send_messages(match, None, None, MessageObject.MessageEventType.MatchFirstVideo)
     else:
-        print(f'MatchHighlights | Checking if should send match... {match.slug}', flush=True)
         if match.videogoal_set.count() > 0 and \
                 not match.highlights_msg_sent and \
                 match.status.lower() == 'finished' and \
                 match.home_team.name_code is not None and \
                 match.away_team.name_code is not None:
-            print(f'MatchHighlights | ################## SEND ################## {match.slug}', flush=True)
             send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights)
 
 
