@@ -4,6 +4,7 @@ import operator
 import os
 import re
 import time
+import timeit
 import traceback
 from datetime import date, timedelta
 from functools import reduce
@@ -60,6 +61,7 @@ def _fetch_reddit_goals():
             return
         results = data['data']['dist']
         print(f'{results} posts fetched...', flush=True)
+        start = timeit.default_timer()
         for post in data['data']['children']:
             post = post['data']
             if post['url'] is not None and \
@@ -71,7 +73,10 @@ def _fetch_reddit_goals():
                 find_and_store_videogoal(post, title, post_created_date)
         after = data['data']['after']
         i += 1
+        end = timeit.default_timer()
         print(f'{results} posts processed...', flush=True)
+        print(f'{end - start} elapsed', flush=True)
+        print(f'{(end - start) / results} elapsed', flush=True)
     print('Finished fetching goals', flush=True)
 
 
