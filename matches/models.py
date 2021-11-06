@@ -3,8 +3,10 @@ import os
 import re
 from io import BytesIO
 
+from django.contrib.postgres.indexes import GinIndex, OpClass
 from django.core.files import File
 from django.db import models
+from django.db.models.functions import Upper
 from django.urls import reverse
 from django.utils.text import slugify
 
@@ -20,6 +22,14 @@ class Team(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     updated_at = models.DateTimeField(auto_now=True)
     logo_updated_at = models.DateTimeField(default=datetime.datetime.now)
+
+    class Meta:
+        indexes = [
+            GinIndex(
+                OpClass(Upper('name'), name='gin_trgm_ops'),
+                name='team_name_ln_gin_idx',
+            )
+        ]
 
     def __str__(self):
         return str(self.name)
@@ -62,6 +72,12 @@ class TeamAlias(models.Model):
     class Meta:
         constraints = [
             models.UniqueConstraint(fields=['alias', 'team'], name='unique_team_alias'),
+        ]
+        indexes = [
+            GinIndex(
+                OpClass(Upper('alias'), name='gin_trgm_ops'),
+                name='team_alias_ln_gin_idx',
+            )
         ]
 
     def __str__(self):
@@ -157,6 +173,11 @@ class Match(models.Model):
     first_msg_sent = models.BooleanField(default=False)
     highlights_msg_sent = models.BooleanField(default=False)
     status = models.CharField(max_length=50, default='finished')
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['datetime']),
+        ]
 
     @property
     def home_team_score(self):
