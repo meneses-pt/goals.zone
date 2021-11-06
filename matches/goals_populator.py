@@ -76,7 +76,6 @@ def _fetch_reddit_goals():
         end = timeit.default_timer()
         print(f'{results} posts processed...', flush=True)
         print(f'{end - start} elapsed', flush=True)
-        print(f'{(end - start) / results} elapsed', flush=True)
     print('Finished fetching goals', flush=True)
 
 
@@ -573,33 +572,34 @@ def find_match(home_team, away_team, to_date, from_date=None):
     suffix_affiliate_away = re.findall(suffix_regex_string, away_team)
     prefix_affiliate_home = re.findall(prefix_regex_string, home_team)
     prefix_affiliate_away = re.findall(prefix_regex_string, away_team)
-    matches = Match.objects.filter(Q(home_team__name__unaccent__trigram_similar=home_team) |
-                                   Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
-                                   Q(away_team__name__unaccent__trigram_similar=away_team) |
-                                   Q(away_team__alias__alias__unaccent__trigram_similar=away_team),
-                                   datetime__gte=(from_date - timedelta(hours=72)),
-                                   datetime__lte=to_date)
+    matches = Match.objects \
+        .filter(datetime__gte=(from_date - timedelta(hours=72)),
+                datetime__lte=to_date) \
+        .filter(Q(home_team__name__unaccent__trigram_similar=home_team) |
+                Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
+                Q(away_team__name__unaccent__trigram_similar=away_team) |
+                Q(away_team__alias__alias__unaccent__trigram_similar=away_team))
     if len(suffix_affiliate_home) > 0:
-        matches = matches.filter(home_team__name__endswith=suffix_affiliate_home[0])
+        matches = matches.filter(home_team__name__iendswith=suffix_affiliate_home[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(home_team__name__endswith=f' {term}') for term in suffix_affiliate_terms)))
+            reduce(operator.or_, (Q(home_team__name__iendswith=f' {term}') for term in suffix_affiliate_terms)))
     if len(prefix_affiliate_home) > 0:
-        matches = matches.filter(home_team__name__startswith=prefix_affiliate_home[0])
+        matches = matches.filter(home_team__name__istartswith=prefix_affiliate_home[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(home_team__name__startswith=f' {term}') for term in prefix_affiliate_terms)))
+            reduce(operator.or_, (Q(home_team__name__istartswith=f' {term}') for term in prefix_affiliate_terms)))
 
     if len(suffix_affiliate_away) > 0:
-        matches = matches.filter(away_team__name__endswith=suffix_affiliate_away[0])
+        matches = matches.filter(away_team__name__iendswith=suffix_affiliate_away[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(away_team__name__endswith=f' {term}') for term in suffix_affiliate_terms)))
+            reduce(operator.or_, (Q(away_team__name__iendswith=f' {term}') for term in suffix_affiliate_terms)))
     if len(prefix_affiliate_away) > 0:
-        matches = matches.filter(away_team__name__startswith=prefix_affiliate_away[0])
+        matches = matches.filter(away_team__name__istartswith=prefix_affiliate_away[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(away_team__name__startswith=f' {term}') for term in prefix_affiliate_terms)))
+            reduce(operator.or_, (Q(away_team__name__istartswith=f' {term}') for term in prefix_affiliate_terms)))
     return matches
 
 
