@@ -256,7 +256,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
 
 
 def send_messages(match, videogoal, videogoal_mirror, event_filter):
-    print(f'WEBHOOK - SEND MESSAGES {str(event_filter)}', flush=True)
+    print(f'SEND MESSAGES {str(event_filter)}', flush=True)
     send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
@@ -282,31 +282,25 @@ def format_event_message(match, videogoal, videogoal_mirror, message):
 def check_conditions(match, msg_obj):
     if msg_obj.include_categories.all().count() > 0 and \
             (match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()):
-        print(f"WEBHOOK - Not included Category [Category]{match.category}", flush=True)
         return False
     if msg_obj.include_tournaments.all().count() > 0 and \
             (match.tournament is None or not msg_obj.include_tournaments.filter(id=match.tournament.id).exists()):
-        print(f"WEBHOOK - Not included Tournament [Tournament]{match.tournament}", flush=True)
         return False
     if msg_obj.include_teams.all().count() > 0 and \
             ((match.home_team is None and match.away_team is None) or
              (not msg_obj.include_teams.filter(id=match.home_team.id).exists() and
               not msg_obj.include_teams.filter(id=match.away_team.id).exists())):
-        print(f"WEBHOOK - Not included Teams [Home Team]{match.home_team} [Away Team]{match.away_team}", flush=True)
         return False
     if msg_obj.exclude_categories.all().count() > 0 and \
             (match.category is None or msg_obj.exclude_categories.filter(id=match.category.id).exists()):
-        print(f"WEBHOOK - Excluded Category [Category]{match.category}", flush=True)
         return False
     if msg_obj.exclude_tournaments.all().count() > 0 and \
             (match.tournament is None or msg_obj.exclude_tournaments.filter(id=match.tournament.id).exists()):
-        print(f"WEBHOOK - Excluded Tournament [Tournament]{match.tournament}", flush=True)
         return False
     if msg_obj.exclude_teams.all().count() > 0 and \
             ((match.home_team is None and match.away_team is None) or
              msg_obj.exclude_teams.filter(id=match.home_team.id).exists() or
              msg_obj.exclude_teams.filter(id=match.away_team.id).exists()):
-        print(f"WEBHOOK - Excluded Teams [Home Team]{match.home_team} [Away Team]{match.away_team}", flush=True)
         return False
     return True
 
@@ -315,7 +309,6 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack,
                                           event_type=event_filter)
-        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} SLACK WEBHOOKS", flush=True)
         for wh in webhooks:
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
@@ -337,16 +330,11 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
                                           event_type=event_filter)
-        print(f"WEBHOOK - Checking {str(event_filter)} - {str(len(webhooks))} DISCORD WEBHOOKS", flush=True)
         for wh in webhooks:
-            print(f"WEBHOOK - Checking {str(event_filter)}... "
-                  f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}", flush=True)
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
                       check_author(wh, videogoal, videogoal_mirror, event_filter)
             if not to_send:
-                print(f"WEBHOOK - Not to send. "
-                      f"[Webhook]{wh} [Match]{match} [Videogoal]{videogoal} [Mirror]{videogoal_mirror}", flush=True)
                 continue
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
