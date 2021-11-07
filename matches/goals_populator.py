@@ -63,6 +63,7 @@ def _fetch_reddit_goals():
         print(f'{results} posts fetched...', flush=True)
         start = timeit.default_timer()
         new_posts = 0
+        old_with_mirror = 0
         new_posts_duration = 0
         old_posts_duration = 0
         for post in data['data']['children']:
@@ -73,7 +74,7 @@ def _fetch_reddit_goals():
                 title = post['title']
                 title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                is_new, duration = find_and_store_videogoal(post, title, post_created_date)
+                is_new, old_with_mirror, duration = find_and_store_videogoal(post, title, post_created_date)
                 if is_new:
                     new_posts += 1
                     new_posts_duration += duration
@@ -86,6 +87,7 @@ def _fetch_reddit_goals():
         print(f'{end - start} total elapsed', flush=True)
         print(f'{new_posts} are new posts...', flush=True)
         print(f'{new_posts_duration} elapsed on new posts', flush=True)
+        print(f'{old_with_mirror}/{results-new_posts} are old posts with mirror search...', flush=True)
         print(f'{old_posts_duration} elapsed on old posts', flush=True)
     print('Finished fetching goals', flush=True)
 
@@ -140,7 +142,7 @@ def calculate_next_mirrors_check(videogoal):
 def find_mirrors(videogoal):
     try:
         if videogoal.next_mirrors_check > timezone.now():
-            return
+            return False
         calculate_next_mirrors_check(videogoal)
         main_comments_link = 'http://api.reddit.com' + videogoal.post_match.permalink
         response = _make_reddit_api_request(main_comments_link)
@@ -162,12 +164,16 @@ def find_mirrors(videogoal):
                         print(tb, flush=True)
                         print(e, flush=True)
                         print(children_response.content, flush=True)
+                        return True
         except Exception as e:
             tb = traceback.format_exc()
             print(tb, flush=True)
             print(e, flush=True)
+            return True
     except Exception as e:
         print("An exception as occurred trying to find mirrors", e, flush=True)
+        return True
+    return True
 
 
 def _parse_reply_for_mirrors(reply, videogoal):
@@ -451,9 +457,10 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     start = timeit.default_timer()
     is_new = False
+    old_with_mirror = False
     try:
         post_match = PostMatch.objects.get(permalink=post['permalink'])
-        find_mirrors(post_match.videogoal)
+        old_with_mirror = find_mirrors(post_match.videogoal)
     except PostMatch.DoesNotExist:
         is_new = True
         if match_date is None:
@@ -486,7 +493,7 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
             except Exception as ex:
                 print("Exception in monitoring: " + str(ex), flush=True)
     end = timeit.default_timer()
-    return is_new, end - start
+    return is_new, old_with_mirror, end - start
 
 
 def _save_found_match(matches_results, minute_str, post):
