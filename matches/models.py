@@ -218,7 +218,6 @@ class Match(models.Model):
 
 
 class VideoGoal(models.Model):
-    permalink = models.CharField(max_length=1024, unique=True)
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     url = models.CharField(max_length=1024, null=True)
     title = models.CharField(max_length=200, null=True)
@@ -240,7 +239,7 @@ class VideoGoal(models.Model):
 
     @property
     def simple_permalink(self):
-        result = re.search(r'[^/]+(?=/[^/]+/?$)', self.permalink)
+        result = re.search(r'[^/]+(?=/[^/]+/?$)', self.post_match.permalink)
         return result[0] if result else None
 
     def __str__(self):
@@ -264,3 +263,17 @@ class AffiliateTerm(models.Model):
 
     def __str__(self):
         return str(self.term)
+
+
+class PostMatch(models.Model):
+    permalink = models.CharField(max_length=1024, unique=True)
+    videogoal = models.OneToOneField(VideoGoal, related_name='post_match', on_delete=models.CASCADE, null=True)
+    fetched = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=200, null=True)
+    home_team_str = models.CharField(max_length=256, null=True)
+    away_team_str = models.CharField(max_length=256, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['permalink']),
+        ]

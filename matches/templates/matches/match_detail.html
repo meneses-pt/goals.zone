@@ -64,8 +64,8 @@
                             data-target="#collapse{{ forloop.counter }}">
                         {{ goal.title }}
                     </button>
-                    {% if goal.permalink %}
-                        <a href="https://reddit.com{{ goal.permalink }}" class="float-right list-group-small-link">
+                    {% if goal.post_match.permalink %}
+                        <a href="https://reddit.com{{ goal.post_match.permalink }}" class="float-right list-group-small-link">
                             <img alt="reddit" src="{% static "img/reddit_logo.png" %}" class="list-group-img">
                         </a>
                     {% endif %}

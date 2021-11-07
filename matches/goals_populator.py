@@ -22,8 +22,8 @@ from django.db.models import Q
 from django.utils import timezone
 from slack_webhook import Slack
 
-from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team
-from monitoring.models import MatchNotFound, MonitoringAccount
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch
+from monitoring.models import MonitoringAccount
 from msg_events.models import Webhook, Tweet, MessageObject
 from ner.models import NerLog
 from ner.utils import extract_names_from_title_ner
@@ -62,6 +62,7 @@ def _fetch_reddit_goals():
         results = data['data']['dist']
         print(f'{results} posts fetched...', flush=True)
         start = timeit.default_timer()
+        new_posts = 0
         for post in data['data']['children']:
             post = post['data']
             if post['url'] is not None and \
@@ -70,11 +71,13 @@ def _fetch_reddit_goals():
                 title = post['title']
                 title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                find_and_store_videogoal(post, title, post_created_date)
+                is_new = find_and_store_videogoal(post, title, post_created_date)
+                new_posts += 1 if is_new else 0
         after = data['data']['after']
         i += 1
         end = timeit.default_timer()
         print(f'{results} posts processed...', flush=True)
+        print(f'{new_posts} are new posts...', flush=True)
         print(f'{end - start} elapsed', flush=True)
     print('Finished fetching goals', flush=True)
 
@@ -131,7 +134,7 @@ def find_mirrors(videogoal):
         if videogoal.next_mirrors_check > timezone.now():
             return
         calculate_next_mirrors_check(videogoal)
-        main_comments_link = 'http://api.reddit.com' + videogoal.permalink
+        main_comments_link = 'http://api.reddit.com' + videogoal.post_match.permalink
         response = _make_reddit_api_request(main_comments_link)
         data = json.loads(response.content)
         try:
@@ -438,46 +441,48 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
 
 
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
-    if match_date is None:
-        match_date = datetime.datetime.utcnow()
-    regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
-    ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
-    save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
-    matches_results = None
-    minute_str = None
-    if regex_home_team and regex_away_team:
-        minute_str = regex_minute
-        matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
-        if not matches_results.exists():
-            matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
-    if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
-        minute_str = ner_minute
-        matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
-        if not matches_results.exists():
-            matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
-    if matches_results and matches_results.exists():
-        _save_found_match(matches_results, minute_str, post)
-    elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
-        try:
-            home_team = regex_home_team
-            away_team = regex_away_team
-            if not regex_home_team or not regex_away_team:
-                home_team = ner_home_team
-                away_team = ner_away_team
-            _handle_not_found_match(home_team, away_team, post)
-        except Exception as ex:
-            print("Exception in monitoring: " + str(ex), flush=True)
+    is_new = False
+    try:
+        PostMatch.objects.get(permalink=post['permalink'])
+    except PostMatch.DoesNotExist:
+        is_new = True
+        if match_date is None:
+            match_date = datetime.datetime.utcnow()
+        regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
+        ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
+        save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
+        matches_results = None
+        minute_str = None
+        if regex_home_team and regex_away_team:
+            minute_str = regex_minute
+            matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
+            if not matches_results.exists():
+                matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
+        if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
+            minute_str = ner_minute
+            matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
+            if not matches_results.exists():
+                matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
+        if matches_results and matches_results.exists():
+            _save_found_match(matches_results, minute_str, post)
+        elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
+            try:
+                home_team = regex_home_team
+                away_team = regex_away_team
+                if not regex_home_team or not regex_away_team:
+                    home_team = ner_home_team
+                    away_team = ner_away_team
+                _handle_not_found_match(home_team, away_team, post)
+            except Exception as ex:
+                print("Exception in monitoring: " + str(ex), flush=True)
+    return is_new
 
 
 def _save_found_match(matches_results, minute_str, post):
     match = matches_results.first()
     # print(f'Match {match} found for: {title}', flush=True)
-    try:
-        videogoal = VideoGoal.objects.get(permalink__exact=post['permalink'])
-    except VideoGoal.DoesNotExist:
-        videogoal = VideoGoal()
-        videogoal.permalink = post['permalink']
-        videogoal.next_mirrors_check = timezone.now()
+    videogoal = VideoGoal()
+    videogoal.next_mirrors_check = timezone.now()
     videogoal.match = match
     videogoal.url = post['url']
     videogoal.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
@@ -487,6 +492,7 @@ def _save_found_match(matches_results, minute_str, post):
         videogoal.minute = None
     videogoal.author = post['author']
     videogoal.save()
+    PostMatch.objects.create(permalink=post['permalink'], videogoal=videogoal)
     _handle_messages_to_send(match, videogoal)
     find_mirrors(videogoal)
     # print('Saved: ' + title, flush=True)
@@ -513,26 +519,19 @@ def _handle_messages_to_send(match, videogoal=None):
 
 
 def _handle_not_found_match(away_team, home_team, post):
-    try:
-        MatchNotFound.objects.get(permalink__exact=post['permalink'])
-    except MatchNotFound.DoesNotExist:
-        d = datetime.datetime.utcnow()
-        epoch = datetime.datetime(1970, 1, 1)
-        t = (d - epoch).total_seconds()
-        home_team_obj = Team.objects.filter(Q(name__unaccent__trigram_similar=home_team) |
-                                            Q(alias__alias__unaccent__trigram_similar=home_team))
-        away_team_obj = Team.objects.filter(Q(name__unaccent__trigram_similar=away_team) |
-                                            Q(alias__alias__unaccent__trigram_similar=away_team))
-        if (t - post['created_utc']) < 86400:  # in the last day
-            match_not_found = MatchNotFound()
-            match_not_found.permalink = post['permalink']
-            match_not_found.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
-            match_not_found.home_team_str = home_team
-            match_not_found.away_team_str = away_team
-            match_not_found.save()
-            if home_team_obj or away_team_obj:
-                send_monitoring_message(
-                    f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
+    post_match = PostMatch.objects.create(permalink=post['permalink'])
+    home_team_obj = Team.objects.filter(Q(name__unaccent__trigram_similar=home_team) |
+                                        Q(alias__alias__unaccent__trigram_similar=home_team))
+    away_team_obj = Team.objects.filter(Q(name__unaccent__trigram_similar=away_team) |
+                                        Q(alias__alias__unaccent__trigram_similar=away_team))
+    post_match.permalink = post['permalink']
+    post_match.title = (post['title'][:195] + '..') if len(post['title']) > 195 else post['title']
+    post_match.home_team_str = home_team
+    post_match.away_team_str = away_team
+    post_match.save()
+    if home_team_obj or away_team_obj:
+        send_monitoring_message(
+                f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
 
 
 def extract_names_from_title_regex(title):
