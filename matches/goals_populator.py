@@ -74,11 +74,12 @@ def _fetch_reddit_goals():
                 title = post['title']
                 title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                is_new, old_with_mirror, duration = find_and_store_videogoal(post, title, post_created_date)
+                is_new, mirror_checked, duration = find_and_store_videogoal(post, title, post_created_date)
                 if is_new:
                     new_posts += 1
                     new_posts_duration += duration
                 else:
+                    old_with_mirror += 1 if mirror_checked else 0
                     old_posts_duration += duration
         after = data['data']['after']
         i += 1
@@ -87,7 +88,7 @@ def _fetch_reddit_goals():
         print(f'{end - start} total elapsed', flush=True)
         print(f'{new_posts} are new posts...', flush=True)
         print(f'{new_posts_duration} elapsed on new posts', flush=True)
-        print(f'{old_with_mirror}/{results-new_posts} are old posts with mirror search...', flush=True)
+        print(f'{old_with_mirror}/{results - new_posts} are old posts with mirror search...', flush=True)
         print(f'{old_posts_duration} elapsed on old posts', flush=True)
     print('Finished fetching goals', flush=True)
 
@@ -549,7 +550,7 @@ def _handle_not_found_match(away_team, home_team, post):
     post_match.save()
     if home_team_obj or away_team_obj:
         send_monitoring_message(
-                f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
+            f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}", True)
 
 
 def extract_names_from_title_regex(title):
