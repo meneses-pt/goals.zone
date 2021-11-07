@@ -63,6 +63,8 @@ def _fetch_reddit_goals():
         print(f'{results} posts fetched...', flush=True)
         start = timeit.default_timer()
         new_posts = 0
+        new_posts_duration = 0
+        old_posts_duration = 0
         for post in data['data']['children']:
             post = post['data']
             if post['url'] is not None and \
@@ -71,14 +73,20 @@ def _fetch_reddit_goals():
                 title = post['title']
                 title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                is_new = find_and_store_videogoal(post, title, post_created_date)
-                new_posts += 1 if is_new else 0
+                is_new, duration = find_and_store_videogoal(post, title, post_created_date)
+                if is_new:
+                    new_posts += 1
+                    new_posts_duration += duration
+                else:
+                    old_posts_duration += duration
         after = data['data']['after']
         i += 1
         end = timeit.default_timer()
         print(f'{results} posts processed...', flush=True)
+        print(f'{end - start} total elapsed', flush=True)
         print(f'{new_posts} are new posts...', flush=True)
-        print(f'{end - start} elapsed', flush=True)
+        print(f'{new_posts_duration} elapsed on new posts', flush=True)
+        print(f'{old_posts_duration} elapsed on old posts', flush=True)
     print('Finished fetching goals', flush=True)
 
 
@@ -441,9 +449,11 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
 
 
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
+    start = timeit.default_timer()
     is_new = False
     try:
-        PostMatch.objects.get(permalink=post['permalink'])
+        post_match = PostMatch.objects.get(permalink=post['permalink'])
+        find_mirrors(post_match.videogoal)
     except PostMatch.DoesNotExist:
         is_new = True
         if match_date is None:
@@ -475,7 +485,8 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
                 _handle_not_found_match(home_team, away_team, post)
             except Exception as ex:
                 print("Exception in monitoring: " + str(ex), flush=True)
-    return is_new
+    end = timeit.default_timer()
+    return is_new, end - start
 
 
 def _save_found_match(matches_results, minute_str, post):
