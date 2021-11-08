@@ -19,7 +19,8 @@ class WebhookAdminForm(forms.ModelForm):
                   'include_teams',
                   'exclude_tournaments',
                   'exclude_categories',
-                  'exclude_teams']
+                  'exclude_teams',
+                  'active']
         widgets = {
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
         }
@@ -31,8 +32,7 @@ class WebhookAdmin(admin.ModelAdmin):
                          'include_teams',
                          'exclude_tournaments',
                          'exclude_categories',
-                         'exclude_teams',
-                         'active']
+                         'exclude_teams']
     form = WebhookAdminForm
 
 
