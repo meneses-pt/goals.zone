@@ -449,7 +449,8 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     old_with_mirror = False
     try:
         post_match = PostMatch.objects.get(permalink=post['permalink'])
-        old_with_mirror = find_mirrors(post_match.videogoal)
+        if post_match.videogoal:
+            old_with_mirror = find_mirrors(post_match.videogoal)
     except PostMatch.DoesNotExist:
         is_new = True
         if match_date is None:
