@@ -308,7 +308,8 @@ def check_conditions(match, msg_obj):
 def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Slack,
-                                          event_type=event_filter)
+                                          event_type=event_filter,
+                                          active=True)
         for wh in webhooks:
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
@@ -329,7 +330,8 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
 def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
         webhooks = Webhook.objects.filter(destination__exact=Webhook.WebhookDestinations.Discord,
-                                          event_type=event_filter)
+                                          event_type=event_filter,
+                                          active=True)
         for wh in webhooks:
             to_send = check_conditions(match, wh) and \
                       check_link_regex(wh, videogoal, videogoal_mirror, event_filter) and \
@@ -375,7 +377,7 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
-        tweets = Tweet.objects.filter(event_type=event_filter)
+        tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
             to_send = check_conditions(match, tw) and \
                       check_link_regex(tw, videogoal, videogoal_mirror, event_filter) and \

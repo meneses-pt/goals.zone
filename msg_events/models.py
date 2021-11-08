@@ -53,6 +53,7 @@ class Tweet(MessageObject):
     access_token_key = models.CharField(max_length=100)
     access_token_secret = models.CharField(max_length=100)
     message = models.CharField(max_length=2000)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.title
@@ -67,6 +68,7 @@ class Webhook(MessageObject):
     webhook_url = models.CharField(max_length=2000, unique=False)
     message = models.CharField(max_length=2000)
     destination = models.IntegerField(choices=WebhookDestinations.choices, default=WebhookDestinations.Discord)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return f"[{self.get_destination_display()}] {self.title}"

@@ -31,7 +31,8 @@ class WebhookAdmin(admin.ModelAdmin):
                          'include_teams',
                          'exclude_tournaments',
                          'exclude_categories',
-                         'exclude_teams']
+                         'exclude_teams',
+                         'active']
     form = WebhookAdminForm
 
 
@@ -69,7 +70,8 @@ class TweetAdminForm(forms.ModelForm):
                   'include_teams',
                   'exclude_tournaments',
                   'exclude_categories',
-                  'exclude_teams']
+                  'exclude_teams',
+                  'active']
         widgets = {
             'message': forms.Textarea(attrs={'cols': 80, 'rows': 3}),
         }
