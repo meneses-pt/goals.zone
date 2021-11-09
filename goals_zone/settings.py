@@ -143,6 +143,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Settings for background tasks
 MAX_ATTEMPTS = 60
 MAX_RUN_TIME = 300
+# Doesn't seem to be working
 BACKGROUND_TASK_RUN_ASYNC = True
 
 # Static files (CSS, JavaScript, Images)
