@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta
 
 import requests
 from background_task import background
+from django.db.models import Count
 
 from .goals_populator import _handle_messages_to_send
 from .models import Match, Team, Tournament, Category, Season
@@ -108,6 +109,9 @@ def fetch_matches_from_sofascore(days_ago=0):
             match.status = status
             _save_or_update_match(match)
         print(f'Ended processing day {single_date}', flush=True)
+    print('Going to delete old matches without videos', flush=True)
+    delete = Match.objects.annotate(videos_count=Count('videogoal')).filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
+    print(f'Deleted {delete} old matches without videos', flush=True)
     print('Ended processing matches', flush=True)
 
 

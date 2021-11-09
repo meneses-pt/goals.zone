@@ -1,7 +1,6 @@
 import base64
 import json
 import re
-from urllib import parse
 
 import requests
 from lxml.html import fromstring
@@ -88,36 +87,6 @@ def get_proxies_proxyscrape():
     return proxies
 
 
-def get_proxies_freeproxylists():
-    global headers_list
-    url = 'http://www.freeproxylists.net/?c=&pt=&pr=HTTPS&a%5B%5D=2&u=0'
-    try:
-        response = requests.get(url, headers=headers_list)
-    except requests.exceptions.ConnectionError:
-        print(f'Connection error getting proxies ({url})', flush=True)
-        return list()
-    try:
-        parser = fromstring(response.text)
-        proxies = list()
-        for i in parser.xpath("//table/tr[@class='Odd']|//table/tr[@class='Even']")[:20]:
-            # Grabbing IP and corresponding PORT
-            ip_script = i.xpath('./td[1]/script/text()')[0]
-            p = re.compile("\"(.*)\"")
-            res = p.search(ip_script)
-            if res is None:
-                continue
-            ip_encoded = res.group(1)
-            ip_el = parse.unquote(ip_encoded)
-            ip = fromstring(ip_el).xpath('//text()')[0]
-            port = i.xpath('./td[2]/text()')[0]
-            proxy = ":".join([ip, port])
-            proxies.append(proxy)
-    except Exception as e:
-        print(f'Error getting proxies ({url}): {e}', flush=True)
-        return list()
-    return proxies
-
-
 def get_proxies_proxylist():
     url = 'https://www.proxy-list.download/api/v0/get?l=en&t=https'
     try:
@@ -158,7 +127,7 @@ def get_proxies_proxynova():
                 continue
             ip = res.group(1)
             # Grabbing IP and corresponding PORT
-            proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())])
+            proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())]).replace("' + '", "")
             proxies.append(proxy)
     except Exception as e:
         print(f'Error getting proxies ({url}): {e}', flush=True)
@@ -171,7 +140,6 @@ def get_all_proxies():
     proxies += get_proxies_sslproxies()
     proxies += get_proxies_freeproxycz()
     proxies += get_proxies_proxyscrape()
-    proxies += get_proxies_freeproxylists()
     proxies += get_proxies_proxylist()
     proxies += get_proxies_proxynova()
     proxies = list(set(proxies))
