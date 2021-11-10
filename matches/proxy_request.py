@@ -1,6 +1,7 @@
 import random
 
 import requests
+from proxy_list import ProxyList
 
 from matches.utils import get_all_proxies
 
@@ -38,7 +39,13 @@ class ProxyRequest:
                 print(f"Proxy {self.current_proxy} | Attempt {attempts+1}", flush=True)
                 if not proxies:
                     print("Getting proxies", flush=True)
-                    proxies = get_all_proxies()
+                    # Proxies ---> Alternative 1 (https://github.com/meetsohail/proxy-list)
+                    pl = ProxyList()
+                    pl_proxies = pl.get_all_proxies()
+                    proxies = [f'{p[0]}:{p[1]}' for p in pl_proxies]
+                    # Proxies ---> Alternative 2 (Custom)
+                    # proxies = get_all_proxies()
+                    # End proxies
                     print(str(len(proxies)) + " proxies returned. Going to fetch url.", flush=True)
                 self.current_proxy = random.choice(proxies)
                 proxies.remove(self.current_proxy)
