@@ -1,11 +1,19 @@
-name: Test & Deploy to Production
+name: Deployment to Production
 on: [push]
 jobs:
   build:
-    name: Build
+    name: Deployment Process
     runs-on: ubuntu-latest
     environment: DigitalOcean
     steps:
+    - name: Build
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY_ED25519 }}
+        port: ${{ secrets.PORT }}
+        script: ./build.sh
     - name: Test
       uses: appleboy/ssh-action@master
       with:
@@ -13,7 +21,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY_ED25519 }}
         port: ${{ secrets.PORT }}
-        script: sh test.sh
+        script: ./test.sh
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
