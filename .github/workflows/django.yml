@@ -5,6 +5,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    environment: DigitalOcean
     steps:
     - name: executing remote ssh commands using ssh key
       uses: appleboy/ssh-action@master
