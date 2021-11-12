@@ -43,8 +43,8 @@ def fetch_matches_from_rapidapi(days_ago=2):
             match.score = score
             match.datetime = match_datetime
             _save_or_update_match(match)
-        print(f'Ended processing day {single_date}', flush=True)
-    print('Ended processing matches', flush=True)
+        print(f'Finished processing day {single_date}', flush=True)
+    print('Finished processing matches\n\n', flush=True)
 
 
 def fetch_matches_from_sofascore(days_ago=0):
@@ -108,11 +108,11 @@ def fetch_matches_from_sofascore(days_ago=0):
             match.season = season_obj
             match.status = status
             _save_or_update_match(match)
-        print(f'Ended processing day {single_date}', flush=True)
+        print(f'Finished processing day {single_date}', flush=True)
     print('Going to delete old matches without videos', flush=True)
     delete = Match.objects.annotate(videos_count=Count('videogoal')).filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
     print(f'Deleted {delete} old matches without videos', flush=True)
-    print('Ended processing matches', flush=True)
+    print('Finished processing matches\n\n', flush=True)
 
 
 def _get_or_create_away_team_rapidapi(fixture):

@@ -82,7 +82,6 @@ def _fetch_reddit_goals():
                     if post_match.videogoal and post_match.videogoal.next_mirrors_check > timezone.now():
                         old_posts_to_check.append(post_match)
                 except PostMatch.DoesNotExist:
-                    print(title)
                     new_posts_to_check.append({
                         'post': post,
                         'title': title,
@@ -116,7 +115,7 @@ def _fetch_reddit_goals():
         print(f'{results} posts processed...\n', flush=True)
         after = data['data']['after']
         i += 1
-    print('Finished fetching goals', flush=True)
+    print('Finished fetching goals\n\n', flush=True)
 
 
 def calculate_next_mirrors_check(videogoal):
