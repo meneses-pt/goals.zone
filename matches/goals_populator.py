@@ -140,7 +140,9 @@ def calculate_next_mirrors_check(videogoal):
     videogoal.next_mirrors_check = next_mirrors_check
 
 
-def get_auto_moderator_comment_id(data):
+def get_auto_moderator_comment_id(main_comments_link):
+    response = _make_reddit_api_request(main_comments_link)
+    data = json.loads(response.content)
     auto_moderator_comments = [
         child
         for child in data[1]['data']['children']
@@ -158,10 +160,8 @@ def find_mirrors(videogoal):
             return False
         calculate_next_mirrors_check(videogoal)
         main_comments_link = 'https://api.reddit.com' + videogoal.post_match.permalink
-        response = _make_reddit_api_request(main_comments_link)
-        data = json.loads(response.content)
         if not videogoal.auto_moderator_comment_id:
-            videogoal.auto_moderator_comment_id = get_auto_moderator_comment_id(data)
+            videogoal.auto_moderator_comment_id = get_auto_moderator_comment_id(main_comments_link)
             videogoal.save()
         try:
             children_url = main_comments_link + videogoal.auto_moderator_comment_id
