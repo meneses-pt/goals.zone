@@ -128,28 +128,26 @@ def _fetch_reddit_goals():
 def calculate_next_mirrors_check(videogoal):
     now = timezone.now()
     created_how_long = now - videogoal.created_at
+    print('--------------')
+    print(videogoal.title)
+    print(now)
+    print(videogoal.created_at)
+    print(created_how_long)
+    print('--------------')
     if created_how_long < timedelta(minutes=10):
         next_mirrors_check = now + datetime.timedelta(minutes=1)
-        videogoal.next_mirrors_check = next_mirrors_check
-        return
-    if created_how_long < timedelta(minutes=30):
+    elif created_how_long < timedelta(minutes=30):
         next_mirrors_check = now + datetime.timedelta(minutes=5)
-        videogoal.next_mirrors_check = next_mirrors_check
-        return
-    if created_how_long < timedelta(minutes=60):
+    elif created_how_long < timedelta(minutes=60):
         next_mirrors_check = now + datetime.timedelta(minutes=10)
-        videogoal.next_mirrors_check = next_mirrors_check
-        return
-    if created_how_long < timedelta(minutes=120):
+    elif created_how_long < timedelta(minutes=120):
         next_mirrors_check = now + datetime.timedelta(minutes=20)
-        videogoal.next_mirrors_check = next_mirrors_check
-        return
-    if created_how_long < timedelta(minutes=240):
+    elif created_how_long < timedelta(minutes=240):
         next_mirrors_check = now + datetime.timedelta(minutes=30)
-        videogoal.next_mirrors_check = next_mirrors_check
-        return
-    next_mirrors_check = now + datetime.timedelta(minutes=60)
+    else:
+        next_mirrors_check = now + datetime.timedelta(minutes=60)
     videogoal.next_mirrors_check = next_mirrors_check
+    videogoal.save()
 
 
 def get_auto_moderator_comment_id(main_comments_link):
