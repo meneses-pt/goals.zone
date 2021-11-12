@@ -2,12 +2,12 @@ name: Remote Testing
 on: [push]
 jobs:
 
-  build:
-    name: Build
+  test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using ssh key
-      uses: appleboy/ssh-action@master
+      uses: goals_zone/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
