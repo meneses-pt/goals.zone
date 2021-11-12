@@ -1,3 +1,4 @@
+import concurrent.futures
 import datetime
 import json
 import operator
@@ -6,6 +7,7 @@ import re
 import time
 import timeit
 import traceback
+from concurrent.futures import ThreadPoolExecutor
 from datetime import date, timedelta
 from functools import reduce
 from xml.etree import ElementTree as ETree
@@ -33,6 +35,8 @@ TWITTER_CONSUMER_SECRET = os.environ.get('TWITTER_CONSUMER_SECRET')
 TWITTER_ACCESS_TOKEN = os.environ.get('TWITTER_ACCESS_TOKEN')
 TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
+executor = ThreadPoolExecutor(max_workers=10)
+
 
 @background(schedule=60)
 def fetch_videogoals():
@@ -50,6 +54,7 @@ def _fetch_reddit_goals():
     if completed % 60 == 0:
         iterations = 10
     while i < iterations:
+        start = timeit.default_timer()
         print(f"Fetching Reddit Goals {i + 1}/{iterations}", flush=True)
         response = _fetch_data_from_reddit_api(after)
         if response is None or response.content is None:
@@ -60,12 +65,10 @@ def _fetch_reddit_goals():
             print(f'No data in response: {response.content}', flush=True)
             return
         results = data['data']['dist']
-        print(f'{results} posts fetched...', flush=True)
-        start = timeit.default_timer()
-        new_posts = 0
-        old_with_mirror = 0
-        new_posts_duration = 0
-        old_posts_duration = 0
+        new_posts_to_check = []
+        old_posts_to_check = []
+        new_futures = []
+        old_futures = []
         for post in data['data']['children']:
             post = post['data']
             if post['url'] is not None and \
@@ -74,42 +77,45 @@ def _fetch_reddit_goals():
                 title = post['title']
                 title = _fix_title(title)
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                is_new, mirror_checked, duration = find_and_store_videogoal(post, title, post_created_date)
-                if is_new:
-                    new_posts += 1
-                    new_posts_duration += duration
-                else:
-                    old_with_mirror += 1 if mirror_checked else 0
-                    old_posts_duration += duration
+                try:
+                    post_match = PostMatch.objects.get(permalink=post['permalink'])
+                    if post_match.videogoal and post_match.videogoal.next_mirrors_check > timezone.now():
+                        old_posts_to_check.append(post_match)
+                except PostMatch.DoesNotExist:
+                    print(title)
+                    new_posts_to_check.append({
+                        'post': post,
+                        'title': title,
+                        'post_created_date': post_created_date
+                    })
+        new_posts_count = len(new_posts_to_check)
+        old_posts_count = results - new_posts_count
+        old_posts_to_check_count = len(old_posts_to_check)
+        end = timeit.default_timer()
+        print(f'{results} posts fetched...', flush=True)
+        print(f'{(end - start):.2f} elapsed on pre-processing', flush=True)
+
+        start = timeit.default_timer()
+        for post in new_posts_to_check:
+            future = executor.submit(find_and_store_videogoal, post['post'], post['title'], post['post_created_date'])
+            new_futures.append(future)
+        concurrent.futures.wait(new_futures)
+        end = timeit.default_timer()
+        print(f'{new_posts_count} new posts processed...', flush=True)
+        print(f'{(end - start):.2f} total elapsed on new posts', flush=True)
+
+        start = timeit.default_timer()
+        for post in old_posts_to_check:
+            future = executor.submit(find_mirrors, post.videogoal)
+            old_futures.append(future)
+        concurrent.futures.wait(old_futures)
+        end = timeit.default_timer()
+        print(f'{old_posts_to_check_count}/{old_posts_count} are old posts with mirror search...', flush=True)
+        print(f'{(end - start):.2f} elapsed on old posts', flush=True)
+
+        print(f'{results} posts processed...\n', flush=True)
         after = data['data']['after']
         i += 1
-        end = timeit.default_timer()
-        print(f'{results} posts processed...', flush=True)
-        print(f'{end - start} total elapsed', flush=True)
-        print(f'{new_posts} are new posts...', flush=True)
-        print(f'{new_posts_duration} elapsed on new posts', flush=True)
-        print(f'{old_with_mirror}/{results - new_posts} are old posts with mirror search...', flush=True)
-        print(f'{old_posts_duration} elapsed on old posts', flush=True)
-    print('Finished fetching goals', flush=True)
-
-
-def _fetch_reddit_goals_from_date(days_ago=2):
-    start_date = datetime.datetime.utcnow() - timedelta(days=days_ago)
-    for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
-        response = _fetch_historic_data_from_reddit_api(single_date)
-        data = json.loads(response.content)
-        if 'data' not in data.keys():
-            print(f'No data in response: {response.content}', flush=True)
-            return
-        results = len(data['data'])
-        print(f'{results} posts fetched...', flush=True)
-        for post in data['data']:
-            if post['url'] is not None and 'Thread' not in post['title'] and 'reddit.com' not in post['url']:
-                title = post['title']
-                title = _fix_title(title)
-                post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                find_and_store_videogoal(post, title, post_created_date, single_date)
-        print(f'Ended processing day {single_date}', flush=True)
     print('Finished fetching goals', flush=True)
 
 
@@ -156,8 +162,6 @@ def get_auto_moderator_comment_id(main_comments_link):
 
 def find_mirrors(videogoal):
     try:
-        if videogoal.next_mirrors_check > timezone.now():
-            return False
         calculate_next_mirrors_check(videogoal)
         main_comments_link = 'https://api.reddit.com' + videogoal.post_match.permalink
         if not videogoal.auto_moderator_comment_id:
@@ -459,46 +463,37 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
 
 
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
-    start = timeit.default_timer()
-    is_new = False
-    old_with_mirror = False
-    try:
-        post_match = PostMatch.objects.get(permalink=post['permalink'])
-        if post_match.videogoal:
-            old_with_mirror = find_mirrors(post_match.videogoal)
-    except PostMatch.DoesNotExist:
-        is_new = True
-        if match_date is None:
-            match_date = datetime.datetime.utcnow()
-        regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
-        ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
-        save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
-        matches_results = None
-        minute_str = None
-        if regex_home_team and regex_away_team:
-            minute_str = regex_minute
-            matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
-            if not matches_results.exists():
-                matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
-        if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
-            minute_str = ner_minute
-            matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
-            if not matches_results.exists():
-                matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
-        if matches_results and matches_results.exists():
-            _save_found_match(matches_results, minute_str, post)
-        elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
-            try:
-                home_team = regex_home_team
-                away_team = regex_away_team
-                if not regex_home_team or not regex_away_team:
-                    home_team = ner_home_team
-                    away_team = ner_away_team
-                _handle_not_found_match(home_team, away_team, post)
-            except Exception as ex:
-                print("Exception in monitoring: " + str(ex), flush=True)
-    end = timeit.default_timer()
-    return is_new, old_with_mirror, end - start
+    if match_date is None:
+        match_date = datetime.datetime.utcnow()
+    regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
+    ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
+    save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
+    matches_results = None
+    minute_str = None
+    if regex_home_team and regex_away_team:
+        minute_str = regex_minute
+        matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
+        if not matches_results.exists():
+            matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
+    if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
+        minute_str = ner_minute
+        matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
+        if not matches_results.exists():
+            matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
+    if matches_results and matches_results.exists():
+        _save_found_match(matches_results, minute_str, post)
+    elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
+        try:
+            home_team = regex_home_team
+            away_team = regex_away_team
+            if not regex_home_team or not regex_away_team:
+                home_team = ner_home_team
+                away_team = ner_away_team
+            _handle_not_found_match(home_team, away_team, post)
+        except Exception as ex:
+            print("Exception in monitoring: " + str(ex), flush=True)
+    else:
+        PostMatch.objects.create(permalink=post['permalink'])
 
 
 def _save_found_match(matches_results, minute_str, post):
