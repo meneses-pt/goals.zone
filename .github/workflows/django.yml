@@ -7,10 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: executing remote ssh commands using ssh key
-      uses: goals_zone/ssh-action@master
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY_ED25519 }}
         port: ${{ secrets.PORT }}
-        script: ./test.sh
+        script: sh test.sh
