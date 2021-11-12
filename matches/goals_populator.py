@@ -127,7 +127,7 @@ def _fetch_reddit_goals():
 
 def calculate_next_mirrors_check(videogoal):
     now = timezone.now()
-    created_how_long = videogoal.created_at - now
+    created_how_long = now - videogoal.created_at
     if created_how_long < timedelta(minutes=10):
         next_mirrors_check = now + datetime.timedelta(minutes=1)
         videogoal.next_mirrors_check = next_mirrors_check
