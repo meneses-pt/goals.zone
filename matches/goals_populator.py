@@ -42,8 +42,6 @@ executor = ThreadPoolExecutor(max_workers=10)
 def fetch_videogoals():
     print('Fetching new goals', flush=True)
     _fetch_reddit_goals()
-    # How to get historic data
-    # _fetch_reddit_goals_from_date(days_ago=2)
 
 
 def _fetch_reddit_goals():
@@ -80,13 +78,6 @@ def _fetch_reddit_goals():
                 try:
                     post_match = PostMatch.objects.get(permalink=post['permalink'])
                     if post_match.videogoal:
-                        print('---')
-                        print('POST: ' + title)
-                        print('POST: ' + str(datetime.datetime.fromtimestamp(post['created_utc'])))
-                        print('NEXT: ' + str(post_match.videogoal.next_mirrors_check))
-                        print('NOW:  ' + str(timezone.now()))
-                        print(f'CHECK: {post_match.videogoal.next_mirrors_check < timezone.now()}')
-                        print(' ')
                         if post_match.videogoal.next_mirrors_check < timezone.now():
                             old_posts_to_check.append(post_match)
                 except PostMatch.DoesNotExist:
@@ -129,12 +120,6 @@ def _fetch_reddit_goals():
 def calculate_next_mirrors_check(videogoal):
     now = timezone.now()
     created_how_long = now - videogoal.created_at
-    print('--------------')
-    print(videogoal.title)
-    print(now)
-    print(videogoal.created_at)
-    print(created_how_long)
-    print('--------------')
     if created_how_long < timedelta(minutes=10):
         next_mirrors_check = now + datetime.timedelta(minutes=1)
     elif created_how_long < timedelta(minutes=30):
