@@ -401,7 +401,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     auth.set_access_token(tw.access_token_key, tw.access_token_secret)
                     api = tweepy.API(auth)
                     result = api.update_status(status=message)
-                    print(result, flush=True)
+                    print(f'Successful tweet! Tweets count: {result.statuses_count}', flush=True)
                     is_sent = True
                 except Exception as ex:
                     last_exception_str = str(ex)
