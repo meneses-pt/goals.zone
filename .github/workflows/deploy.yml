@@ -1,13 +1,12 @@
 name: Test & Deploy to Production
 on: [push]
 jobs:
-
-  test:
-    name: Test
+  build:
+    name: Build
     runs-on: ubuntu-latest
     environment: DigitalOcean
     steps:
-    - name: executing remote ssh commands using ssh key
+    - name: Test
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -15,14 +14,7 @@ jobs:
         key: ${{ secrets.KEY_ED25519 }}
         port: ${{ secrets.PORT }}
         script: ./test.sh
-
-
-  deploy:
-    name: Deploy
-    runs-on: ubuntu-latest
-    environment: DigitalOcean
-    steps:
-    - name: executing remote ssh commands using ssh key
+    - name: Deploy
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
