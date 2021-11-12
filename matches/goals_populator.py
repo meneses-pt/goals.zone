@@ -79,8 +79,15 @@ def _fetch_reddit_goals():
                 post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
                 try:
                     post_match = PostMatch.objects.get(permalink=post['permalink'])
-                    if post_match.videogoal and post_match.videogoal.next_mirrors_check > timezone.now():
-                        old_posts_to_check.append(post_match)
+                    if post_match.videogoal:
+                        print('---')
+                        print('POST: ' + str(datetime.datetime.fromtimestamp(post['created_utc'])))
+                        print('NEXT: ' + str(post_match.videogoal.next_mirrors_check))
+                        print('NOW:  ' + str(timezone.now()))
+                        print(f'CHECK: {post_match.videogoal.next_mirrors_check < timezone.now()}')
+                        print(' ')
+                        if post_match.videogoal.next_mirrors_check < timezone.now():
+                            old_posts_to_check.append(post_match)
                 except PostMatch.DoesNotExist:
                     new_posts_to_check.append({
                         'post': post,
