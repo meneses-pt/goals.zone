@@ -226,6 +226,7 @@ class VideoGoal(models.Model):
     author = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     next_mirrors_check = models.DateTimeField(default=datetime.datetime.now)
+    auto_moderator_comment_id = models.CharField(max_length=20, null=True)
 
     @property
     def minute_int(self):

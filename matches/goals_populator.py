@@ -140,32 +140,45 @@ def calculate_next_mirrors_check(videogoal):
     videogoal.next_mirrors_check = next_mirrors_check
 
 
+def get_auto_moderator_comment_id(data):
+    auto_moderator_comments = [
+        child
+        for child in data[1]['data']['children']
+        if 'author' in child['data'] and child['data']['author'] == 'AutoModerator'
+    ]
+    auto_moderator_comment = next(iter(auto_moderator_comments or []), None)
+    if len(auto_moderator_comments) > 1:
+        print(f"WARNING: More than one AutoModerator comment\n{data}", flush=True)
+    return auto_moderator_comment['data']['id']
+
+
 def find_mirrors(videogoal):
     try:
         if videogoal.next_mirrors_check > timezone.now():
             return False
         calculate_next_mirrors_check(videogoal)
-        main_comments_link = 'http://api.reddit.com' + videogoal.post_match.permalink
+        main_comments_link = 'https://api.reddit.com' + videogoal.post_match.permalink
         response = _make_reddit_api_request(main_comments_link)
         data = json.loads(response.content)
+        if not videogoal.auto_moderator_comment_id:
+            videogoal.auto_moderator_comment_id = get_auto_moderator_comment_id(data)
+            videogoal.save()
         try:
-            for child in data[1]['data']['children']:
-                if 'author' in child['data'] and child['data']['author'] == 'AutoModerator':
-                    children_url = main_comments_link + child['data']['id']
-                    children_response = _make_reddit_api_request(children_url)
-                    try:
-                        children = json.loads(children_response.content)
-                        if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
-                                children[1]['data']['children'][0]['data']['replies'], dict):
-                            replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
-                            for reply in replies:
-                                _parse_reply_for_mirrors(reply, videogoal)
-                    except Exception as e:
-                        tb = traceback.format_exc()
-                        print(tb, flush=True)
-                        print(e, flush=True)
-                        print(children_response.content, flush=True)
-                        return True
+            children_url = main_comments_link + videogoal.auto_moderator_comment_id
+            children_response = _make_reddit_api_request(children_url)
+            try:
+                children = json.loads(children_response.content)
+                if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
+                        children[1]['data']['children'][0]['data']['replies'], dict):
+                    replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
+                    for reply in replies:
+                        _parse_reply_for_mirrors(reply, videogoal)
+            except Exception as e:
+                tb = traceback.format_exc()
+                print(tb, flush=True)
+                print(e, flush=True)
+                print(children_response.content, flush=True)
+                return True
         except Exception as e:
             tb = traceback.format_exc()
             print(tb, flush=True)
