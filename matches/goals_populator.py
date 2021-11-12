@@ -81,6 +81,7 @@ def _fetch_reddit_goals():
                     post_match = PostMatch.objects.get(permalink=post['permalink'])
                     if post_match.videogoal:
                         print('---')
+                        print('POST: ' + title)
                         print('POST: ' + str(datetime.datetime.fromtimestamp(post['created_utc'])))
                         print('NEXT: ' + str(post_match.videogoal.next_mirrors_check))
                         print('NOW:  ' + str(timezone.now()))
