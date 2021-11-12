@@ -13,7 +13,7 @@ jobs:
         username: ${{ secrets.USERNAME }}
         key: ${{ secrets.KEY_ED25519 }}
         port: ${{ secrets.PORT }}
-        script: ./test.sh
+        script: sh test.sh
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
