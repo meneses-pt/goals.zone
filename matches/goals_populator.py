@@ -208,7 +208,7 @@ def _parse_reply_for_mirrors(reply, videogoal):
 def _extract_urls_from_comment(author, body, videogoal):
     for line in body.splitlines():
         urls = re.findall(
-            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+',
+            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|%[0-9a-fA-F][0-9a-fA-F])+',
             line)
         if len(urls) > 0:
             for url in urls:
@@ -545,8 +545,8 @@ def _handle_not_found_match(away_team, home_team, post):
 def extract_names_from_title_regex(title):
     # Maybe later we should consider the format
     # HOME_TEAM - AWAY_TEAM HOME_SCORE-AWAY_SCORE
-    home = re.findall(r'\[?\]?\s?((\w|\s|\.|-)+)((\d|\[\d\])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d\])', title)
-    away = re.findall(r'(\d|\[\d\])([-x]| [-x] | [-x]|[-x] )(\d|\[\d\])\s?(((\w|\s|\.|-)(?!- ))+)(:|\s?\||-)?',
+    home = re.findall(r'\[?]?\s?((\w|\s|\.|-)+)((\d|\[\d])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d])', title)
+    away = re.findall(r'(\d|\[\d])([-x]| [-x] | [-x]|[-x] )(\d|\[\d])\s?(((\w|\s|\.|-)(?!- ))+)(:|\s?\||-)?',
                       title)
     minute = re.findall(r'(\S*\d+\S*)\'', title)
     if len(home) > 0:
