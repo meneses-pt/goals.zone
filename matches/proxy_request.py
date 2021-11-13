@@ -41,7 +41,7 @@ class ProxyRequest:
                     print("Getting proxies", flush=True)
                     # Proxies ---> Alternative 1 (https://github.com/meetsohail/proxy-list)
                     pl = ProxyList()
-                    pl_proxies = pl.get_all_proxies()
+                    pl_proxies = pl.get_all_proxies()[:100]
                     proxies = [f'{p[0]}:{p[1]}' for p in pl_proxies]
                     # Proxies ---> Alternative 2 (Custom)
                     # proxies = get_all_proxies()
