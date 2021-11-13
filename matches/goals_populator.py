@@ -38,7 +38,7 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
 executor = ThreadPoolExecutor(max_workers=10)
 
-logging.basicConfig(filename='/var/log/goals_zone_background_tasks.log',
+logging.basicConfig(filename='goals_zone_background_tasks.log',
                     filemode='w', format='[%(asctime)s|%(name)s|%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
