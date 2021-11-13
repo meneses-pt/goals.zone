@@ -20,7 +20,7 @@ def fetch_new_matches():
 
 
 def fetch_full_days(days_ago, days_amount, inverse=True):
-    print(f'Fetching full days events!', flush=True)
+    print(f'Fetching full days events! Inverse?: {inverse}', flush=True)
     events = []
     start_date = date.today() - timedelta(days=days_ago)
     for single_date in (start_date + timedelta(n) for n in range(days_ago + days_amount)):
@@ -45,7 +45,7 @@ def fetch_full_days(days_ago, days_amount, inverse=True):
                 print(f'Fetched {len(inverse_data["events"])} inverse events!', flush=True)
                 events += inverse_data['events']
             print(f'Finished fetching day {single_date}', flush=True)
-    print(f'Fetched {len(events)} total events!', flush=True)
+    print(f'Fetched {len(events)} total events! Inverse?: {inverse}', flush=True)
     return events
 
 
