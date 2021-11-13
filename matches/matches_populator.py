@@ -19,7 +19,7 @@ def fetch_new_matches():
     fetch_matches_from_sofascore()
 
 
-def fetch_full_days(days_ago, days_amount):
+def fetch_full_days(days_ago, days_amount, inverse=True):
     print(f'Fetching full days events!', flush=True)
     events = []
     start_date = date.today() - timedelta(days=days_ago)
@@ -34,16 +34,17 @@ def fetch_full_days(days_ago, days_amount):
         data = json.loads(content)
         events += data['events']
         print(f'Fetched {len(data["events"])} events!', flush=True)
-        url, headers = _fetch_full_scan_url(single_date, inverse=True)
-        inverse_response = _fetch_data_from_sofascore_api(url, headers)
-        if inverse_response is None or inverse_response.content is None:
-            print(f'No response retrieved from inverse', flush=True)
-        else:
-            inverse_content = inverse_response.content
-            inverse_data = json.loads(inverse_content)
-            print(f'Fetched {len(inverse_data["events"])} inverse events!', flush=True)
-            events += inverse_data['events']
-        print(f'Finished fetching day {single_date}', flush=True)
+        if inverse:
+            url, headers = _fetch_full_scan_url(single_date, inverse=True)
+            inverse_response = _fetch_data_from_sofascore_api(url, headers)
+            if inverse_response is None or inverse_response.content is None:
+                print(f'No response retrieved from inverse', flush=True)
+            else:
+                inverse_content = inverse_response.content
+                inverse_data = json.loads(inverse_content)
+                print(f'Fetched {len(inverse_data["events"])} inverse events!', flush=True)
+                events += inverse_data['events']
+            print(f'Finished fetching day {single_date}', flush=True)
     print(f'Fetched {len(events)} total events!', flush=True)
     return events
 
@@ -69,9 +70,10 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     start = timeit.default_timer()
     completed = CompletedTask.objects.filter(task_name='matches.matches_populator.fetch_new_matches').count()
     # 12 is every hour if task is every 5 minutes
-    full_scan = True if completed % 12 == 0 else False
-    if full_scan:
-        events = fetch_full_days(days_ago, days_amount)
+    if completed % 12 == 0:
+        events = fetch_full_days(days_ago, days_amount, inverse=True)
+    elif completed % 2 == 0:
+        events = fetch_full_days(days_ago, days_amount, inverse=False)
     else:
         events = fetch_live()
     end = timeit.default_timer()
