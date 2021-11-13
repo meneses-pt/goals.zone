@@ -9,13 +9,23 @@ https://docs.djangoproject.com/en/2.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
-
+import logging
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from warnings import filterwarnings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+filterwarnings('ignore', message=r'.*received a naive datetime')
+
+logging.basicConfig(
+    filename='/var/log/goals_zone/site.log',
+    filemode='a',
+    format='[%(asctime)s | %(name)s | %(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level='DEBUG'
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -168,5 +178,3 @@ if os.environ.get('SECRET_KEY') is not None and \
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 GEOIP_PATH = os.path.join(STATICFILES_DIRS[0] if DEBUG else STATIC_ROOT, "geoip2/GeoLite2-City.mmdb")
-
-filterwarnings('ignore', message=r'.*received a naive datetime')
