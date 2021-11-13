@@ -3,6 +3,7 @@ import random
 import requests
 from proxy_list import ProxyList
 
+from goals_zone import settings
 from matches.utils import get_all_proxies
 
 
@@ -34,6 +35,9 @@ class ProxyRequest:
         response = None
         attempts = 0
         proxies = None
+        # Try always the IPRoyal proxy first
+        if settings.PREMIUM_PROXY and settings.PREMIUM_PROXY != '':
+            self.current_proxy = settings.PREMIUM_PROXY
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             if attempts > 0 or not self.current_proxy:
                 print(f"Proxy {self.current_proxy} | Attempt {attempts+1}", flush=True)
