@@ -50,7 +50,7 @@ logging.basicConfig(
 @background(schedule=60)
 def fetch_videogoals():
     print('Fetching new goals', flush=True)
-    logging.debug('Fetching new goals')
+    logging.info('Fetching new goals')
     _fetch_reddit_goals()
 
 
@@ -102,6 +102,7 @@ def _fetch_reddit_goals():
         print(f'{new_posts_count} are new posts', flush=True)
         print(f'{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search', flush=True)
         print(f'{(end - start):.2f} elapsed', flush=True)
+        logging.debug(f'{(end - start):.2f} elapsed')
         after = data['data']['after']
         i += 1
     print('Finished fetching goals\n\n', flush=True)
