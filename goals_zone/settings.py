@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from warnings import filterwarnings
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -166,3 +168,5 @@ if os.environ.get('SECRET_KEY') is not None and \
     STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 GEOIP_PATH = os.path.join(STATICFILES_DIRS[0] if DEBUG else STATIC_ROOT, "geoip2/GeoLite2-City.mmdb")
+
+filterwarnings('ignore', message=r'.*received a naive datetime')
