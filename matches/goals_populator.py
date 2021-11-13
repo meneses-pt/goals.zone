@@ -86,7 +86,7 @@ def _fetch_reddit_goals():
                             futures.append(future)
                 except PostMatch.DoesNotExist:
                     new_posts_count += 1
-                    future = executor.submit(find_and_store_videogoal, post['post'], post['title'], post['post_created_date'])
+                    future = executor.submit(find_and_store_videogoal, post, post['title'], post['post_created_date'])
                     futures.append(future)
         concurrent.futures.wait(futures)
         end = timeit.default_timer()
