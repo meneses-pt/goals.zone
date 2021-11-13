@@ -35,12 +35,11 @@ class ProxyRequest:
         response = None
         attempts = 0
         proxies = None
-        # Try always the IPRoyal proxy first
-        if settings.PREMIUM_PROXY and settings.PREMIUM_PROXY != '':
-            self.current_proxy = settings.PREMIUM_PROXY
         while (response is None or response.status_code != 200) and attempts < max_attempts:
-            if attempts > 0 or not self.current_proxy:
-                print(f"Proxy {self.current_proxy} | Attempt {attempts+1}", flush=True)
+            # Make half of the attempts with the PREMIUM_PROXY
+            if attempts / 2 < max_attempts and settings.PREMIUM_PROXY and settings.PREMIUM_PROXY != '':
+                self.current_proxy = settings.PREMIUM_PROXY
+            else:
                 if not proxies:
                     print("Getting proxies", flush=True)
                     # Proxies ---> Alternative 1 (https://github.com/meetsohail/proxy-list)
@@ -54,6 +53,7 @@ class ProxyRequest:
                 self.current_proxy = random.choice(proxies)
                 proxies.remove(self.current_proxy)
             try:
+                print(f"Proxy {self.current_proxy} | Attempt {attempts + 1}", flush=True)
                 attempts += 1
                 if use_proxy:
                     response = requests.get(

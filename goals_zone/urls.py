@@ -13,7 +13,7 @@ urlpatterns = [
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if not Task.objects.filter(verbose_name="fetch_new_matches").exists():
-    fetch_new_matches(repeat=60 * 10, repeat_until=None, verbose_name="fetch_new_matches")
+    fetch_new_matches(repeat=60 * 5, repeat_until=None, verbose_name="fetch_new_matches")
 
 if not Task.objects.filter(verbose_name="fetch_videogoals").exists():
     fetch_videogoals(repeat=60, repeat_until=None, verbose_name="fetch_videogoals")

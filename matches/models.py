@@ -11,6 +11,7 @@ from django.urls import reverse
 from django.utils.text import slugify
 
 from matches.proxy_request import ProxyRequest
+from matches.utils import random_string
 
 
 class Team(models.Model):
@@ -122,7 +123,7 @@ class Tournament(models.Model):
             (" - " + self.category.name) if self.category is not None else ""))
 
     def _get_unique_slug(self):
-        slug = slugify((self.name if self.name is not None else "(no name)") + (
+        slug = slugify((self.name if self.name is not None else random_string(5)) + (
             (" - " + self.category.name) if self.category is not None else ""))
         unique_slug = slug
         num = 1

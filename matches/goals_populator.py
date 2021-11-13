@@ -49,9 +49,7 @@ def _fetch_reddit_goals():
     i = 0
     after = None
     completed = CompletedTask.objects.filter(task_name='matches.goals_populator.fetch_videogoals').count()
-    iterations = 1
-    if completed % 60 == 0:
-        iterations = 10
+    iterations = 10 if completed % 60 == 0 else 1
     while i < iterations:
         start = timeit.default_timer()
         print(f"Fetching Reddit Goals {i + 1}/{iterations}", flush=True)
