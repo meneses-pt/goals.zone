@@ -38,8 +38,12 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
 executor = ThreadPoolExecutor(max_workers=10)
 
-logging.basicConfig(filename='/var/log/goals_zone/background_tasks.log',
-                    filemode='w', format='[%(asctime)s|%(name)s|%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+logging.basicConfig(
+    filename='/var/log/goals_zone/background_tasks.log',
+    filemode='a',
+    format='[%(asctime)s |%(name)s | %(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
 
 
 @background(schedule=60)
@@ -82,7 +86,7 @@ def _fetch_reddit_goals():
                     if post_match.videogoal:
                         if post_match.videogoal.next_mirrors_check < timezone.now():
                             old_posts_to_check_count += 1
-                            future = executor.submit(find_mirrors, post.videogoal)
+                            future = executor.submit(find_mirrors, post_match.videogoal)
                             futures.append(future)
                 except PostMatch.DoesNotExist:
                     new_posts_count += 1
