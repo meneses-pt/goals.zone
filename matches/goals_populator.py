@@ -40,8 +40,8 @@ executor = ThreadPoolExecutor(max_workers=10)
 
 @background(schedule=60)
 def fetch_videogoals():
-    current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals')
-    print(f'Now: {datetime.datetime.now()} | Run at: {current.run_at} | Fetching new goals', flush=True)
+    current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals').first()
+    print(f'Now: {datetime.datetime.now()} | Task: {current.id} | Fetching new goals', flush=True)
     _fetch_reddit_goals()
 
 

@@ -13,8 +13,8 @@ from .proxy_request import ProxyRequest
 
 @background(schedule=60 * 10)
 def fetch_new_matches():
-    current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals')
-    print(f'Now: {datetime.now()} | Run at: {current.run_at} | Fetching new matches...', flush=True)
+    current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals').first()
+    print(f'Now: {datetime.now()} | Task: {current.id} | Fetching new matches...', flush=True)
     fetch_matches_from_sofascore()
 
 
