@@ -1,5 +1,4 @@
 import json
-import os
 from datetime import date, datetime, timedelta
 
 import requests
@@ -15,36 +14,6 @@ from .proxy_request import ProxyRequest
 def fetch_new_matches():
     print('Fetching new matches...', flush=True)
     fetch_matches_from_sofascore()
-    # How to get historic data
-    # fetch_matches_from_sofascore(days_ago=2)
-
-
-def fetch_matches_from_rapidapi(days_ago=2):
-    start_date = date.today() - timedelta(days=days_ago)
-    for single_date in (start_date + timedelta(n) for n in range(days_ago + 1)):
-        response = _fetch_data_from_rapidpi_api(single_date)
-        data = json.loads(response.content)
-        results = data['api']['results']
-        print(f'{results} matches fetched...', flush=True)
-        for fixture in data['api']['fixtures']:
-            home_team = _get_or_create_home_team_rapidapi(fixture)
-            away_team = _get_or_create_away_team_rapidapi(fixture)
-            home_goals = fixture['goalsHomeTeam']
-            away_goals = fixture['goalsAwayTeam']
-            score = None
-            if home_goals and away_goals:
-                score = f'{home_goals}:{away_goals}'
-            datetime_str = _get_datetime_string(fixture['event_date'])
-            match_datetime = datetime.strptime(datetime_str, '%Y-%m-%dT%H:%M:%S%z')
-            print(f'{home_team} - {away_team} | {score} at {match_datetime}', flush=True)
-            match = Match()
-            match.home_team = home_team
-            match.away_team = away_team
-            match.score = score
-            match.datetime = match_datetime
-            _save_or_update_match(match)
-        print(f'Finished processing day {single_date}', flush=True)
-    print('Finished processing matches\n\n', flush=True)
 
 
 def fetch_matches_from_sofascore(days_ago=0):
@@ -113,14 +82,6 @@ def fetch_matches_from_sofascore(days_ago=0):
     delete = Match.objects.annotate(videos_count=Count('videogoal')).filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
     print(f'Deleted {delete} old matches without videos', flush=True)
     print('Finished processing matches\n\n', flush=True)
-
-
-def _get_or_create_away_team_rapidapi(fixture):
-    away_team, away_team_created = Team.objects.get_or_create(id=fixture['awayTeam']['team_id'])
-    away_team.name = fixture['awayTeam']['team_name']
-    away_team.logo_url = fixture['awayTeam']['logo']
-    away_team.save()
-    return away_team
 
 
 def _get_or_create_away_team_sofascore(fixture):
@@ -213,19 +174,6 @@ def _get_or_create_season_sofascore(season):
     except Exception as e:
         print("An exception as occurred getting or creating season", e, flush=True)
         return None
-
-
-def _fetch_data_from_rapidpi_api(single_date):
-    today_str = single_date.strftime("%Y-%m-%d")
-    headers = {
-        "X-RapidAPI-Host": "api-football-v1.p.rapidapi.com",
-        "X-RapidAPI-Key": os.environ.get('RAPIDAPI_KEY')
-    }
-    response = requests.get(
-        f'https://api-football-v1.p.rapidapi.com/v2/fixtures/date/{today_str}?timezone=Europe/London',
-        headers=headers
-    )
-    return response
 
 
 # noinspection PyBroadException

@@ -1,6 +1,7 @@
 import concurrent.futures
 import datetime
 import json
+import logging
 import operator
 import os
 import re
@@ -37,10 +38,13 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
 executor = ThreadPoolExecutor(max_workers=10)
 
+logging.basicConfig(filename='background_tasks_l.log', filemode='w', format='[%(asctime)s|%(name)s|%(levelname)s] %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
 
 @background(schedule=60)
 def fetch_videogoals():
     print('Fetching new goals', flush=True)
+    logging.debug('Fetching new goals')
     _fetch_reddit_goals()
 
 
@@ -63,55 +67,32 @@ def _fetch_reddit_goals():
             print(f'No data in response: {response.content}', flush=True)
             return
         results = data['data']['dist']
-        new_posts_to_check = []
-        old_posts_to_check = []
-        new_futures = []
-        old_futures = []
+        print(f'{results} posts fetched...', flush=True)
+        futures = []
+        new_posts_count = 0
+        old_posts_to_check_count = 0
         for post in data['data']['children']:
             post = post['data']
             if post['url'] is not None and \
                     post['link_flair_text'] is not None and \
                     (post['link_flair_text'].lower() == 'media' or post['link_flair_text'].lower() == 'mirror'):
-                title = post['title']
-                title = _fix_title(title)
-                post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
                 try:
                     post_match = PostMatch.objects.get(permalink=post['permalink'])
                     if post_match.videogoal:
                         if post_match.videogoal.next_mirrors_check < timezone.now():
-                            old_posts_to_check.append(post_match)
+                            old_posts_to_check_count += 1
+                            future = executor.submit(find_mirrors, post.videogoal)
+                            futures.append(future)
                 except PostMatch.DoesNotExist:
-                    new_posts_to_check.append({
-                        'post': post,
-                        'title': title,
-                        'post_created_date': post_created_date
-                    })
-        new_posts_count = len(new_posts_to_check)
-        old_posts_count = results - new_posts_count
-        old_posts_to_check_count = len(old_posts_to_check)
+                    new_posts_count += 1
+                    future = executor.submit(find_and_store_videogoal, post['post'], post['title'], post['post_created_date'])
+                    futures.append(future)
+        concurrent.futures.wait(futures)
         end = timeit.default_timer()
-        print(f'{results} posts fetched...', flush=True)
-        print(f'{(end - start):.2f} elapsed on pre-processing', flush=True)
-
-        start = timeit.default_timer()
-        for post in new_posts_to_check:
-            future = executor.submit(find_and_store_videogoal, post['post'], post['title'], post['post_created_date'])
-            new_futures.append(future)
-        concurrent.futures.wait(new_futures)
-        end = timeit.default_timer()
-        print(f'{new_posts_count} new posts processed...', flush=True)
-        print(f'{(end - start):.2f} total elapsed on new posts', flush=True)
-
-        start = timeit.default_timer()
-        for post in old_posts_to_check:
-            future = executor.submit(find_mirrors, post.videogoal)
-            old_futures.append(future)
-        concurrent.futures.wait(old_futures)
-        end = timeit.default_timer()
-        print(f'{old_posts_to_check_count}/{old_posts_count} are old posts with mirror search...', flush=True)
-        print(f'{(end - start):.2f} elapsed on old posts', flush=True)
-
-        print(f'{results} posts processed...\n', flush=True)
+        print(f'{results} posts processed', flush=True)
+        print(f'{new_posts_count} are new posts', flush=True)
+        print(f'{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search', flush=True)
+        print(f'{(end - start):.2f} elapsed', flush=True)
         after = data['data']['after']
         i += 1
     print('Finished fetching goals\n\n', flush=True)
