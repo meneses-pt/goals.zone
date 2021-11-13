@@ -42,7 +42,8 @@ logging.basicConfig(
     filename='/var/log/goals_zone/background_tasks.log',
     filemode='a',
     format='[%(asctime)s |%(name)s | %(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level='DEBUG'
 )
 
 
