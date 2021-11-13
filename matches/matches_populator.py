@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 
 import requests
 from background_task import background
+from background_task.models import Task
 from django.db.models import Count
 
 from .goals_populator import _handle_messages_to_send
@@ -12,7 +13,8 @@ from .proxy_request import ProxyRequest
 
 @background(schedule=60 * 10)
 def fetch_new_matches():
-    print('Fetching new matches...', flush=True)
+    current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals')
+    print(f'{datetime.now()} | {current.id} | Fetching new matches...', flush=True)
     fetch_matches_from_sofascore()
 
 

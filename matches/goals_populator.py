@@ -1,7 +1,6 @@
 import concurrent.futures
 import datetime
 import json
-import logging
 import operator
 import os
 import re
@@ -17,7 +16,7 @@ import markdown as markdown
 import requests
 import tweepy
 from background_task import background
-from background_task.models import CompletedTask
+from background_task.models import CompletedTask, Task
 from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
@@ -38,19 +37,11 @@ TWITTER_ACCESS_TOKEN_SECRET = os.environ.get('TWITTER_ACCESS_TOKEN_SECRET')
 
 executor = ThreadPoolExecutor(max_workers=10)
 
-logging.basicConfig(
-    filename='/var/log/goals_zone/background_tasks.log',
-    filemode='a',
-    format='[%(asctime)s | %(name)s | %(levelname)s] %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S',
-    level='DEBUG'
-)
-
 
 @background(schedule=60)
 def fetch_videogoals():
-    print('Fetching new goals', flush=True)
-    logging.info('Fetching new goals')
+    current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals')
+    print(f'{datetime.datetime.now()} | {current.id} | Fetching new goals', flush=True)
     _fetch_reddit_goals()
 
 
@@ -102,7 +93,6 @@ def _fetch_reddit_goals():
         print(f'{new_posts_count} are new posts', flush=True)
         print(f'{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search', flush=True)
         print(f'{(end - start):.2f} elapsed', flush=True)
-        logging.debug(f'{(end - start):.2f} elapsed')
         after = data['data']['after']
         i += 1
     print('Finished fetching goals\n\n', flush=True)
