@@ -57,7 +57,14 @@ def _fetch_reddit_goals():
         if response is None or response.content is None:
             print(f'No response retrieved', flush=True)
             continue
-        data = json.loads(response.content)
+        try:
+            data = json.loads(response.content)
+        except Exception as e:
+            tb = traceback.format_exc()
+            print(tb, flush=True)
+            print(e, flush=True)
+            print(response.content, flush=True)
+            raise e
         if 'data' not in data.keys():
             print(f'No data in response: {response.content}', flush=True)
             return
