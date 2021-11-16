@@ -94,6 +94,8 @@ def send_message(sender, instance, **kwargs):
         return
     result = ''
     for wh in instance.webhooks.all():
+        if not wh.active:
+            continue
         if wh.destination == Webhook.WebhookDestinations.Discord:
             try:
                 webhook = DiscordWebhook(url=wh.webhook_url, content=instance.message)

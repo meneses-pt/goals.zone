@@ -4,6 +4,7 @@ import json
 import operator
 import os
 import re
+import sys
 import time
 import timeit
 import traceback
@@ -63,7 +64,7 @@ def _fetch_reddit_goals():
             tb = traceback.format_exc()
             print(tb, flush=True)
             print(e, flush=True)
-            print(response.content, flush=True)
+            print(response.content, file=sys.stderr, flush=True)
             raise e
         if 'data' not in data.keys():
             print(f'No data in response: {response.content}', flush=True)
