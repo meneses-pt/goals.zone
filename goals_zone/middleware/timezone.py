@@ -1,3 +1,5 @@
+import ipaddress
+
 import pytz
 from django.contrib.gis.geoip2 import GeoIP2
 
@@ -16,11 +18,18 @@ class TimezoneMiddleware:
             request.META["REMOTE_ADDR"] = parts[0]
         ip = request.META["REMOTE_ADDR"]
         g = GeoIP2()
+        time_zone = None
         try:
-            ip_response = g.city(ip)
-            time_zone = ip_response['time_zone']
-        except AddressNotFoundError:
-            time_zone = None
+            ip = ipaddress.ip_address(ip)
+            try:
+                ip_response = g.city(ip)
+                time_zone = ip_response['time_zone']
+            except AddressNotFoundError as e:
+                print('AddressNotFoundError: %s' % e)
+        except ValueError:
+            print('address/netmask is invalid: %s' % ip)
+        except Exception as e:
+            print(f'IP: {ip}. Exception: {e}')
         if time_zone:
             timezone_object = pytz.timezone(time_zone)
             timezone.activate(timezone_object)
