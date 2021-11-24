@@ -37,7 +37,7 @@ class ProxyRequest:
         proxies = None
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             # Make half of the attempts with the PREMIUM_PROXY
-            if attempts / 2 < max_attempts and settings.PREMIUM_PROXY and settings.PREMIUM_PROXY != '':
+            if attempts < (max_attempts / 2) and settings.PREMIUM_PROXY and settings.PREMIUM_PROXY != '':
                 self.current_proxy = settings.PREMIUM_PROXY
             else:
                 if not proxies:
