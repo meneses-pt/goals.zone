@@ -61,7 +61,7 @@ jupyter-client==7.0.6
 jupyter-core==4.9.1
 jupyterlab-pygments==0.1.2
 langcodes==3.3.0
-lxml==4.6.4
+lxml==4.6.5
 Markdown==3.3.5
 MarkupSafe==2.0.1
 matplotlib-inline==0.1.3
