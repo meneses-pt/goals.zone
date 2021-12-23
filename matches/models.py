@@ -174,10 +174,12 @@ class Match(models.Model):
     first_msg_sent = models.BooleanField(default=False)
     highlights_msg_sent = models.BooleanField(default=False)
     status = models.CharField(max_length=50, default='finished')
+    first_video_datetime = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         indexes = [
             models.Index(fields=['datetime']),
+            models.Index(fields=['first_video_datetime']),
         ]
 
     @property
@@ -195,6 +197,10 @@ class Match(models.Model):
         else:
             splitted = self.score.split(':')
             return splitted[1]
+
+    @property
+    def simple_title(self):
+        return str(self.home_team.name) + ' - ' + str(self.away_team.name)
 
     def __str__(self):
         return str(self.home_team.name) + ' ' + (self.score if self.score else ':') + ' ' + str(self.away_team.name)
@@ -246,6 +252,9 @@ class VideoGoal(models.Model):
 
     def __str__(self):
         return str(self.title)
+
+    def get_absolute_url(self):
+        return reverse('match-detail', kwargs={'slug': self.match.slug}) + f'?v={self.simple_permalink}'
 
 
 class VideoGoalMirror(models.Model):
