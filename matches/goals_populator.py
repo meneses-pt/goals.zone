@@ -475,6 +475,9 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
 
 def _save_found_match(matches_results, minute_str, post):
     match = matches_results.first()
+    if match.videogoal_set.count() == 0:
+        match.first_video_datetime = timezone.now()
+        match.save()
     # print(f'Match {match} found for: {title}', flush=True)
     videogoal = VideoGoal()
     videogoal.next_mirrors_check = timezone.now()
