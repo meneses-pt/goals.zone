@@ -58,7 +58,7 @@ class ProxyRequest:
                 if use_proxy:
                     response = requests.get(
                         url,
-                        proxies={"https": f'http://{self.current_proxy}'},
+                        proxies={"http": f'http://{self.current_proxy}'},
                         headers=headers,
                         timeout=timeout
                     )
