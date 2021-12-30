@@ -1,6 +1,7 @@
 import random
 
 import requests
+from fake_headers import Headers
 from proxy_list import ProxyList
 
 from goals_zone import settings
@@ -58,7 +59,9 @@ class ProxyRequest:
                 if use_proxy:
                     response = requests.get(
                         url,
-                        proxies={"http": f'http://{self.current_proxy}'},
+                        proxies={
+                            "https": f'http://{self.current_proxy}'
+                        },
                         headers=headers,
                         timeout=timeout
                     )

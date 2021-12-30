@@ -1,27 +1,12 @@
 import base64
 import json
+import random
 import re
 import string
-import random
 
 import requests
+from fake_headers import Headers
 from lxml.html import fromstring
-
-headers_list = {
-    'accept': 'text/html,application/xhtml+xml,application/xml;'
-              'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-    'accept-encoding': 'gzip, deflate',
-    'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
-    'cache-control': 'no-cache',
-    'pragma': 'no-cache',
-    'sec-fetch-dest': 'document',
-    'sec-fetch-mode': 'navigate',
-    'sec-fetch-site': 'none',
-    'sec-fetch-user': '?1',
-    'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                  'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-}
 
 
 def random_string(length):
@@ -51,7 +36,8 @@ def get_proxies_sslproxies():
 
 
 def get_proxies_freeproxycz():
-    global headers_list
+    headers_list = Headers(headers=True).generate()
+    headers_list['Accept-Encoding'] = 'gizp, deflate'
     url = 'http://free-proxy.cz/en/proxylist/country/all/https/ping/level1'
     try:
         response = requests.get(url, headers=headers_list)
@@ -79,7 +65,8 @@ def get_proxies_freeproxycz():
 
 
 def get_proxies_proxyscrape():
-    global headers_list
+    headers_list = Headers(headers=True).generate()
+    headers_list['Accept-Encoding'] = 'gizp, deflate'
     url = 'https://api.proxyscrape.com/?request=displayproxies&proxytype=http&timeout=10000&country=all&ssl=yes&anonymity=elite'
     try:
         response = requests.get(url, headers=headers_list)

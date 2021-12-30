@@ -23,6 +23,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
 from django.utils import timezone
+from fake_headers import Headers
 from slack_webhook import Slack
 
 from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch
@@ -601,18 +602,16 @@ def find_match(home_team, away_team, to_date, from_date=None):
 
 
 def _fetch_data_from_reddit_api(after):
-    headers = {
-        "User-agent": "Goals Populator 0.1"
-    }
+    headers = Headers(headers=True).generate()
+    headers['Accept-Encoding'] = 'gizp, deflate'
     response = requests.get(f'https://api.reddit.com/r/soccer/new?limit=100&after={after}',
                             headers=headers)
     return response
 
 
 def _make_reddit_api_request(link):
-    headers = {
-        "User-agent": "Goals Populator 0.1"
-    }
+    headers = Headers(headers=True).generate()
+    headers['Accept-Encoding'] = 'gizp, deflate'
     response = requests.get(link, headers=headers)
     return response
 
@@ -620,9 +619,8 @@ def _make_reddit_api_request(link):
 def _fetch_historic_data_from_reddit_api(from_date):
     after = int(time.mktime(from_date.timetuple()))
     before = int(after + 86400)  # a day
-    headers = {
-        "User-agent": "Goals Populator 0.1"
-    }
+    headers = Headers(headers=True).generate()
+    headers['Accept-Encoding'] = 'gizp, deflate'
     response = requests.get(
         f'https://api.pushshift.io/reddit/search/submission/'
         f'?subreddit=soccer&sort=desc&sort_type=created_utc&after={after}&before={before}&size=1000',

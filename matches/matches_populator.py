@@ -6,6 +6,7 @@ import requests
 from background_task import background
 from background_task.models import Task, CompletedTask
 from django.db.models import Count
+from fake_headers import Headers
 
 from .goals_populator import _handle_messages_to_send
 from .models import Match, Team, Tournament, Category, Season
@@ -132,7 +133,7 @@ def _get_or_create_away_team_sofascore(fixture):
     team_id = fixture['awayTeam']['id']
     away_team, away_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['awayTeam']['name']})
     away_team.name = fixture['awayTeam']['name']
-    away_team.logo_url = f"https://www.sofascore.com/images/team-logo/football_{team_id}.png"
+    away_team.logo_url = f"https://api.sofascore.app/api/team/{team_id}/image"
     away_team.save()
     return away_team
 
@@ -155,11 +156,11 @@ def get_team_name_code(team, response, team_tag):
 
 def _get_or_create_home_team_sofascore(fixture):
     team_id = fixture['homeTeam']['id']
-    away_team, away_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['homeTeam']['name']})
-    away_team.name = fixture['homeTeam']['name']
-    away_team.logo_url = f"https://www.sofascore.com/images/team-logo/football_{team_id}.png"
-    away_team.save()
-    return away_team
+    home_team, home_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['homeTeam']['name']})
+    home_team.name = fixture['homeTeam']['name']
+    home_team.logo_url = f"https://api.sofascore.app/api/team/{team_id}/image"
+    home_team.save()
+    return home_team
 
 
 def _get_or_create_tournament_sofascore(tournament, category):
@@ -254,65 +255,27 @@ def make_sofascore_request(today_str, proxy=None, inverse=False):
     url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
     if inverse:
         url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
+    headers = Headers(headers=True).generate()
+    headers['Accept-Encoding'] = 'gizp, deflate'
     if proxy:
         response = requests.get(
             url,
             proxies={"http": f'http://{proxy}', "https": f'https://{proxy}'},
-            headers={
-                'accept': 'text/html,application/xhtml+xml,application/xml;'
-                          'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'accept-encoding': 'gzip, deflate',
-                'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
-                'cache-control': 'no-cache',
-                'pragma': 'no-cache',
-                'sec-fetch-dest': 'document',
-                'sec-fetch-mode': 'navigate',
-                'sec-fetch-site': 'none',
-                'sec-fetch-user': '?1',
-                'upgrade-insecure-requests': '1',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-            },
+            headers=headers,
             timeout=10
         )
     else:
         response = requests.get(
             url,
-            headers={
-                'accept': 'text/html,application/xhtml+xml,application/xml;'
-                          'q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'accept-encoding': 'gzip, deflate',
-                'accept-language': 'pt-PT,pt;q=0.9,en-PT;q=0.8,en;q=0.7,en-US;q=0.6,es;q=0.5,fr;q=0.4',
-                'cache-control': 'no-cache',
-                'pragma': 'no-cache',
-                'sec-fetch-dest': 'document',
-                'sec-fetch-mode': 'navigate',
-                'sec-fetch-site': 'none',
-                'sec-fetch-user': '?1',
-                'upgrade-insecure-requests': '1',
-                'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) '
-                              'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.102 Safari/537.36'
-            },
+            headers=headers,
             timeout=10
         )
     return response
 
 
 def get_sofascore_headers():
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'Pragma': 'no-cache',
-        'Cache-Control': 'no-cache',
-    }
+    headers = Headers(headers=True).generate()
+    headers['Accept-Encoding'] = 'gizp, deflate'
     return headers
 
 
