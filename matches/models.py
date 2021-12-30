@@ -54,7 +54,7 @@ class Team(models.Model):
         if (self.logo_url and not self.logo_file) or \
                 datetime.datetime.now().replace(tzinfo=None) - self.logo_updated_at.replace(tzinfo=None) > \
                 datetime.timedelta(days=90):
-            print(f'Going to update team logo: {self.name}', flush=True)
+            print(f'Going to update team logo: {self.name} | {self.logo_url}', flush=True)
             response = ProxyRequest.get_instance().make_request(url=self.logo_url,
                                                                 max_attempts=10)
             if response:

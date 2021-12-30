@@ -133,7 +133,7 @@ def _get_or_create_away_team_sofascore(fixture):
     team_id = fixture['awayTeam']['id']
     away_team, away_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['awayTeam']['name']})
     away_team.name = fixture['awayTeam']['name']
-    away_team.logo_url = f"https://api.sofascore.app/api/team/{team_id}/image"
+    away_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
     away_team.save()
     return away_team
 
@@ -158,7 +158,7 @@ def _get_or_create_home_team_sofascore(fixture):
     team_id = fixture['homeTeam']['id']
     home_team, home_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['homeTeam']['name']})
     home_team.name = fixture['homeTeam']['name']
-    home_team.logo_url = f"https://api.sofascore.app/api/team/{team_id}/image"
+    home_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
     home_team.save()
     return home_team
 
