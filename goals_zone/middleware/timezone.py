@@ -22,7 +22,7 @@ class TimezoneMiddleware:
         try:
             ip = ipaddress.ip_address(ip)
             try:
-                ip_response = g.city(ip)
+                ip_response = g.city(str(ip))
                 time_zone = ip_response['time_zone']
             except AddressNotFoundError as e:
                 print('AddressNotFoundError: %s' % e)
