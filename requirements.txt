@@ -59,7 +59,7 @@ iniconfig==1.1.1
 ipaddress==1.0.23
 ipapi==1.0.4
 ipykernel==6.6.1
-ipython==8.0.0
+ipython==8.0.1
 ipython-genutils==0.2.0
 jedi==0.18.1
 Jinja2==3.0.3
