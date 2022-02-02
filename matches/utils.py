@@ -16,12 +16,12 @@ def random_string(length):
 
 
 def localize_date(date):
-    current_timezone = timezone.get_current_timezone()
     try:
+        current_timezone = timezone.get_current_timezone()
         date = current_timezone.localize(date)
     except Exception as e:
         print(f'Exception localizing date ({e})', flush=True)
-        return date
+    return date
 
 
 def get_proxies_sslproxies():
