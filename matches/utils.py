@@ -17,9 +17,11 @@ def random_string(length):
 
 def localize_date(date):
     current_timezone = timezone.get_current_timezone()
-    if current_timezone.key == 'UTC':
+    try:
+        date = current_timezone.localize(date)
+    except Exception as e:
+        print(f'Exception localizing date ({e})', flush=True)
         return date
-    return current_timezone.localize(date)
 
 
 def get_proxies_sslproxies():
