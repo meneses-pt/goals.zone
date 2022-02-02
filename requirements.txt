@@ -28,12 +28,11 @@ defusedxml==0.7.1
 discord-webhook==0.14.0
 distlib==0.3.4
 dj-database-url==0.5.0
-Django==3.2.12
+Django==4.0.2
 django-admin-rangefilter==0.8.3
 django-appconf==1.0.5
-django-compat==1.0.15
 django-heroku==0.3.1
-django4-background-tasks==1.2.5.3
+django4-background-tasks==1.2.5.5
 djangorestframework==3.13.1
 docopt==0.6.2
 entrypoints==0.3

@@ -9,6 +9,7 @@ from rest_framework import generics
 
 from .models import Match, Team
 from .serializers import MatchSerializer, TeamSerializer
+from .utils import localize_date
 
 
 class MatchesHistoryListView(generic.ListView):
@@ -23,8 +24,8 @@ class MatchesHistoryListView(generic.ListView):
         except (ValueError, TypeError):
             start_date = datetime.combine(datetime.today(), datetime.min.time())
             end_date = start_date + timedelta(days=1)
-        start_date = timezone.get_current_timezone().localize(start_date)
-        end_date = timezone.get_current_timezone().localize(end_date)
+        start_date = localize_date(start_date)
+        end_date = localize_date(end_date)
         return Match.objects.order_by('datetime').filter(datetime__gte=start_date,
                                                          datetime__lt=end_date,
                                                          videogoal__isnull=False).distinct()
@@ -71,8 +72,8 @@ class MatchSearchView(generics.ListAPIView):
         except (ValueError, TypeError):
             start_date = datetime.combine(datetime.today(), datetime.min.time())
             end_date = start_date + timedelta(days=1)
-        start_date = timezone.get_current_timezone().localize(start_date)
-        end_date = timezone.get_current_timezone().localize(end_date)
+        start_date = localize_date(start_date)
+        end_date = localize_date(end_date)
         queryset = Match.objects.order_by('datetime').filter(datetime__gte=start_date,
                                                              datetime__lte=end_date,
                                                              videogoal__isnull=False).distinct()
@@ -88,7 +89,7 @@ class MatchWeekSearchView(generics.ListAPIView):
     def get_queryset(self):
         filter_q = self.request.query_params.get('filter', None)
         start_date = datetime.combine(datetime.today(), datetime.min.time()) - timedelta(days=7)
-        start_date = timezone.get_current_timezone().localize(start_date)
+        start_date = localize_date(start_date)
         queryset = Match.objects.order_by('-datetime').filter(datetime__gte=start_date,
                                                               videogoal__isnull=False).distinct()
         if filter_q is not None:

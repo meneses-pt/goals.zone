@@ -5,6 +5,7 @@ import re
 import string
 
 import requests
+from django.utils import timezone
 from fake_headers import Headers
 from lxml.html import fromstring
 
@@ -12,6 +13,13 @@ from lxml.html import fromstring
 def random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))
+
+
+def localize_date(date):
+    current_timezone = timezone.get_current_timezone()
+    if current_timezone.key == 'UTC':
+        return date
+    return current_timezone.localize(date)
 
 
 def get_proxies_sslproxies():
