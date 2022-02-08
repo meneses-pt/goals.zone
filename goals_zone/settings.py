@@ -36,6 +36,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 ALLOWED_HOSTS = ['goals.zone', 'videogoals.meneses.pt', '127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://goals.zone']
 
 # Application definition
 
