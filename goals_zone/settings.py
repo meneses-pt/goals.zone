@@ -1,3 +1,4 @@
+# noinspection GrazieInspection
 """
 Django settings for goals.zone project.
 
