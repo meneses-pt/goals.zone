@@ -1,7 +1,11 @@
 from datetime import date, timedelta, datetime
+from itertools import chain
+
+from django.core.paginator import Paginator
+from django.db.models import Count
 from django.views import generic
 
-from matches.models import Match
+from matches.models import Match, Team
 from matches.utils import localize_date
 
 
@@ -65,3 +69,20 @@ class AfricaTeamsListView(generic.ListView):
                     group by t.id, name, logo_url, logo_file, name_code
                     order by matches_count desc
                 ''')
+
+
+class AfricaTeamsDetailView(generic.DetailView):
+    template_name = 'africa/matches/team_detail.html'
+    paginate_by = 25
+    model = Team
+
+    def get_context_data(self, **kwargs):
+        context = super(AfricaTeamsDetailView, self).get_context_data(**kwargs)
+        home_matches = self.object.home_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
+        away_matches = self.object.away_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
+        team_matches = sorted(chain(home_matches, away_matches), key=lambda instance: instance.datetime, reverse=True)
+        paginator = Paginator(team_matches, self.paginate_by)
+        page_number = self.request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        context['page_obj'] = page_obj
+        return context
