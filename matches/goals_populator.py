@@ -579,7 +579,7 @@ def find_match(home_team, away_team, to_date, from_date=None):
                 Q(away_team__name__unaccent__trigram_similar=away_team) |
                 Q(away_team__alias__alias__unaccent__trigram_similar=away_team))
     end = timeit.default_timer()
-    PerformanceMonitorEvent.objects.create("FIND_MATCH_TRIGRAM_SEARCH", (end - start))
+    PerformanceMonitorEvent.objects.create(name="FIND_MATCH_TRIGRAM_SEARCH", elapsed_time=(end - start))
     if len(suffix_affiliate_home) > 0:
         matches = matches.filter(home_team__name__iendswith=suffix_affiliate_home[0])
     else:

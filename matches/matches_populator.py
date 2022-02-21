@@ -296,7 +296,7 @@ def _save_or_update_match(match):
                                    datetime__gte=match.datetime - timedelta(days=1),
                                    datetime__lte=match.datetime + timedelta(days=1))
     end = timeit.default_timer()
-    PerformanceMonitorEvent.objects.create("FIND_UPDATE_MATCH", (end - start))
+    PerformanceMonitorEvent.objects.create(name="FIND_UPDATE_MATCH", elapsed_time=(end - start))
     if matches.exists():
         matches.update(datetime=match.datetime,
                        score=match.score,
