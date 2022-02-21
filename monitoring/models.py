@@ -11,6 +11,12 @@ class MonitoringAccount(models.Model):
 
 
 class PerformanceMonitorEvent(models.Model):
-    name = models.CharField(max_length=200, unique=True)
+    name = models.CharField(max_length=200)
     elapsed_time = models.DecimalField(max_digits=8, decimal_places=5)
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-timestamp",)
+
+    def __str__(self):
+        return f"{self.name} - [{self.timestamp}]: {self.elapsed_time}"
