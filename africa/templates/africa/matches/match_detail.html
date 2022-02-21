@@ -1,0 +1,125 @@
+{% extends "africa/base.html" %}
+{% load static %}
+
+{% block head_title %}{{ object.home_team.name }} - {{ object.away_team.name }} ||
+    {{ block.super }}{% endblock head_title %}
+
+{% block content %}
+    <div class="mobile">
+        <h3 class="small-header mobile">
+            {% if match.home_team.logo_file %}
+                <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
+                     class="img-fluid detail-img-thumb">
+            {% else %}
+                <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
+                     class="img-fluid detail-img-thumb">
+            {% endif %}&nbsp;<span
+                class="detail-score">{{ object.home_team_score|default_if_none:"-" }}</span> {{ object.home_team }}
+            <br class="br-spacing"/>
+            {% if match.away_team.logo_file %}
+                <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                     class="img-fluid detail-img-thumb">
+            {% else %}
+                <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
+                     class="img-fluid detail-img-thumb">
+            {% endif %}&nbsp;<span
+                class="detail-score">{{ object.away_team_score|default_if_none:"-" }}</span> {{ object.away_team }}
+            <br>
+        </h3>
+        <p class="mobile-spacing">&nbsp;{{ match.datetime|date:"d-b-Y H:i" }}</p>
+    </div>
+    <div class="desktop">
+        <h3 class="small-header">
+			<span style="white-space: nowrap">
+                {% if match.home_team.logo_file %}
+                    <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
+                         class="img-fluid detail-img-thumb">
+                {% else %}
+                    <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
+                         class="img-fluid detail-img-thumb">
+                {% endif %}&nbsp;
+                <a href="{% url 'teams-detail' slug=match.home_team.slug %}"
+                   class="team-a"><b>{{ match.home_team.name }} </b></a>
+                <span class="detail-score-desktop">{{ match.home_team_score|default_if_none:"-" }}</span>:<span
+                    class="detail-score-desktop">{{ match.away_team_score|default_if_none:"-" }}</span>
+                <a href="{% url 'teams-detail' slug=match.away_team.slug %}"
+                   class="team-a"><b> {{ match.away_team.name }}</b></a>
+                {% if match.away_team.logo_file %}
+                    <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                         class="img-fluid detail-img-thumb">
+                {% else %}
+                    <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
+                         class="img-fluid detail-img-thumb">
+                {% endif %}
+			</span>
+            <p class="desktop-spacing">&nbsp;{{ match.datetime|date:"d-b-Y H:i" }}</p>
+        </h3>
+    </div>
+
+    {% if object.videogoal_set.all.count > 0 %}
+        <ul id="goals-list" class="list-group">
+            {% for goal in object.videogoal_set.all|dictsort:"minute_int" %}
+                <div id="video{{ forloop.counter }}" class="list-group-item no-padding list-group-item-action" data-permalink="{{ goal.simple_permalink }}">
+                    <button class="btn btn-link list-group-item-left-link" data-toggle="collapse"
+                            data-target="#collapse{{ forloop.counter }}">
+                        {{ goal.title }}
+                    </button>
+                    {% if goal.post_match.permalink %}
+                        <a href="https://reddit.com{{ goal.post_match.permalink }}" class="float-right list-group-small-link">
+                            <img alt="reddit" src="{% static "img/reddit_logo.png" %}" class="list-group-img">
+                        </a>
+                    {% endif %}
+                </div>
+                <div id="collapse{{ forloop.counter }}" class="collapse" data-parent="#goals-list">
+                    <ul class="list-group mirror-list">
+                        <div class="list-group-item no-padding list-group-item-action mirror-item">
+                            <a class="list-group-item-left-link mirror-link" target="_blank" rel="noopener noreferrer"
+                               href="{{ goal.url }}">
+                                Original Link
+                            </a>
+                        </div>
+                        {% for mirror in goal.mirrors.all %}
+                            <div class="list-group-item no-padding list-group-item-action mirror-item">
+                                <a class="list-group-item-left-link mirror-link" target="_blank"
+                                   rel="noopener noreferrer" href="{{ mirror.url }}">
+                                    {{ mirror.title|default:"Mirror" }}
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No goals for this match.</p>
+    {% endif %}
+    <ul class="pagination" style="margin-top: 25px;">
+        <li class="page-item">
+            <a class="page-link" href="{% url 'index' %}?date={{ match.datetime|date:"Y-m-d" }}">
+                <span aria-hidden="true">&laquo; Back to day</span>
+            </a>
+        </li>
+    </ul>
+{% endblock content %}
+{% block customjs %}
+    <script>
+        $(".collapse").on('show.bs.collapse', function () {
+            $(this).prev().addClass('collapse-open');
+        });
+        $(".collapse").on('hide.bs.collapse', function () {
+            $(this).prev().removeClass('collapse-open');
+        });
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const product = urlParams.get('v')
+        if(product) {
+            const mainDiv = $(`div[data-permalink='${product}']`)
+            $([document.documentElement, document.body]).animate({
+                scrollTop: mainDiv.offset().top
+            }, 'fast');
+            let collapseId = mainDiv.attr('id');
+            collapseId = collapseId.replace('video', 'collapse');
+            $(`#${collapseId}`).collapse('show');
+        }
+    </script>
+{% endblock %}

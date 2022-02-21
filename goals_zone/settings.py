@@ -50,15 +50,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'matches.apps.MatchesConfig',
+    'africa.apps.AfricaConfig',
     'msg_events.apps.MsgEventsConfig',
     'monitoring.apps.MonitoringConfig',
     'ner.apps.NerConfig',
     'background_task',
     'rest_framework',
-    'rangefilter'
+    'rangefilter',
+    'django_hosts'
 ]
 
 MIDDLEWARE = [
+    'django_hosts.middleware.HostsRequestMiddleware',
     'goals_zone.middleware.timezone.TimezoneMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -66,10 +69,13 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware'
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_hosts.middleware.HostsResponseMiddleware'
 ]
 
 ROOT_URLCONF = 'goals_zone.urls'
+ROOT_HOSTCONF = 'goals_zone.hosts'
+DEFAULT_HOST = 'goals_zone'
 
 TEMPLATES = [
     {

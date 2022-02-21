@@ -3,7 +3,6 @@ from itertools import chain
 
 from django.core.paginator import Paginator
 from django.db.models import Q, Count
-from django.utils import timezone
 from django.views import generic
 from rest_framework import generics
 
