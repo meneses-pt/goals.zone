@@ -12,7 +12,7 @@ admin.site.register(MonitoringAccount)
 @admin.register(PerformanceMonitorEvent)
 class PerformanceMonitorEventAdmin(admin.ModelAdmin):
     list_display = ("name", "timestamp", "elapsed_time")
-    list_filter = ("name", ('date_field_name', DateRangeFilter),)
+    list_filter = ("name", ("timestamp", DateRangeFilter),)
     actions = ["export_as_csv"]
 
 
