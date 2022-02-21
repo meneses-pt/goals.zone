@@ -9,13 +9,6 @@ from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
 admin.site.register(MonitoringAccount)
 
 
-@admin.register(PerformanceMonitorEvent)
-class PerformanceMonitorEventAdmin(admin.ModelAdmin):
-    list_display = ("name", "timestamp", "elapsed_time")
-    list_filter = ("name", ("timestamp", DateRangeFilter),)
-    actions = ["export_as_csv"]
-
-
 def export_performance_monitor_events(self, request, queryset):
     meta = self.model._meta
     field_names = [field.name for field in meta.fields]
@@ -31,3 +24,10 @@ def export_performance_monitor_events(self, request, queryset):
 
 
 export_performance_monitor_events.short_description = "Export selected"
+
+
+@admin.register(PerformanceMonitorEvent)
+class PerformanceMonitorEventAdmin(admin.ModelAdmin):
+    list_display = ("name", "timestamp", "elapsed_time")
+    list_filter = ("name", ("timestamp", DateRangeFilter),)
+    actions = [export_performance_monitor_events]
