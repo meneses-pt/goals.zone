@@ -25,10 +25,16 @@
 <body>
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'index' %}">
-        <img src="{% static 'goals_zone/original_icon_w200.png' %}" width="40" class="d-inline-block align-top" alt=""/>
+        <img src="{% static 'goals_zone/africa/original_icon_w200.png' %}" width="40" class="d-inline-block align-top" alt=""/>
         &nbsp;goals.africa
     </a>
     <div class="form-inline">
+        <a id="historyButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="History" href="{% url 'history' %}">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
+        </a>
+        <a id="teamsButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="Teams" href="{% url 'teams-list' %}">
+            <i class="fa fa-shield" aria-hidden="true"></i>
+        </a>
         <button id="moreButton" class="btn btn-success small-btn" data-toggle="modal" data-target="#aboutModal" title="Info">
             <i class="fa fa-info" aria-hidden="true"></i>
         </button>
@@ -40,7 +46,7 @@
             {% block content %}
             {% endblock content %}
         </div>
-        {% include "africa/snippets/js.html" %}
+        {% include "snippets/js.html" %}
         {% block customjs %}
         {% endblock customjs %}
     </div>
