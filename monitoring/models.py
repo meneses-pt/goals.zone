@@ -8,3 +8,9 @@ class MonitoringAccount(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class PerformanceMonitorEvent(models.Model):
+    name = models.CharField(max_length=200, unique=True)
+    elapsed_time = models.DecimalField(max_digits=8, decimal_places=5)
+    timestamp = models.DateTimeField(auto_now_add=True)

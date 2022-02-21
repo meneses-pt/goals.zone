@@ -27,7 +27,7 @@ from fake_headers import Headers
 from slack_webhook import Slack
 
 from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch
-from monitoring.models import MonitoringAccount
+from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
 from msg_events.models import Webhook, Tweet, MessageObject
 from ner.models import NerLog
 from ner.utils import extract_names_from_title_ner
@@ -570,6 +570,7 @@ def find_match(home_team, away_team, to_date, from_date=None):
     suffix_affiliate_away = re.findall(suffix_regex_string, away_team)
     prefix_affiliate_home = re.findall(prefix_regex_string, home_team)
     prefix_affiliate_away = re.findall(prefix_regex_string, away_team)
+    start = timeit.default_timer()
     matches = Match.objects \
         .filter(datetime__gte=(from_date - timedelta(hours=72)),
                 datetime__lte=to_date) \
@@ -577,6 +578,8 @@ def find_match(home_team, away_team, to_date, from_date=None):
                 Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
                 Q(away_team__name__unaccent__trigram_similar=away_team) |
                 Q(away_team__alias__alias__unaccent__trigram_similar=away_team))
+    end = timeit.default_timer()
+    PerformanceMonitorEvent.objects.create("FIND_MATCH_TRIGRAM_SEARCH", (end - start))
     if len(suffix_affiliate_home) > 0:
         matches = matches.filter(home_team__name__iendswith=suffix_affiliate_home[0])
     else:

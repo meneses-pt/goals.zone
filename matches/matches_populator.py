@@ -8,6 +8,7 @@ from background_task.models import Task, CompletedTask
 from django.db.models import Count
 from fake_headers import Headers
 
+from monitoring.models import PerformanceMonitorEvent
 from .goals_populator import _handle_messages_to_send
 from .models import Match, Team, Tournament, Category, Season
 from .proxy_request import ProxyRequest
@@ -123,9 +124,9 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         _save_or_update_match(match)
     end = timeit.default_timer()
     print(f'{(end - start):.2f} elapsed processing {len(events)} events\n', flush=True)
-    print('Going to delete old matches without videos', flush=True)
-    delete = Match.objects.annotate(videos_count=Count('videogoal')).filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
-    print(f'Deleted {delete} old matches without videos', flush=True)
+    # print('Going to delete old matches without videos', flush=True)
+    # delete = Match.objects.annotate(videos_count=Count('videogoal')).filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
+    # print(f'Deleted {delete} old matches without videos', flush=True)
     print('Finished processing matches\n\n', flush=True)
 
 
@@ -289,10 +290,13 @@ def _fetch_sofascore_match_details(event_id):
 
 
 def _save_or_update_match(match):
+    start = timeit.default_timer()
     matches = Match.objects.filter(home_team=match.home_team,
                                    away_team=match.away_team,
                                    datetime__gte=match.datetime - timedelta(days=1),
                                    datetime__lte=match.datetime + timedelta(days=1))
+    end = timeit.default_timer()
+    PerformanceMonitorEvent.objects.create("FIND_UPDATE_MATCH", (end - start))
     if matches.exists():
         matches.update(datetime=match.datetime,
                        score=match.score,
