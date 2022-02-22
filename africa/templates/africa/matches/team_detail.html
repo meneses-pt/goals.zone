@@ -38,73 +38,73 @@
                 <ul class="list-group small-margin-bottom">
                     {% for match in page_obj.object_list %}
                         <div class="mobile">
-{#                            <a class="list-group-item list-group-item-action list-group-flex"#}
-{#                               href="{% url 'match-detail' slug=match.slug %}">#}
-{#                                <div class="list-hour-mobile">#}
-{#                                    <span style="white-space: nowrap">#}
-{#                                        {{ match.datetime|date:"d-m" }}#}
-{#                                    </span>#}
-{#                                </div>#}
-{#                                <div class="list-match-result">#}
-{#                                    {% if match.home_team.logo_file %}#}
-{#                                        <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"#}
-{#                                             class="img-fluid detail-img-thumb">#}
-{#                                    {% else %}#}
-{#                                        <img src="{% static "img/badge_placeholder.png" %}"#}
-{#                                             alt="{{ match.home_team.name }}"#}
-{#                                             class="img-fluid detail-img-thumb">#}
-{#                                    {% endif %}&nbsp;<span#}
-{#                                        class="list-score">{{ match.home_team_score|default_if_none:"-" }}</span>#}
-{#                                    <b>{{ match.home_team.name }} </b>#}
-{#                                    <br>#}
-{#                                    {% if match.away_team.logo_file %}#}
-{#                                        <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"#}
-{#                                             class="img-fluid detail-img-thumb">#}
-{#                                    {% else %}#}
-{#                                        <img src="{% static "img/badge_placeholder.png" %}"#}
-{#                                             alt="{{ match.home_team.name }}"#}
-{#                                             class="img-fluid detail-img-thumb">#}
-{#                                    {% endif %}&nbsp;<span#}
-{#                                        class="list-score">{{ match.away_team_score|default_if_none:"-" }}</span>#}
-{#                                    <b>{{ match.away_team.name }} </b>#}
-{#                                    <br>#}
-{#                                </div>#}
-{#                            </a>#}
+                            <a class="list-group-item list-group-item-action list-group-flex"
+                               href="{% url 'match-detail' slug=match.slug %}">
+                                <div class="list-hour-mobile">
+                                    <span style="white-space: nowrap">
+                                        {{ match.datetime|date:"d-m" }}
+                                    </span>
+                                </div>
+                                <div class="list-match-result">
+                                    {% if match.home_team.logo_file %}
+                                        <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
+                                             class="img-fluid detail-img-thumb">
+                                    {% else %}
+                                        <img src="{% static "img/badge_placeholder.png" %}"
+                                             alt="{{ match.home_team.name }}"
+                                             class="img-fluid detail-img-thumb">
+                                    {% endif %}&nbsp;<span
+                                        class="list-score">{{ match.home_team_score|default_if_none:"-" }}</span>
+                                    <b>{{ match.home_team.name }} </b>
+                                    <br>
+                                    {% if match.away_team.logo_file %}
+                                        <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                                             class="img-fluid detail-img-thumb">
+                                    {% else %}
+                                        <img src="{% static "img/badge_placeholder.png" %}"
+                                             alt="{{ match.home_team.name }}"
+                                             class="img-fluid detail-img-thumb">
+                                    {% endif %}&nbsp;<span
+                                        class="list-score">{{ match.away_team_score|default_if_none:"-" }}</span>
+                                    <b>{{ match.away_team.name }} </b>
+                                    <br>
+                                </div>
+                            </a>
                         </div>
                         <div class="desktop">
-{#                            <a class="list-group-item list-group-item-action"#}
-{#                               href="{% url 'match-detail' slug=match.slug %}">#}
-{#                                <div class="list-hour-desktop">#}
-{#                                    <span style="font-weight: bold">#}
-{#                                        {{ match.datetime|date:"d-m-Y" }}#}
-{#                                    </span>#}
-{#                                    <span style="font-weight: lighter; color: #8c8c8c">#}
-{#                                        &nbsp;{{ match.datetime|date:"H:i" }}#}
-{#                                    </span>#}
-{#                                </div>#}
-{#                                <div class="list-match-result">#}
-{#                                    {% if match.home_team.logo_file %}#}
-{#                                        <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"#}
-{#                                             class="img-fluid list-img-thumb"/>#}
-{#                                    {% else %}#}
-{#                                        <img src="{% static "img/badge_placeholder.png" %}"#}
-{#                                             alt="{{ match.home_team.name }}"#}
-{#                                             class="img-fluid list-img-thumb"/>#}
-{#                                    {% endif %}#}
-{#                                    <b>{{ match.home_team.name }} </b>#}
-{#                                    <span class="list-score-desktop">{{ match.home_team_score|default_if_none:"-" }}</span>:<span#}
-{#                                        class="list-score-desktop">{{ match.away_team_score|default_if_none:"-" }}</span>#}
-{#                                    <b> {{ match.away_team.name }}</b>#}
-{#                                    {% if match.away_team.logo_file %}#}
-{#                                        <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"#}
-{#                                             class="img-fluid list-img-thumb"/>#}
-{#                                    {% else %}#}
-{#                                        <img src="{% static "img/badge_placeholder.png" %}"#}
-{#                                             alt="{{ match.home_team.name }}"#}
-{#                                             class="img-fluid list-img-thumb"/>#}
-{#                                    {% endif %}#}
-{#                                </div>#}
-{#                            </a>#}
+                            <a class="list-group-item list-group-item-action"
+                               href="{% url 'match-detail' slug=match.slug %}">
+                                <div class="list-hour-desktop">
+                                    <span style="font-weight: bold">
+                                        {{ match.datetime|date:"d-m-Y" }}
+                                    </span>
+                                    <span style="font-weight: lighter; color: #8c8c8c">
+                                        &nbsp;{{ match.datetime|date:"H:i" }}
+                                    </span>
+                                </div>
+                                <div class="list-match-result">
+                                    {% if match.home_team.logo_file %}
+                                        <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
+                                             class="img-fluid list-img-thumb"/>
+                                    {% else %}
+                                        <img src="{% static "img/badge_placeholder.png" %}"
+                                             alt="{{ match.home_team.name }}"
+                                             class="img-fluid list-img-thumb"/>
+                                    {% endif %}
+                                    <b>{{ match.home_team.name }} </b>
+                                    <span class="list-score-desktop">{{ match.home_team_score|default_if_none:"-" }}</span>:<span
+                                        class="list-score-desktop">{{ match.away_team_score|default_if_none:"-" }}</span>
+                                    <b> {{ match.away_team.name }}</b>
+                                    {% if match.away_team.logo_file %}
+                                        <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
+                                             class="img-fluid list-img-thumb"/>
+                                    {% else %}
+                                        <img src="{% static "img/badge_placeholder.png" %}"
+                                             alt="{{ match.home_team.name }}"
+                                             class="img-fluid list-img-thumb"/>
+                                    {% endif %}
+                                </div>
+                            </a>
                         </div>
                     {% endfor %}
                 </ul>
