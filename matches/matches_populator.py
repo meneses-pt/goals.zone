@@ -5,14 +5,15 @@ from datetime import date, datetime, timedelta
 import requests
 from background_task import background
 from background_task.models import Task, CompletedTask
-from django.db.models import Count
 from fake_headers import Headers
 
-from africa.models import AfricaMatch
+from africa.models import AfricaMatch, AfricaMatchesFilter
 from monitoring.models import PerformanceMonitorEvent
 from .goals_populator import _handle_messages_to_send
 from .models import Match, Team, Tournament, Category, Season
 from .proxy_request import ProxyRequest
+
+africa_match_filter = AfricaMatchesFilter.objects.first()
 
 
 @background(schedule=60 * 5)
@@ -70,6 +71,8 @@ def fetch_live():
 # To fetch yesterday and today: days_ago=1, days_amount=2
 # To fetch today and tomorrow: days_ago=0, days_amount=2
 def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
+    global africa_match_filter
+    africa_match_filter = AfricaMatchesFilter.objects.first()
     start = timeit.default_timer()
     completed = CompletedTask.objects.filter(task_name='matches.matches_populator.fetch_new_matches').count()
     # 12 is every hour if task is every 5 minutes
@@ -290,6 +293,22 @@ def _fetch_sofascore_match_details(event_id):
     return ProxyRequest.get_instance().make_request(f'https://api.sofascore.com/mobile/v4/event/{event_id}/details')
 
 
+def matches_filter_conditions(match_filter, match):
+    if match_filter.include_categories.all().count() > 0 and \
+            (match.category is None or not match_filter.include_categories.filter(id=match.category.id).exists()):
+        return False
+    if match_filter.include_tournaments.all().count() > 0 and \
+            (match.tournament is None or not match_filter.include_tournaments.filter(id=match.tournament.id).exists()):
+        return False
+    if match_filter.exclude_categories.all().count() > 0 and \
+            (match.category is None or match_filter.exclude_categories.filter(id=match.category.id).exists()):
+        return False
+    if match_filter.exclude_tournaments.all().count() > 0 and \
+            (match.tournament is None or match_filter.exclude_tournaments.filter(id=match.tournament.id).exists()):
+        return False
+    return True
+
+
 def _save_or_update_match(match):
     start = timeit.default_timer()
     matches = Match.objects.filter(home_team=match.home_team,
@@ -309,9 +328,8 @@ def _save_or_update_match(match):
             _handle_messages_to_send(i_match)
     else:
         match.save()
-        # TODO
-        # Check condition
-        # AfricaMatch.objects.create(match=match)
+        if matches_filter_conditions(africa_match_filter, match):
+            AfricaMatch.objects.create(match=match)
         _handle_messages_to_send(match)
 
 

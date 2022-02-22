@@ -25,8 +25,15 @@ class AfricaMatchesHistoryListView(generic.ListView):
             end_date = start_date + timedelta(days=1)
         start_date = localize_date(start_date)
         end_date = localize_date(end_date)
-        return Match.objects.filter(id__in=AfricaMatch.objects.values_list('match_id', flat=True)) \
-            .order_by('datetime').filter(datetime__gte=start_date, datetime__lt=end_date).distinct()
+        return Match.objects.filter(
+            id__in=AfricaMatch.objects.values_list('match_id', flat=True),
+            datetime__gte=start_date,
+            datetime__lt=end_date,
+            score__isnull=False
+        ) \
+            .order_by('datetime') \
+            .filter() \
+            .distinct()
 
     def get_context_data(self, **kwargs):
         context = super(AfricaMatchesHistoryListView, self).get_context_data(**kwargs)
@@ -50,7 +57,12 @@ class AfricaMatchesListView(generic.ListView):
 
     def get_queryset(self):
         start = timeit.default_timer()
-        qs = Match.objects.filter(id__in=AfricaMatch.objects.values_list('match_id', flat=True)).order_by('-datetime').distinct()
+        qs = Match.objects.filter(
+            id__in=AfricaMatch.objects.values_list('match_id', flat=True),
+            score__isnull=False
+        ) \
+            .order_by('-datetime') \
+            .distinct()
         end = timeit.default_timer()
         print(end - start)
         return qs
