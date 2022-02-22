@@ -95,8 +95,8 @@
     {% endif %}
     <ul class="pagination" style="margin-top: 25px;">
         <li class="page-item">
-            <a class="page-link" href="{% url 'index' %}?date={{ match.datetime|date:"Y-m-d" }}">
-                <span aria-hidden="true">&laquo; Back to day</span>
+            <a class="page-link" onclick="history.back()" href="#">
+                <span aria-hidden="true">&laquo; Return</span>
             </a>
         </li>
     </ul>
