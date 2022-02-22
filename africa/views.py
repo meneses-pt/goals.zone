@@ -140,8 +140,7 @@ class AfricaMatchWeekSearchView(generics.ListAPIView):
         start_date = localize_date(start_date)
         queryset = Match.objects.filter(
             id__in=AfricaMatch.objects.values_list('match_id', flat=True),
-            datetime__gte=start_date,
-            videogoal__isnull=False
+            datetime__gte=start_date
         ).distinct().order_by('-datetime')
         if filter_q is not None:
             queryset = queryset.filter(
