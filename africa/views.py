@@ -1,3 +1,4 @@
+import timeit
 from datetime import date, timedelta, datetime
 from itertools import chain
 
@@ -5,6 +6,7 @@ from django.core.paginator import Paginator
 from django.db.models import Count
 from django.views import generic
 
+from africa.models import AfricaMatch
 from matches.models import Match, Team
 from matches.utils import localize_date
 
@@ -23,9 +25,8 @@ class AfricaMatchesHistoryListView(generic.ListView):
             end_date = start_date + timedelta(days=1)
         start_date = localize_date(start_date)
         end_date = localize_date(end_date)
-        return Match.objects.order_by('datetime').filter(datetime__gte=start_date,
-                                                         datetime__lt=end_date,
-                                                         videogoal__isnull=False).distinct()
+        return Match.objects.filter(id__in=AfricaMatch.objects.values_list('match_id', flat=True)) \
+            .order_by('datetime').filter(datetime__gte=start_date, datetime__lt=end_date).distinct()
 
     def get_context_data(self, **kwargs):
         context = super(AfricaMatchesHistoryListView, self).get_context_data(**kwargs)
@@ -48,7 +49,11 @@ class AfricaMatchesListView(generic.ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return Match.objects.order_by('-datetime').filter(videogoal__isnull=False).distinct()
+        start = timeit.default_timer()
+        qs = Match.objects.filter(id__in=AfricaMatch.objects.values_list('match_id', flat=True)).order_by('-datetime').distinct()
+        end = timeit.default_timer()
+        print(end - start)
+        return qs
 
 
 class AfricaMatchDetailView(generic.DetailView):
@@ -65,7 +70,7 @@ class AfricaTeamsListView(generic.ListView):
                     select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
                     from matches_team t
                     inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
-                    inner join matches_videogoal vg on m.id = vg.match_id
+                    inner join africa_match am on m.id = am.match_id
                     group by t.id, name, logo_url, logo_file, name_code
                     order by matches_count desc
                 ''')

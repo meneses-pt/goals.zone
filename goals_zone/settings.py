@@ -75,7 +75,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'goals_zone.urls'
 ROOT_HOSTCONF = 'goals_zone.hosts'
-DEFAULT_HOST = 'goals_zone'
+DEFAULT_HOST = 'africa'
 
 TEMPLATES = [
     {
