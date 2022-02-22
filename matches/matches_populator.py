@@ -318,6 +318,11 @@ def _save_or_update_match(match):
     end = timeit.default_timer()
     PerformanceMonitorEvent.objects.create(name="FIND_UPDATE_MATCH", elapsed_time=(end - start))
     if matches.exists():
+        score_changed = False
+        for old_match in matches:
+            if old_match.score != match.score and match.score != '0:0':
+                score_changed = True
+                break
         matches.update(datetime=match.datetime,
                        score=match.score,
                        tournament=match.tournament,
@@ -325,7 +330,7 @@ def _save_or_update_match(match):
                        season=match.season,
                        status=match.status)
         for i_match in matches:
-            _handle_messages_to_send(i_match)
+            _handle_messages_to_send(i_match, videogoal=None, score_changed=score_changed)
     else:
         match.save()
         if matches_filter_conditions(africa_match_filter, match):

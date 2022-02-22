@@ -267,6 +267,11 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter):
     if MessageObject.MessageEventType.MatchHighlights == event_filter and match is not None:
         match.highlights_msg_sent = True
         match.save()
+    if MessageObject.MessageEventType.MatchScoreChanged == event_filter and match is not None:
+        pass
+    if MessageObject.MessageEventType.MatchResult == event_filter and match is not None:
+        match.highlights_msg_sent = True
+        match.save()
 
 
 def format_event_message(match, videogoal, videogoal_mirror, message):
@@ -497,7 +502,7 @@ def _save_found_match(matches_results, minute_str, post):
     # print('Saved: ' + title, flush=True)
 
 
-def _handle_messages_to_send(match, videogoal=None):
+def _handle_messages_to_send(match, videogoal=None, score_changed=False):
     if videogoal:
         if not videogoal.msg_sent and \
                 match.home_team.name_code is not None and \
@@ -515,6 +520,19 @@ def _handle_messages_to_send(match, videogoal=None):
                 match.home_team.name_code is not None and \
                 match.away_team.name_code is not None:
             send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights)
+        # If a match has videos, do not post score changed tweet
+        if match.videogoal_set.count() == 0 and \
+                score_changed and \
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchScoreChanged)
+        if match.videogoal_set.count() == 0 and \
+                not match.highlights_msg_sent and \
+                match.status.lower() == 'finished' and \
+                match.score is not None and \
+                match.home_team.name_code is not None and \
+                match.away_team.name_code is not None:
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchResult)
 
 
 def _handle_not_found_match(away_team, home_team, post):

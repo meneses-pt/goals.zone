@@ -13,6 +13,8 @@ class MessageObject(models.Model):
         Video = 2, 'Video'
         Mirror = 3, 'Mirror'
         MatchHighlights = 4, 'MatchHighlights'
+        MatchScoreChanged = 5, 'MatchScoreChanged'
+        MatchResult = 6, 'MatchResult'
 
     include_tournaments = models.ManyToManyField(Tournament,
                                                  related_name='%(class)s_include_tournaments',
