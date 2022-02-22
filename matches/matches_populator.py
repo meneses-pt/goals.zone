@@ -8,6 +8,7 @@ from background_task.models import Task, CompletedTask
 from django.db.models import Count
 from fake_headers import Headers
 
+from africa.models import AfricaMatch
 from monitoring.models import PerformanceMonitorEvent
 from .goals_populator import _handle_messages_to_send
 from .models import Match, Team, Tournament, Category, Season
@@ -308,6 +309,9 @@ def _save_or_update_match(match):
             _handle_messages_to_send(i_match)
     else:
         match.save()
+        # TODO
+        # Check condition
+        # AfricaMatch.objects.create(match=match)
         _handle_messages_to_send(match)
 
 
