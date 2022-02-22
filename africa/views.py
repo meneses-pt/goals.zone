@@ -96,8 +96,8 @@ class AfricaTeamsDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(AfricaTeamsDetailView, self).get_context_data(**kwargs)
-        home_matches = self.object.home_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
-        away_matches = self.object.away_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
+        home_matches = self.object.home_team
+        away_matches = self.object.away_team
         team_matches = sorted(chain(home_matches, away_matches), key=lambda instance: instance.datetime, reverse=True)
         paginator = Paginator(team_matches, self.paginate_by)
         page_number = self.request.GET.get('page')
