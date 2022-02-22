@@ -25,9 +25,9 @@ class MatchesHistoryListView(generic.ListView):
             end_date = start_date + timedelta(days=1)
         start_date = localize_date(start_date)
         end_date = localize_date(end_date)
-        return Match.objects.order_by('datetime').filter(datetime__gte=start_date,
-                                                         datetime__lt=end_date,
-                                                         videogoal__isnull=False).distinct()
+        return Match.objects.filter(datetime__gte=start_date,
+                                    datetime__lt=end_date,
+                                    videogoal__isnull=False).distinct().order_by('datetime')
 
     def get_context_data(self, **kwargs):
         context = super(MatchesHistoryListView, self).get_context_data(**kwargs)
@@ -50,7 +50,7 @@ class MatchesListView(generic.ListView):
     paginate_by = 50
 
     def get_queryset(self):
-        return Match.objects.order_by('-datetime').filter(videogoal__isnull=False).distinct()
+        return Match.objects.filter(videogoal__isnull=False).distinct().order_by('-datetime')
 
 
 class MatchDetailView(generic.DetailView):
@@ -73,9 +73,9 @@ class MatchSearchView(generics.ListAPIView):
             end_date = start_date + timedelta(days=1)
         start_date = localize_date(start_date)
         end_date = localize_date(end_date)
-        queryset = Match.objects.order_by('datetime').filter(datetime__gte=start_date,
-                                                             datetime__lte=end_date,
-                                                             videogoal__isnull=False).distinct()
+        queryset = Match.objects.filter(datetime__gte=start_date,
+                                        datetime__lte=end_date,
+                                        videogoal__isnull=False).distinct().order_by('datetime')
         if filter_q is not None:
             queryset = queryset.filter(
                 Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
@@ -89,8 +89,8 @@ class MatchWeekSearchView(generics.ListAPIView):
         filter_q = self.request.query_params.get('filter', None)
         start_date = datetime.combine(datetime.today(), datetime.min.time()) - timedelta(days=7)
         start_date = localize_date(start_date)
-        queryset = Match.objects.order_by('-datetime').filter(datetime__gte=start_date,
-                                                              videogoal__isnull=False).distinct()
+        queryset = Match.objects.filter(datetime__gte=start_date,
+                                        videogoal__isnull=False).distinct().order_by('-datetime')
         if filter_q is not None:
             queryset = queryset.filter(
                 Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))

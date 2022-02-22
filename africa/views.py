@@ -3,11 +3,13 @@ from datetime import date, timedelta, datetime
 from itertools import chain
 
 from django.core.paginator import Paginator
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.views import generic
+from rest_framework import generics
 
 from africa.models import AfricaMatch
 from matches.models import Match, Team
+from matches.serializers import MatchSerializer, TeamSerializer
 from matches.utils import localize_date
 
 
@@ -31,9 +33,8 @@ class AfricaMatchesHistoryListView(generic.ListView):
             datetime__lt=end_date,
             score__isnull=False
         ) \
-            .order_by('datetime') \
-            .filter() \
-            .distinct()
+            .distinct() \
+            .order_by('datetime')
 
     def get_context_data(self, **kwargs):
         context = super(AfricaMatchesHistoryListView, self).get_context_data(**kwargs)
@@ -61,8 +62,8 @@ class AfricaMatchesListView(generic.ListView):
             id__in=AfricaMatch.objects.values_list('match_id', flat=True),
             score__isnull=False
         ) \
-            .order_by('-datetime') \
-            .distinct()
+            .distinct() \
+            .order_by('-datetime')
         end = timeit.default_timer()
         print(end - start)
         return qs
@@ -103,3 +104,68 @@ class AfricaTeamsDetailView(generic.DetailView):
         page_obj = paginator.get_page(page_number)
         context['page_obj'] = page_obj
         return context
+
+
+class AfricaMatchSearchView(generics.ListAPIView):
+    serializer_class = MatchSerializer
+
+    def get_queryset(self):
+        query_date_str = self.request.query_params.get('date', None)
+        filter_q = self.request.query_params.get('filter', None)
+        try:
+            query_date_obj = datetime.strptime(query_date_str, '%Y-%m-%d')
+            start_date = query_date_obj
+            end_date = query_date_obj + timedelta(days=1)
+        except (ValueError, TypeError):
+            start_date = datetime.combine(datetime.today(), datetime.min.time())
+            end_date = start_date + timedelta(days=1)
+        start_date = localize_date(start_date)
+        end_date = localize_date(end_date)
+        queryset = Match.objects.filter(
+            id__in=AfricaMatch.objects.values_list('match_id', flat=True),
+            datetime__gte=start_date,
+            datetime__lte=end_date).distinct().order_by('datetime')
+        if filter_q is not None:
+            queryset = queryset.filter(
+                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+        return queryset
+
+
+class AfricaMatchWeekSearchView(generics.ListAPIView):
+    serializer_class = MatchSerializer
+
+    def get_queryset(self):
+        filter_q = self.request.query_params.get('filter', None)
+        start_date = datetime.combine(datetime.today(), datetime.min.time()) - timedelta(days=7)
+        start_date = localize_date(start_date)
+        queryset = Match.objects.filter(
+            id__in=AfricaMatch.objects.values_list('match_id', flat=True),
+            datetime__gte=start_date,
+            videogoal__isnull=False
+        ).distinct().order_by('-datetime')
+        if filter_q is not None:
+            queryset = queryset.filter(
+                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+        return queryset
+
+
+class AfricaTeamSearchView(generics.ListAPIView):
+    serializer_class = TeamSerializer
+
+    def get_queryset(self):
+        filter_q = self.request.query_params.get('filter', None)
+        query_string = ''' select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+                           from matches_team t
+                           inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+                           inner join africa_match am on m.id = am.match_id ''' + (
+            '' if filter_q is None
+            else
+            f''
+            f'where UPPER(UNACCENT(t.name)::text) '
+            f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
+        ) + '''
+                            group by t.id, name, logo_url, logo_file, name_code
+                            order by matches_count desc
+                        '''
+        queryset = Team.objects.raw(query_string)
+        return queryset
