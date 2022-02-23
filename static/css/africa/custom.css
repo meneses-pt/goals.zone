@@ -428,20 +428,29 @@
     background-color: #888;
 }
 
-.floating-button {
-    position: fixed;
-    width: auto;
-    height: auto;
-    bottom: 20px;
-    right: 40px;
+.affiliated {
     background-color: rgb(68, 68, 68);
     color: #FFF;
     border-radius: 5px;
     border-color: #00bc8c;
     border-style: solid;
     border-width: 1px;
+    width: auto;
+    height: auto;
+    padding: 20px;
 }
 
-.floating-button > a {
+.affiliated > a {
     color: white;
+}
+
+.mobile.affiliated {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 40px;
 }
