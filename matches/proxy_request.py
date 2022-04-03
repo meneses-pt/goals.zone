@@ -76,6 +76,8 @@ class ProxyRequest:
                     raise Exception("Wrong Status Code: " + str(response.status_code))
             except Exception as e:
                 print(f"Exception making ProxyRequest ({attempts}/{max_attempts}): {str(e)}\n{url}\n{json.dumps(headers)}", flush=True)
+                headers = Headers(headers=True).generate()
+                headers['Accept-Encoding'] = 'gzip, deflate, br'
                 pass
         if attempts == max_attempts:
             print("Number of attempts exceeded trying to make request: " + str(url), flush=True)

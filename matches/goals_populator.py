@@ -624,7 +624,7 @@ def find_match(home_team, away_team, to_date, from_date=None):
 
 def _fetch_data_from_reddit_api(after):
     headers = Headers(headers=True).generate()
-    headers['Accept-Encoding'] = 'gizp, deflate'
+    headers['Accept-Encoding'] = 'gzip, deflate, br'
     response = requests.get(f'https://api.reddit.com/r/soccer/new?limit=100&after={after}',
                             headers=headers)
     return response
@@ -632,7 +632,7 @@ def _fetch_data_from_reddit_api(after):
 
 def _make_reddit_api_request(link):
     headers = Headers(headers=True).generate()
-    headers['Accept-Encoding'] = 'gizp, deflate'
+    headers['Accept-Encoding'] = 'gzip, deflate, br'
     response = requests.get(link, headers=headers)
     return response
 
@@ -641,7 +641,7 @@ def _fetch_historic_data_from_reddit_api(from_date):
     after = int(time.mktime(from_date.timetuple()))
     before = int(after + 86400)  # a day
     headers = Headers(headers=True).generate()
-    headers['Accept-Encoding'] = 'gizp, deflate'
+    headers['Accept-Encoding'] = 'gzip, deflate, br'
     response = requests.get(
         f'https://api.pushshift.io/reddit/search/submission/'
         f'?subreddit=soccer&sort=desc&sort_type=created_utc&after={after}&before={before}&size=1000',

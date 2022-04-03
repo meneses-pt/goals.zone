@@ -12,6 +12,7 @@ beautifulsoup4==4.10.0
 black==22.1.0
 bleach==4.1.0
 blis==0.7.6
+Brotli==1.0.9
 bs4==0.0.1
 catalogue==2.0.6
 certifi==2021.10.8

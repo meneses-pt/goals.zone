@@ -47,7 +47,7 @@ def get_proxies_sslproxies():
 
 def get_proxies_freeproxycz():
     headers_list = Headers(headers=True).generate()
-    headers_list['Accept-Encoding'] = 'gizp, deflate'
+    headers_list['Accept-Encoding'] = 'gzip, deflate, br'
     url = 'http://free-proxy.cz/en/proxylist/country/all/https/ping/level1'
     try:
         response = requests.get(url, headers=headers_list)
@@ -76,7 +76,7 @@ def get_proxies_freeproxycz():
 
 def get_proxies_proxyscrape():
     headers_list = Headers(headers=True).generate()
-    headers_list['Accept-Encoding'] = 'gizp, deflate'
+    headers_list['Accept-Encoding'] = 'gzip, deflate, br'
     url = 'https://api.proxyscrape.com/?request=displayproxies&proxytype=http&timeout=10000&country=all&ssl=yes&anonymity=elite'
     try:
         response = requests.get(url, headers=headers_list)

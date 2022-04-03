@@ -270,8 +270,7 @@ def make_sofascore_request(today_str, proxy=None, inverse=False):
     url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
     if inverse:
         url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
-    headers = Headers(headers=True).generate()
-    headers['Accept-Encoding'] = 'gizp, deflate'
+    headers = get_sofascore_headers()
     if proxy:
         response = requests.get(
             url,
@@ -290,7 +289,8 @@ def make_sofascore_request(today_str, proxy=None, inverse=False):
 
 def get_sofascore_headers():
     headers = Headers(headers=True).generate()
-    headers['Accept-Encoding'] = 'gizp, deflate'
+    headers['Accept-Encoding'] = 'gzip, deflate, br'
+    headers['Referer'] = 'https://www.sofascore.com/'
     return headers
 
 
