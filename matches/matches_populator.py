@@ -1,6 +1,7 @@
 import json
 import timeit
 from datetime import date, datetime, timedelta
+from json import JSONDecodeError
 
 import requests
 from background_task import background
@@ -23,6 +24,15 @@ def fetch_new_matches():
     fetch_matches_from_sofascore()
 
 
+def try_load_json_content(content):
+    try:
+        data = json.loads(content)
+    except JSONDecodeError as e:
+        print(f'Error decoding JSON content: [{content}]', flush=True)
+        raise e
+    return data
+
+
 def fetch_full_days(days_ago, days_amount, inverse=True):
     print(f'Fetching full days events! Inverse?: {inverse}', flush=True)
     events = []
@@ -35,7 +45,7 @@ def fetch_full_days(days_ago, days_amount, inverse=True):
             print(f'No response retrieved', flush=True)
             continue
         content = response.content
-        data = json.loads(content)
+        data = try_load_json_content(content)
         events += data['events']
         print(f'Fetched {len(data["events"])} events!', flush=True)
         if inverse:
@@ -61,7 +71,7 @@ def fetch_live():
         print(f'No response retrieved', flush=True)
         return []
     content = response.content
-    data = json.loads(content)
+    data = try_load_json_content(content)
     events = data['events']
     print(f'Fetched {len(events)} LIVE events!', flush=True)
     return events
