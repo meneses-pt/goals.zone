@@ -1,3 +1,4 @@
+import json
 import random
 
 import requests
@@ -74,8 +75,9 @@ class ProxyRequest:
                 if response.status_code != 200:
                     raise Exception("Wrong Status Code: " + str(response.status_code))
             except Exception as e:
-                print(f"Exception making ProxyRequest ({attempts}/{max_attempts}): {str(e)}", flush=True)
+                print(f"Exception making ProxyRequest ({attempts}/{max_attempts}): {str(e)}\n{url}\n{json.dumps(headers)}", flush=True)
                 pass
         if attempts == max_attempts:
             print("Number of attempts exceeded trying to make request: " + str(url), flush=True)
+            raise Exception("Number of attempts exceeded trying to make request: " + str(url))
         return response
