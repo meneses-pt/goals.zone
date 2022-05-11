@@ -8,19 +8,18 @@
     <meta http-equiv="Content-Language" content="en">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-
     <!-- Start cookieyes banner -->
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/090b097ba026adefd295feb1/script.js"></script>
     <!-- End cookieyes banner -->
-
-    {% if not debug %}
-        {% include "africa/snippets/analytics.html" %}
-    {% endif %}
     {% include "africa/snippets/favicon.html" %}
 
     <title>{% block head_title %}goals.africa{% endblock %}</title>
     <meta name="description" content="This is the place where you can watch videos of the latest goals of football matches."/>
     {% include "africa/snippets/css.html" %}
+
+    {% if not debug %}
+        {% include "africa/snippets/analytics.html" %}
+    {% endif %}
 </head>
 
 <body>

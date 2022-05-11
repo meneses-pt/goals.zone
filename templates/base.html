@@ -15,10 +15,6 @@
     <!-- Start cookieyes banner -->
     <script id="cookieyes" type="text/javascript" src="https://cdn-cookieyes.com/client_data/c9ff20011eb0e4e70653a5c3/script.js"></script>
     <!-- End cookieyes banner -->
-
-    {% if not debug %}
-        {% include "snippets/analytics.html" %}
-    {% endif %}
     {% include "snippets/favicon.html" %}
 
     <title>{% block head_title %}goals.zone{% endblock %}</title>
@@ -29,6 +25,10 @@
     <!-- End Google Ads -->
 
     {% include "snippets/css.html" %}
+
+    {% if not debug %}
+        {% include "snippets/analytics.html" %}
+    {% endif %}
 </head>
 
 <body>
