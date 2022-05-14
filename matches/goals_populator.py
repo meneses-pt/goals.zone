@@ -388,6 +388,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             attempts = 0
             last_exception_str = ""
             while not is_sent and attempts < 10:
+                message = ""
                 try:
                     message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
                     auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
@@ -397,7 +398,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     print(f'Successful tweet! Tweets count: {result.user.statuses_count}', flush=True)
                     is_sent = True
                 except Exception as ex:
-                    last_exception_str = str(ex)
+                    last_exception_str = str(ex) + "\nMessage: " + message
                     print("Error sending twitter single message", str(ex), flush=True)
                     time.sleep(1)
                 attempts += 1
@@ -448,11 +449,15 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
 def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     if match_date is None:
         match_date = datetime.datetime.utcnow()
+    print("HERE 1")
     regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
     ner_home_team, ner_away_team, ner_player, ner_minute = extract_names_from_title_ner(title)
+    print(ner_home_team, ner_away_team, ner_player, ner_minute)
+    print("HERE 2")
     save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team)
     matches_results = None
     minute_str = None
+    print(f"Fetching title: {title}, {match_date}, {max_match_date}")
     if regex_home_team and regex_away_team:
         minute_str = regex_minute
         matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
