@@ -112,10 +112,8 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
                 > timedelta(days=30):
             print(f'Going to fetch match details (update team code)', flush=True)
             match_details_response = _fetch_sofascore_match_details(fixture['id'])
-            if home_team.name_code is None:
-                get_team_name_code(home_team, match_details_response, 'homeTeam')
-            if away_team.name_code is None:
-                get_team_name_code(away_team, match_details_response, 'awayTeam')
+            get_team_name_code(home_team, match_details_response, 'homeTeam')
+            get_team_name_code(away_team, match_details_response, 'awayTeam')
         score = None
         if 'display' in fixture['homeScore'] and 'display' in fixture['awayScore']:
             home_goals = fixture['homeScore']['display']
@@ -147,9 +145,10 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
 def _get_or_create_away_team_sofascore(fixture):
     team_id = fixture['awayTeam']['id']
     away_team, away_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['awayTeam']['name']})
-    away_team.name = fixture['awayTeam']['name']
-    away_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
-    away_team.save()
+    if away_team_created:
+        away_team.name = fixture['awayTeam']['name']
+        away_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
+        away_team.save()
     return away_team
 
 
@@ -157,14 +156,17 @@ def get_team_name_code(team, response, team_tag):
     try:
         if response is not None and response.status_code == 200:
             data = json.loads(response.content)
+            team_data = data['game']['tournaments'][0]['events'][0][team_tag]
             try:
-                name_code = data['game']['tournaments'][0]['events'][0][team_tag]['nameCode']
+                name_code = team_data['nameCode']
             except Exception as e:
                 name_code = ''
                 print(e, flush=True)
             if team.name_code is None or name_code != '':
                 team.name_code = name_code
-                team.save()
+            team.name = team_data['name']
+            team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_data['id']}/image"
+            team.save()
     except Exception as e:
         print(e, flush=True)
 
@@ -172,9 +174,10 @@ def get_team_name_code(team, response, team_tag):
 def _get_or_create_home_team_sofascore(fixture):
     team_id = fixture['homeTeam']['id']
     home_team, home_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['homeTeam']['name']})
-    home_team.name = fixture['homeTeam']['name']
-    home_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
-    home_team.save()
+    if home_team_created:
+        home_team.name = fixture['homeTeam']['name']
+        home_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
+        home_team.save()
     return home_team
 
 
