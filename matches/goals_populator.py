@@ -51,11 +51,17 @@ def _fetch_reddit_goals():
     i = 0
     after = None
     completed = CompletedTask.objects.filter(task_name='matches.goals_populator.fetch_videogoals').count()
-    iterations = 10 if completed % 60 == 0 else 1
-    while i < iterations:
+    iterations = 1
+    new_posts_to_fetch = 25
+    if completed % 60 == 0:
+        # Full Scan
+        iterations = 10
+        new_posts_to_fetch = 100
+    new_posts_count = 0
+    while i < iterations or new_posts_count >= new_posts_to_fetch:
         start = timeit.default_timer()
-        print(f"Fetching Reddit Goals {i + 1}/{iterations}", flush=True)
-        response = _fetch_data_from_reddit_api(after)
+        print(f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}", flush=True)
+        response = _fetch_data_from_reddit_api(after, new_posts_to_fetch)
         if response is None or response.content is None:
             print(f'No response retrieved', flush=True)
             continue
@@ -73,7 +79,6 @@ def _fetch_reddit_goals():
         results = data['data']['dist']
         print(f'{results} posts fetched...', flush=True)
         futures = []
-        new_posts_count = 0
         old_posts_to_check_count = 0
         for post in data['data']['children']:
             post = post['data']
@@ -623,10 +628,10 @@ def find_match(home_team, away_team, to_date, from_date=None):
     return matches
 
 
-def _fetch_data_from_reddit_api(after):
+def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
     headers = Headers(headers=True).generate()
     headers['Accept-Encoding'] = 'gzip, deflate, br'
-    response = requests.get(f'https://api.reddit.com/r/soccer/new?limit=100&after={after}',
+    response = requests.get(f'https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}',
                             headers=headers)
     return response
 
