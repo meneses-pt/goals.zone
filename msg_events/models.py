@@ -91,7 +91,7 @@ class CustomMessage(models.Model):
 
 
 @receiver(m2m_changed, sender=CustomMessage.webhooks.through)
-def send_message(sender, instance, **kwargs):
+def send_message(_sender, instance, **kwargs):
     if kwargs['action'] != 'post_add':
         return
     result = ''
