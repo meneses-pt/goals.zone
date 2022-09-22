@@ -201,7 +201,7 @@ def _parse_reply_for_mirrors(reply, videogoal):
 def _extract_urls_from_comment(author, body, videogoal):
     for line in body.splitlines():
         urls = re.findall(
-            r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|%[0-9a-fA-F][0-9a-fA-F])+',
+            r'https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|%[0-9a-fA-F][0-9a-fA-F])+',
             line)
         if len(urls) > 0:
             for url in urls:

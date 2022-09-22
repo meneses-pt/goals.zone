@@ -3,7 +3,7 @@ from datetime import date, timedelta, datetime
 from itertools import chain
 
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Q
 from django.views import generic
 from rest_framework import generics
 

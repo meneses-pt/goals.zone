@@ -1,0 +1,32 @@
+[tool.poetry]
+name = "goals-zone"
+version = "0.1.0"
+description = "goals.zone"
+authors = ["meneses-pt <andre@meneses.pt>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+discord-webhook = "^0.17"
+Django = "^4.1.1"
+django4_background_tasks = "^1.2.7"
+django_admin_rangefilter = "^0.8.8"
+django_hosts = "^5.1"
+djangorestframework = "^3.14.0"
+fake_headers = "^1.0.2"
+geoip2 = "^4.6.0"
+lxml = "^4.9.1"
+Markdown = "^3.4.1"
+proxy_list = "^0.3.8"
+psycopg2 = "^2.9.3"
+pytz = "^2022.2.1"
+requests = "^2.28.1"
+slack_webhook = "^1.0.7"
+spacy = "^3.4.1"
+tweepy = "^4.10.1"
+free-proxy-list = "^0.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

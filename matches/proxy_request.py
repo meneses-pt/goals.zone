@@ -6,7 +6,6 @@ from fake_headers import Headers
 from proxy_list import ProxyList
 
 from goals_zone import settings
-from matches.utils import get_all_proxies
 
 
 class ProxyRequest:
