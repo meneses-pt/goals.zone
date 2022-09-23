@@ -1,9 +1,8 @@
 import json
-import random
 
 import requests
 from fake_headers import Headers
-from proxy_list import ProxyList
+from fp.fp import FreeProxy
 
 from goals_zone import settings
 
@@ -35,24 +34,14 @@ class ProxyRequest:
             headers = {}
         response = None
         attempts = 0
-        proxies = None
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             # Make half of the attempts with the PREMIUM_PROXY
-            if attempts < (max_attempts / 2) and settings.PREMIUM_PROXY and settings.PREMIUM_PROXY != '':
+            if attempts < (max_attempts / 2) and \
+                    settings.PREMIUM_PROXY and \
+                    settings.PREMIUM_PROXY != '':
                 self.current_proxy = settings.PREMIUM_PROXY
             else:
-                if not proxies:
-                    print("Getting proxies", flush=True)
-                    # Proxies ---> Alternative 1 (https://github.com/meetsohail/proxy-list)
-                    pl = ProxyList()
-                    pl_proxies = pl.get_all_proxies()[:100]
-                    proxies = [f'{p[0]}:{p[1]}' for p in pl_proxies]
-                    # Proxies ---> Alternative 2 (Custom)
-                    # proxies = get_all_proxies()
-                    # End proxies
-                    print(str(len(proxies)) + " proxies returned. Going to fetch url.", flush=True)
-                self.current_proxy = random.choice(proxies)
-                proxies.remove(self.current_proxy)
+                self.current_proxy = FreeProxy(rand=True).get()
             try:
                 print(f"Proxy {self.current_proxy} | Attempt {attempts + 1}", flush=True)
                 attempts += 1
@@ -74,7 +63,10 @@ class ProxyRequest:
                 if response.status_code != 200:
                     raise Exception("Wrong Status Code: " + str(response.status_code))
             except Exception as e:
-                print(f"Exception making ProxyRequest ({attempts}/{max_attempts}): {str(e)}\n{url}\n{json.dumps(headers)}", flush=True)
+                print(
+                    f"Exception making ProxyRequest"
+                    f" ({attempts}/{max_attempts}): {str(e)}\n{url}\n{json.dumps(headers)}",
+                    flush=True)
                 headers = Headers(headers=True).generate()
                 headers['Accept-Encoding'] = 'gzip, deflate, br'
                 pass

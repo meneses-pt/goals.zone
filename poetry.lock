@@ -264,14 +264,15 @@ bs4 = "*"
 html5lib = "*"
 
 [[package]]
-name = "free-proxy-list"
-version = "0.0.3"
-description = "This package is to get free proxy ips and port number for scraping and for testing on proxy."
+name = "free-proxy"
+version = "1.0.6"
+description = "Proxy scraper for further use"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [package.dependencies]
+lxml = "*"
 requests = "*"
 
 [[package]]
@@ -1000,7 +1001,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "9fb4c46f643efaf1750f33a7d73b6e298d489ce57ccf457f9cba88e631147b76"
+content-hash = "e891751f6ce730d411a2038a7d4dffea1a77d1c7dcd7f9a522abfcdedc1c4f41"
 
 [metadata.files]
 aiohttp = [
@@ -1286,8 +1287,8 @@ fake-headers = [
     {file = "fake-headers-1.0.2.tar.gz", hash = "sha256:f22b1f37a97630ad7d8fdcfd1a0b71349aa94d2c000849300645b2e725bc5876"},
     {file = "fake_headers-1.0.2-py3-none-any.whl", hash = "sha256:d5b0e05c2e52573f3d574ec06b7cf96bb330d8d80aa99fb41f62d6df24e8cf3d"},
 ]
-free-proxy-list = [
-    {file = "free_proxy_list-0.0.3-py3-none-any.whl", hash = "sha256:91eb68cb4659bae10bd3c903e0ebd6d51c5b84c5f71d4ca10f5aea64a7e2ddf0"},
+free-proxy = [
+    {file = "free_proxy-1.0.6.tar.gz", hash = "sha256:6ad28adad727e4a5e851149731948b4cc6f8965fdfc30f19c65fdca817daba23"},
 ]
 frozenlist = [
     {file = "frozenlist-1.3.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:5f271c93f001748fc26ddea409241312a75e13466b06c94798d1a341cf0e6989"},
