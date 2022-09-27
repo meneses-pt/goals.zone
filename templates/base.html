@@ -39,13 +39,13 @@
     </a>
     <div class="form-inline">
         <a id="historyButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="History" href="{% url 'history' %}">
-            <i class="fa fa-calendar" aria-hidden="true"></i>
+            <img src="{% static "img/calendar-solid.svg" %}" alt="calendar" height="15" />
         </a>
         <a id="teamsButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="Teams" href="{% url 'teams-list' %}">
-            <i class="fa fa-shield" aria-hidden="true"></i>
+            <img src="{% static "img/shield-solid.svg" %}" alt="calendar" height="15" />
         </a>
         <button id="moreButton" class="btn btn-success small-btn" data-toggle="modal" data-target="#aboutModal" title="Info">
-            <i class="fa fa-info" aria-hidden="true"></i>
+            <img src="{% static "img/info-solid.svg" %}" alt="calendar" height="15" />
         </button>
     </div>
 </nav>
