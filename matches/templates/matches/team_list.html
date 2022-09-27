@@ -24,11 +24,11 @@
                             <div class="list-match-result">
                                 {% if team.logo_file %}
                                     <img src="{{ team.logo_file.url }}" alt="{{ team.name }}"
-                                         class="img-fluid detail-img-thumb">
+                                         class="img-fluid detail-img-thumb" width="30" height="30">
                                 {% else %}
                                     <img src="{% static "img/badge_placeholder.png" %}"
                                          alt="{{ team.name }}"
-                                         class="img-fluid detail-img-thumb">
+                                         class="img-fluid detail-img-thumb" width="30" height="30">
                                 {% endif %}&nbsp;
                                 <b>{{ team.name }} </b>
 
@@ -87,10 +87,10 @@
                 `    <div class="list-match-result">` +
                 (team.logo_file ?
                         `                <img src="${team.logo_file}" alt="${team.name}"` +
-                        `                        class="img-fluid detail-img-thumb">` :
+                        `                        class="img-fluid detail-img-thumb" width="30" height="30">` :
                         `                <img src="{% static "img/badge_placeholder.png" %}"` +
                         `                        alt="${team.name}"` +
-                        `                        class="img-fluid detail-img-thumb">`
+                        `                        class="img-fluid detail-img-thumb" width="30" height="30">`
                 ) + `&nbsp;` +
                 `    <b>${team.name}</b>` +
                 `    </div>` +

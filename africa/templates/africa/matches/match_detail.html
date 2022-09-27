@@ -9,19 +9,19 @@
         <h3 class="small-header mobile">
             {% if match.home_team.logo_file %}
                 <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
-                     class="img-fluid detail-img-thumb">
+                     class="img-fluid detail-img-thumb" width="30" height="30">
             {% else %}
                 <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
-                     class="img-fluid detail-img-thumb">
+                     class="img-fluid detail-img-thumb" width="30" height="30">
             {% endif %}&nbsp;<span
                 class="detail-score">{{ object.home_team_score|default_if_none:"-" }}</span> {{ object.home_team }}
             <br class="br-spacing"/>
             {% if match.away_team.logo_file %}
                 <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
-                     class="img-fluid detail-img-thumb">
+                     class="img-fluid detail-img-thumb" width="30" height="30">
             {% else %}
                 <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
-                     class="img-fluid detail-img-thumb">
+                     class="img-fluid detail-img-thumb" width="30" height="30">
             {% endif %}&nbsp;<span
                 class="detail-score">{{ object.away_team_score|default_if_none:"-" }}</span> {{ object.away_team }}
             <br>
@@ -33,10 +33,10 @@
 			<span style="white-space: nowrap">
                 {% if match.home_team.logo_file %}
                     <img src="{{ match.home_team.logo_file.url }}" alt="{{ match.home_team.name }}"
-                         class="img-fluid detail-img-thumb">
+                         class="img-fluid detail-img-thumb" width="30" height="30">
                 {% else %}
                     <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
-                         class="img-fluid detail-img-thumb">
+                         class="img-fluid detail-img-thumb" width="30" height="30">
                 {% endif %}&nbsp;
                 <a href="{% url 'teams-detail' slug=match.home_team.slug %}"
                    class="team-a"><b>{{ match.home_team.name }} </b></a>
@@ -46,10 +46,10 @@
                    class="team-a"><b> {{ match.away_team.name }}</b></a>
                 {% if match.away_team.logo_file %}
                     <img src="{{ match.away_team.logo_file.url }}" alt="{{ match.away_team.name }}"
-                         class="img-fluid detail-img-thumb">
+                         class="img-fluid detail-img-thumb" width="30" height="30">
                 {% else %}
                     <img src="{% static "img/badge_placeholder.png" %}" alt="{{ match.home_team.name }}"
-                         class="img-fluid detail-img-thumb">
+                         class="img-fluid detail-img-thumb" width="30" height="30">
                 {% endif %}
 			</span>
             <p class="desktop-spacing">&nbsp;{{ match.datetime|date:"d-b-Y H:i" }}</p>
