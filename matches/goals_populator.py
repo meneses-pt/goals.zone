@@ -26,7 +26,8 @@ from django.utils import timezone
 from fake_headers import Headers
 from slack_webhook import Slack
 
-from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch, \
+    MatchTweet
 from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
 from msg_events.models import Webhook, Tweet, MessageObject
 from ner.models import NerLog
@@ -34,18 +35,22 @@ from ner.utils import extract_names_from_title_ner
 
 executor = ThreadPoolExecutor(max_workers=10)
 
+MAX_TWEETS_PER_MATCH = 5
+
 
 @background(schedule=60)
 def fetch_videogoals():
     current = Task.objects.filter(task_name='matches.goals_populator.fetch_videogoals').first()
-    print(f'Now: {datetime.datetime.now()} | Task: {current.id} | Fetching new goals...', flush=True)
+    print(f'Now: {datetime.datetime.now()} | Task: {current.id} | Fetching new goals...',
+          flush=True)
     _fetch_reddit_goals()
 
 
 def _fetch_reddit_goals():
     i = 0
     after = None
-    completed = CompletedTask.objects.filter(task_name='matches.goals_populator.fetch_videogoals').count()
+    completed = CompletedTask.objects.filter(
+        task_name='matches.goals_populator.fetch_videogoals').count()
     iterations = 1
     new_posts_to_fetch = 25
     if completed % 60 == 0:
@@ -55,7 +60,9 @@ def _fetch_reddit_goals():
     new_posts_count = 0
     while i < iterations or new_posts_count >= new_posts_to_fetch:
         start = timeit.default_timer()
-        print(f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}", flush=True)
+        print(
+            f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
+            flush=True)
         response = _fetch_data_from_reddit_api(after, new_posts_to_fetch)
         if response is None or response.content is None:
             print(f'No response retrieved', flush=True)
@@ -79,7 +86,8 @@ def _fetch_reddit_goals():
             post = post['data']
             if post['url'] is not None and \
                     post['link_flair_text'] is not None and \
-                    (post['link_flair_text'].lower() == 'media' or post['link_flair_text'].lower() == 'mirror'):
+                    (post['link_flair_text'].lower() == 'media' or post[
+                        'link_flair_text'].lower() == 'mirror'):
                 try:
                     post_match = PostMatch.objects.get(permalink=post['permalink'])
                     if post_match.videogoal:
@@ -92,13 +100,16 @@ def _fetch_reddit_goals():
                     title = post['title']
                     title = _fix_title(title)
                     post_created_date = datetime.datetime.fromtimestamp(post['created_utc'])
-                    future = executor.submit(find_and_store_videogoal, post, title, post_created_date)
+                    future = executor.submit(find_and_store_videogoal, post, title,
+                                             post_created_date)
                     futures.append(future)
         concurrent.futures.wait(futures)
         end = timeit.default_timer()
         print(f'{results} posts processed', flush=True)
         print(f'{new_posts_count} are new posts', flush=True)
-        print(f'{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search', flush=True)
+        print(
+            f'{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search',
+            flush=True)
         print(f'{(end - start):.2f} elapsed', flush=True)
         after = data['data']['after']
         i += 1
@@ -152,7 +163,8 @@ def find_mirrors(videogoal):
                 children = json.loads(children_response.content)
                 if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
                         children[1]['data']['children'][0]['data']['replies'], dict):
-                    replies = children[1]['data']['children'][0]['data']['replies']['data']['children']
+                    replies = children[1]['data']['children'][0]['data']['replies']['data'][
+                        'children']
                     for reply in replies:
                         _parse_reply_for_mirrors(reply, videogoal)
             except Exception as e:
@@ -281,10 +293,12 @@ def format_event_message(match, videogoal, videogoal_mirror, message):
 
 def check_conditions(match, msg_obj):
     if msg_obj.include_categories.all().count() > 0 and \
-            (match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()):
+            (match.category is None or not msg_obj.include_categories.filter(
+                id=match.category.id).exists()):
         return False
     if msg_obj.include_tournaments.all().count() > 0 and \
-            (match.tournament is None or not msg_obj.include_tournaments.filter(id=match.tournament.id).exists()):
+            (match.tournament is None or not msg_obj.include_tournaments.filter(
+                id=match.tournament.id).exists()):
         return False
     if msg_obj.include_teams.all().count() > 0 and \
             ((match.home_team is None and match.away_team is None) or
@@ -292,10 +306,12 @@ def check_conditions(match, msg_obj):
               not msg_obj.include_teams.filter(id=match.away_team.id).exists())):
         return False
     if msg_obj.exclude_categories.all().count() > 0 and \
-            (match.category is None or msg_obj.exclude_categories.filter(id=match.category.id).exists()):
+            (match.category is None or msg_obj.exclude_categories.filter(
+                id=match.category.id).exists()):
         return False
     if msg_obj.exclude_tournaments.all().count() > 0 and \
-            (match.tournament is None or msg_obj.exclude_tournaments.filter(id=match.tournament.id).exists()):
+            (match.tournament is None or msg_obj.exclude_tournaments.filter(
+                id=match.tournament.id).exists()):
         return False
     if msg_obj.exclude_teams.all().count() > 0 and \
             ((match.home_team is None and match.away_team is None) or
@@ -387,15 +403,26 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             is_sent = False
             attempts = 0
             last_exception_str = ""
+            tweets = MatchTweet.objects.filter(match_id=match.id).order_by('created_at')
+            tweets_to_delete = tweets[MAX_TWEETS_PER_MATCH-1:]
+            for tweet_to_delete in tweets_to_delete:
+                try:
+                    api = get_tweepy_auth(tw)
+                    result = api.destroy_status(tweet_to_delete.id_str)
+                    print(f'Successful tweet delete! Tweets count: {result.user.statuses_count}',
+                          flush=True)
+                except Exception as ex:
+                    last_exception_str = str(ex) + "\nId: " + tweet_to_delete.id_str
+                    print("Error deleting twitter single message", str(ex), flush=True)
             while not is_sent and attempts < 10:
                 message = ""
                 try:
                     message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
-                    auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
-                    auth.set_access_token(tw.access_token_key, tw.access_token_secret)
-                    api = tweepy.API(auth)
+                    api = get_tweepy_auth(tw)
                     result = api.update_status(status=message)
-                    print(f'Successful tweet! Tweets count: {result.user.statuses_count}', flush=True)
+                    MatchTweet.objects.create(match=match, id_str=result.id_str)
+                    print(f'Successful tweet! Tweets count: {result.user.statuses_count}',
+                          flush=True)
                     is_sent = True
                 except Exception as ex:
                     last_exception_str = str(ex) + "\nMessage: " + message
@@ -406,6 +433,13 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex), flush=True)
+
+
+def get_tweepy_auth(tw):
+    auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
+    auth.set_access_token(tw.access_token_key, tw.access_token_secret)
+    api = tweepy.API(auth)
+    return api
 
 
 def send_telegram_message(bot_key, user_id, message, disable_notification=False):
@@ -427,7 +461,8 @@ def send_monitoring_message(message, disable_notification=False):
     try:
         monitoring_accounts = MonitoringAccount.objects.all()
         for ma in monitoring_accounts:
-            send_telegram_message(ma.telegram_bot_key, ma.telegram_user_id, message, disable_notification)
+            send_telegram_message(ma.telegram_bot_key, ma.telegram_user_id, message,
+                                  disable_notification)
     except Exception as ex:
         print("Error sending monitoring message: " + str(ex), flush=True)
 
@@ -456,14 +491,18 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
     minute_str = None
     if regex_home_team and regex_away_team:
         minute_str = regex_minute
-        matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date, from_date=match_date)
+        matches_results = find_match(regex_home_team, regex_away_team, to_date=max_match_date,
+                                     from_date=match_date)
         if not matches_results.exists():
-            matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date, from_date=match_date)
+            matches_results = find_match(regex_away_team, regex_home_team, to_date=max_match_date,
+                                         from_date=match_date)
     if (not matches_results or not matches_results.exists()) and ner_home_team and ner_away_team:
         minute_str = ner_minute
-        matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date, from_date=match_date)
+        matches_results = find_match(ner_home_team, ner_away_team, to_date=max_match_date,
+                                     from_date=match_date)
         if not matches_results.exists():
-            matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date, from_date=match_date)
+            matches_results = find_match(ner_away_team, ner_home_team, to_date=max_match_date,
+                                         from_date=match_date)
     if matches_results and matches_results.exists():
         _save_found_match(matches_results, minute_str, post)
     elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
@@ -555,9 +594,11 @@ def _handle_not_found_match(away_team, home_team, post):
 def extract_names_from_title_regex(title):
     # Maybe later we should consider the format
     # HOME_TEAM - AWAY_TEAM HOME_SCORE-AWAY_SCORE
-    home = re.findall(r'\[?]?\s?((\w|\s|\.|-)+)((\d|\[\d])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d])', title)
-    away = re.findall(r'(\d|\[\d])([-x]| [-x] | [-x]|[-x] )(\d|\[\d])\s?(((\w|\s|\.|-)(?!- ))+)(:|\s?\||-)?',
+    home = re.findall(r'\[?]?\s?((\w|\s|\.|-)+)((\d|\[\d])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d])',
                       title)
+    away = re.findall(
+        r'(\d|\[\d])([-x]| [-x] | [-x]|[-x] )(\d|\[\d])\s?(((\w|\s|\.|-)(?!- ))+)(:|\s?\||-)?',
+        title)
     minute = re.findall(r'(\S*\d+\S*)\'', title)
     if len(home) > 0:
         home_team = home[0][0].strip()
@@ -581,9 +622,11 @@ def extract_names_from_title_regex(title):
 def find_match(home_team, away_team, to_date, from_date=None):
     if from_date is None:
         from_date = date.today()
-    suffix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=False).values_list('term', flat=True)
+    suffix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=False).values_list('term',
+                                                                                       flat=True)
     suffix_regex_string = r'( ' + r'| '.join(suffix_affiliate_terms) + r')$'
-    prefix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=True).values_list('term', flat=True)
+    prefix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=True).values_list('term',
+                                                                                      flat=True)
     prefix_regex_string = r'^(' + r' |'.join(prefix_affiliate_terms) + r' )'
     suffix_affiliate_home = re.findall(suffix_regex_string, home_team)
     suffix_affiliate_away = re.findall(suffix_regex_string, away_team)
@@ -598,36 +641,42 @@ def find_match(home_team, away_team, to_date, from_date=None):
                 Q(away_team__name__unaccent__trigram_similar=away_team) |
                 Q(away_team__alias__alias__unaccent__trigram_similar=away_team))
     end = timeit.default_timer()
-    PerformanceMonitorEvent.objects.create(name="FIND_MATCH_TRIGRAM_SEARCH", elapsed_time=(end - start))
+    PerformanceMonitorEvent.objects.create(name="FIND_MATCH_TRIGRAM_SEARCH",
+                                           elapsed_time=(end - start))
     if len(suffix_affiliate_home) > 0:
         matches = matches.filter(home_team__name__iendswith=suffix_affiliate_home[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(home_team__name__iendswith=f' {term}') for term in suffix_affiliate_terms)))
+            reduce(operator.or_,
+                   (Q(home_team__name__iendswith=f' {term}') for term in suffix_affiliate_terms)))
     if len(prefix_affiliate_home) > 0:
         matches = matches.filter(home_team__name__istartswith=prefix_affiliate_home[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(home_team__name__istartswith=f' {term}') for term in prefix_affiliate_terms)))
+            reduce(operator.or_,
+                   (Q(home_team__name__istartswith=f' {term}') for term in prefix_affiliate_terms)))
 
     if len(suffix_affiliate_away) > 0:
         matches = matches.filter(away_team__name__iendswith=suffix_affiliate_away[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(away_team__name__iendswith=f' {term}') for term in suffix_affiliate_terms)))
+            reduce(operator.or_,
+                   (Q(away_team__name__iendswith=f' {term}') for term in suffix_affiliate_terms)))
     if len(prefix_affiliate_away) > 0:
         matches = matches.filter(away_team__name__istartswith=prefix_affiliate_away[0])
     else:
         matches = matches.exclude(
-            reduce(operator.or_, (Q(away_team__name__istartswith=f' {term}') for term in prefix_affiliate_terms)))
+            reduce(operator.or_,
+                   (Q(away_team__name__istartswith=f' {term}') for term in prefix_affiliate_terms)))
     return matches
 
 
 def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
     headers = Headers(headers=True).generate()
     headers['Accept-Encoding'] = 'gzip, deflate, br'
-    response = requests.get(f'https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}',
-                            headers=headers)
+    response = requests.get(
+        f'https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}',
+        headers=headers)
     return response
 
 
