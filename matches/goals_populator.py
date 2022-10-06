@@ -416,10 +416,10 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                         print(f'Successful tweet delete {tweet_to_delete.id_str}! '
                               f'Tweets count: {result.user.statuses_count}',
                               flush=True)
+                        tweet_to_delete.delete()
                 except Exception as ex:
                     last_exception_str = str(ex) + "\nId: " + tweet_to_delete.id_str
                     print("Error deleting twitter single message", str(ex), flush=True)
-            tweets_to_delete.delete()
             while not is_sent and attempts < 10:
                 message = ""
                 try:
