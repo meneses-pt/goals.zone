@@ -409,11 +409,17 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 try:
                     api = get_tweepy_auth(tw)
                     result = api.destroy_status(tweet_to_delete.id_str)
-                    print(f'Successful tweet delete! Tweets count: {result.user.statuses_count}',
-                          flush=True)
+                    try:
+                        api.get_status(tweet_to_delete.id_str)
+                        print(f'Deleting tweet didn\'t go as planned', flush=True)
+                    except Exception:
+                        print(f'Successful tweet delete {tweet_to_delete.id_str}! '
+                              f'Tweets count: {result.user.statuses_count}',
+                              flush=True)
                 except Exception as ex:
                     last_exception_str = str(ex) + "\nId: " + tweet_to_delete.id_str
                     print("Error deleting twitter single message", str(ex), flush=True)
+            tweets_to_delete.delete()
             while not is_sent and attempts < 10:
                 message = ""
                 try:
