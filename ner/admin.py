@@ -25,17 +25,21 @@ class TypeFilter(admin.SimpleListFilter):
 
     def queryset(self, request, queryset):
         value = self.value()
-        correct = queryset.filter(Q(regex_home_team=F('ner_home_team')) & Q(regex_away_team=F('ner_away_team')),
+        correct = queryset.filter(Q(regex_home_team=F('ner_home_team')) &
+                                  Q(regex_away_team=F('ner_away_team')),
                                   regex_home_team__isnull=False,
                                   regex_away_team__isnull=False)
-        conflict = queryset.filter(~Q(regex_home_team=F('ner_home_team')) | ~Q(regex_away_team=F('ner_away_team')),
+        conflict = queryset.filter(~Q(regex_home_team=F('ner_home_team')) |
+                                   ~Q(regex_away_team=F('ner_away_team')),
                                    Q(regex_home_team__isnull=False) & ~Q(regex_home_team__exact=''),
                                    Q(regex_away_team__isnull=False) & ~Q(regex_away_team__exact=''),
                                    Q(ner_home_team__isnull=False) & ~Q(ner_home_team__exact=''),
                                    Q(ner_away_team__isnull=False) & ~Q(ner_away_team__exact=''))
 
-        failed_regex = queryset.filter(((Q(regex_home_team__isnull=True) | Q(regex_away_team__isnull=True)
-                                         | Q(regex_home_team__exact='') | Q(regex_away_team__exact=''))
+        failed_regex = queryset.filter(((Q(regex_home_team__isnull=True) |
+                                         Q(regex_away_team__isnull=True) |
+                                         Q(regex_home_team__exact='') |
+                                         Q(regex_away_team__exact=''))
                                         & Q(ner_home_team__isnull=False)
                                         & Q(ner_away_team__isnull=False)))
         failed_ner = queryset.filter(((Q(ner_home_team__isnull=True) | Q(ner_away_team__isnull=True)

@@ -42,7 +42,10 @@ class NerLog(models.Model):
     # noinspection PyPep8Naming
     def toJSON(self):
         return {
-            **model_to_dict(self, fields=['title', 'regex_home_team', 'regex_away_team', 'ner_home_team', 'ner_away_team', 'created_at', 'reviewed']),
+            **model_to_dict(self,
+                            fields=['title', 'regex_home_team', 'regex_away_team',
+                                    'ner_home_team', 'ner_away_team', 'created_at',
+                                    'reviewed']),
             **{'type': self.type}
         }
 

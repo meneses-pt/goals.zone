@@ -40,7 +40,8 @@ class MessageObject(models.Model):
                                            related_name='%(class)s_exclude_teams',
                                            default=None,
                                            blank=True)
-    event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.MatchFirstVideo)
+    event_type = models.IntegerField(choices=MessageEventType.choices,
+                                     default=MessageEventType.MatchFirstVideo)
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
 
@@ -69,7 +70,8 @@ class Webhook(MessageObject):
     title = models.CharField(max_length=100, unique=True)
     webhook_url = models.CharField(max_length=2000, unique=False)
     message = models.CharField(max_length=2000)
-    destination = models.IntegerField(choices=WebhookDestinations.choices, default=WebhookDestinations.Discord)
+    destination = models.IntegerField(choices=WebhookDestinations.choices,
+                                      default=WebhookDestinations.Discord)
     active = models.BooleanField(default=True)
 
     def __str__(self):

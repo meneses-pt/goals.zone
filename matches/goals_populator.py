@@ -85,8 +85,8 @@ def _fetch_reddit_goals():
             post = post['data']
             if post['url'] is not None and \
                     post['link_flair_text'] is not None and \
-                    (post['link_flair_text'].lower() == 'media' or post[
-                        'link_flair_text'].lower() == 'mirror'):
+                    (post['link_flair_text'].lower() == 'media' or
+                     post['link_flair_text'].lower() == 'mirror'):
                 try:
                     post_match = PostMatch.objects.get(permalink=post['permalink'])
                     if post_match.videogoal:
@@ -106,9 +106,8 @@ def _fetch_reddit_goals():
         end = timeit.default_timer()
         print(f'{results} posts processed', flush=True)
         print(f'{new_posts_count} are new posts', flush=True)
-        print(
-            f'{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search',
-            flush=True)
+        print(f'{old_posts_to_check_count}/{results - new_posts_count} '
+              f'are old posts with mirror search', flush=True)
         print(f'{(end - start):.2f} elapsed', flush=True)
         after = data['data']['after']
         i += 1
@@ -160,8 +159,8 @@ def find_mirrors(videogoal):
             children_response = _make_reddit_api_request(children_url)
             try:
                 children = json.loads(children_response.content)
-                if "replies" in children[1]['data']['children'][0]['data'] and isinstance(
-                        children[1]['data']['children'][0]['data']['replies'], dict):
+                if "replies" in children[1]['data']['children'][0]['data'] and \
+                        isinstance(children[1]['data']['children'][0]['data']['replies'], dict):
                     replies = children[1]['data']['children'][0]['data']['replies']['data'][
                         'children']
                     for reply in replies:
@@ -681,7 +680,8 @@ def _fetch_historic_data_from_reddit_api(from_date):
     headers['Accept-Encoding'] = 'gzip, deflate, br'
     response = requests.get(
         f'https://api.pushshift.io/reddit/search/submission/'
-        f'?subreddit=soccer&sort=desc&sort_type=created_utc&after={after}&before={before}&size=1000',
+        f'?subreddit=soccer&sort=desc&sort_type=created_utc'
+        f'&after={after}&before={before}&size=1000',
         headers=headers)
     return response
 

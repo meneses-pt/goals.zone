@@ -78,7 +78,8 @@ class MatchSearchView(generics.ListAPIView):
                                         videogoal__isnull=False).distinct().order_by('datetime')
         if filter_q is not None:
             queryset = queryset.filter(
-                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+                Q(home_team__name__unaccent__icontains=filter_q) |
+                Q(away_team__name__unaccent__icontains=filter_q))
         return queryset
 
 
@@ -93,7 +94,8 @@ class MatchWeekSearchView(generics.ListAPIView):
                                         videogoal__isnull=False).distinct().order_by('-datetime')
         if filter_q is not None:
             queryset = queryset.filter(
-                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+                Q(home_team__name__unaccent__icontains=filter_q) |
+                Q(away_team__name__unaccent__icontains=filter_q))
         return queryset
 
 
@@ -103,12 +105,12 @@ class TeamsListView(generic.ListView):
 
     def get_queryset(self):
         return Team.objects.raw('''
-                    select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
-                    from matches_team t
-                    inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
-                    inner join matches_videogoal vg on m.id = vg.match_id
-                    group by t.id, name, logo_url, logo_file, name_code
-                    order by matches_count desc
+            select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+            from matches_team t
+            inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+            inner join matches_videogoal vg on m.id = vg.match_id
+            group by t.id, name, logo_url, logo_file, name_code
+            order by matches_count desc
                 ''')
 
 
@@ -119,9 +121,12 @@ class TeamsDetailView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(TeamsDetailView, self).get_context_data(**kwargs)
-        home_matches = self.object.home_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
-        away_matches = self.object.away_team.annotate(vg_count=Count('videogoal')).filter(vg_count__gt=0)
-        team_matches = sorted(chain(home_matches, away_matches), key=lambda instance: instance.datetime, reverse=True)
+        home_matches = self.object.home_team.annotate(vg_count=Count('videogoal')).filter(
+            vg_count__gt=0)
+        away_matches = self.object.away_team.annotate(vg_count=Count('videogoal')).filter(
+            vg_count__gt=0)
+        team_matches = sorted(chain(home_matches, away_matches),
+                              key=lambda instance: instance.datetime, reverse=True)
         paginator = Paginator(team_matches, self.paginate_by)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -134,18 +139,19 @@ class TeamSearchView(generics.ListAPIView):
 
     def get_queryset(self):
         filter_q = self.request.query_params.get('filter', None)
-        query_string = ''' select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
-                           from matches_team t
-                           inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
-                           inner join matches_videogoal vg on m.id = vg.match_id ''' + (
+        query_string = ''' 
+            select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+           from matches_team t
+           inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+           inner join matches_videogoal vg on m.id = vg.match_id ''' + (
             '' if filter_q is None
             else
             f''
             f'where UPPER(UNACCENT(t.name)::text) '
             f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
         ) + '''
-                            group by t.id, name, logo_url, logo_file, name_code
-                            order by matches_count desc
-                        '''
+            group by t.id, name, logo_url, logo_file, name_code
+            order by matches_count desc
+            '''
         queryset = Team.objects.raw(query_string)
         return queryset

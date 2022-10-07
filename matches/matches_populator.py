@@ -137,14 +137,16 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     end = timeit.default_timer()
     print(f'{(end - start):.2f} elapsed processing {len(events)} events\n', flush=True)
     # print('Going to delete old matches without videos', flush=True)
-    # delete = Match.objects.annotate(videos_count=Count('videogoal')).filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
+    # delete = Match.objects.annotate(videos_count=Count('videogoal')) \
+    # .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7)).delete()
     # print(f'Deleted {delete} old matches without videos', flush=True)
     print('Finished processing matches\n\n', flush=True)
 
 
 def _get_or_create_away_team_sofascore(fixture):
     team_id = fixture['awayTeam']['id']
-    away_team, away_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['awayTeam']['name']})
+    away_team, away_team_created = \
+        Team.objects.get_or_create(id=team_id, defaults={'name': fixture['awayTeam']['name']})
     if away_team_created:
         away_team.name = fixture['awayTeam']['name']
         away_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
@@ -173,7 +175,8 @@ def get_team_name_code(team, response, team_tag):
 
 def _get_or_create_home_team_sofascore(fixture):
     team_id = fixture['homeTeam']['id']
-    home_team, home_team_created = Team.objects.get_or_create(id=team_id, defaults={'name': fixture['homeTeam']['name']})
+    home_team, home_team_created = \
+        Team.objects.get_or_create(id=team_id, defaults={'name': fixture['homeTeam']['name']})
     if home_team_created:
         home_team.name = fixture['homeTeam']['name']
         home_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
@@ -187,7 +190,8 @@ def _get_or_create_tournament_sofascore(tournament, category):
         name = '(no name)'
         if 'name' in tournament:
             name = tournament['name']
-        tournament_obj, tournament_obj_created = Tournament.objects.get_or_create(id=tid, defaults={'name': name})
+        tournament_obj, tournament_obj_created = \
+            Tournament.objects.get_or_create(id=tid, defaults={'name': name})
         tournament_obj.name = name
         if 'uniqueId' in tournament:
             tournament_obj.unique_id = tournament['uniqueId']
@@ -207,7 +211,8 @@ def _get_or_create_category_sofascore(category):
         name = '(no name)'
         if 'name' in category:
             name = category['name']
-        category_obj, category_obj_created = Category.objects.get_or_create(id=cid, defaults={'name': name})
+        category_obj, category_obj_created = \
+            Category.objects.get_or_create(id=cid, defaults={'name': name})
         category_obj.name = name
         if 'priority' in category:
             category_obj.priority = category['priority']
@@ -226,7 +231,8 @@ def _get_or_create_season_sofascore(season):
         name = '(no name)'
         if 'name' in season:
             name = season['name']
-        season_obj, season_obj_created = Season.objects.get_or_create(id=sid, defaults={'name': name})
+        season_obj, season_obj_created = \
+            Season.objects.get_or_create(id=sid, defaults={'name': name})
         season_obj.name = name
         if 'year' in season:
             season_obj.year = season['year']
@@ -241,7 +247,8 @@ def _fetch_full_scan_url(single_date, inverse=False):
     today_str = single_date.strftime("%Y-%m-%d")
     url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
     if inverse:
-        url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
+        url = f'https://api.sofascore.com/api/v1/sport/football' \
+              f'/scheduled-events/{today_str}/inverse'
     headers = get_sofascore_headers()
     return url, headers
 
@@ -272,7 +279,8 @@ def _fetch_data_from_sofascore_api(url, headers):
 def make_sofascore_request(today_str, proxy=None, inverse=False):
     url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}'
     if inverse:
-        url = f'https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse'
+        url = f'https://api.sofascore.com/api/v1/sport/football' \
+              f'/scheduled-events/{today_str}/inverse'
     headers = get_sofascore_headers()
     if proxy:
         response = requests.get(
@@ -303,21 +311,26 @@ def _fetch_sofascore_match_details(event_id):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    return ProxyRequest.get_instance().make_request(f'https://api.sofascore.com/mobile/v4/event/{event_id}/details')
+    return ProxyRequest.get_instance().make_request(f'https://api.sofascore.com/mobile/v4'
+                                                    f'/event/{event_id}/details')
 
 
 def matches_filter_conditions(match_filter, match):
     if match_filter.include_categories.all().count() > 0 and \
-            (match.category is None or not match_filter.include_categories.filter(id=match.category.id).exists()):
+            (match.category is None or
+             not match_filter.include_categories.filter(id=match.category.id).exists()):
         return False
     if match_filter.include_tournaments.all().count() > 0 and \
-            (match.tournament is None or not match_filter.include_tournaments.filter(id=match.tournament.id).exists()):
+            (match.tournament is None or
+             not match_filter.include_tournaments.filter(id=match.tournament.id).exists()):
         return False
     if match_filter.exclude_categories.all().count() > 0 and \
-            (match.category is None or match_filter.exclude_categories.filter(id=match.category.id).exists()):
+            (match.category is None or
+             match_filter.exclude_categories.filter(id=match.category.id).exists()):
         return False
     if match_filter.exclude_tournaments.all().count() > 0 and \
-            (match.tournament is None or match_filter.exclude_tournaments.filter(id=match.tournament.id).exists()):
+            (match.tournament is None or
+             match_filter.exclude_tournaments.filter(id=match.tournament.id).exists()):
         return False
     return True
 

@@ -12,6 +12,7 @@ urlpatterns = [
 
     # api
     path('api/matches/', views.AfricaMatchSearchView.as_view(), name='api-matches-list'),
-    path('api/matches-week/', views.AfricaMatchWeekSearchView.as_view(), name='api-matches-week-list'),
+    path('api/matches-week/', views.AfricaMatchWeekSearchView.as_view(),
+         name='api-matches-week-list'),
     path('api/teams/', views.AfricaTeamSearchView.as_view(), name='api-teams-list'),
 ]

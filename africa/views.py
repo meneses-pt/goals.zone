@@ -27,14 +27,9 @@ class AfricaMatchesHistoryListView(generic.ListView):
             end_date = start_date + timedelta(days=1)
         start_date = localize_date(start_date)
         end_date = localize_date(end_date)
-        return Match.objects.filter(
-            id__in=AfricaMatch.objects.values_list('match_id', flat=True),
-            datetime__gte=start_date,
-            datetime__lt=end_date,
-            score__isnull=False
-        ) \
-            .distinct() \
-            .order_by('datetime')
+        return Match.objects.filter(id__in=AfricaMatch.objects.values_list('match_id', flat=True),
+                                    datetime__gte=start_date, datetime__lt=end_date,
+                                    score__isnull=False).distinct().order_by('datetime')
 
     def get_context_data(self, **kwargs):
         context = super(AfricaMatchesHistoryListView, self).get_context_data(**kwargs)
@@ -58,12 +53,8 @@ class AfricaMatchesListView(generic.ListView):
 
     def get_queryset(self):
         start = timeit.default_timer()
-        qs = Match.objects.filter(
-            id__in=AfricaMatch.objects.values_list('match_id', flat=True),
-            score__isnull=False
-        ) \
-            .distinct() \
-            .order_by('-datetime')
+        qs = Match.objects.filter(id__in=AfricaMatch.objects.values_list('match_id', flat=True),
+                                  score__isnull=False).distinct().order_by('-datetime')
         end = timeit.default_timer()
         print(end - start)
         return qs
@@ -80,7 +71,13 @@ class AfricaTeamsListView(generic.ListView):
 
     def get_queryset(self):
         return Team.objects.raw('''
-                    select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+                    select 
+                        t.id, 
+                        t.name, 
+                        t.logo_url, 
+                        t.logo_file, 
+                        t.name_code, 
+                        count(m.id) as matches_count
                     from matches_team t
                     inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
                     inner join africa_match am on m.id = am.match_id
@@ -98,7 +95,8 @@ class AfricaTeamsDetailView(generic.DetailView):
         context = super(AfricaTeamsDetailView, self).get_context_data(**kwargs)
         home_matches = self.object.home_team.all()
         away_matches = self.object.away_team.all()
-        team_matches = sorted(chain(home_matches, away_matches), key=lambda instance: instance.datetime, reverse=True)
+        team_matches = sorted(chain(home_matches, away_matches),
+                              key=lambda instance: instance.datetime, reverse=True)
         paginator = Paginator(team_matches, self.paginate_by)
         page_number = self.request.GET.get('page')
         page_obj = paginator.get_page(page_number)
@@ -126,8 +124,8 @@ class AfricaMatchSearchView(generics.ListAPIView):
             datetime__gte=start_date,
             datetime__lte=end_date).distinct().order_by('datetime')
         if filter_q is not None:
-            queryset = queryset.filter(
-                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+            queryset = queryset.filter(Q(home_team__name__unaccent__icontains=filter_q) |
+                                       Q(away_team__name__unaccent__icontains=filter_q))
         return queryset
 
 
@@ -140,11 +138,10 @@ class AfricaMatchWeekSearchView(generics.ListAPIView):
         start_date = localize_date(start_date)
         queryset = Match.objects.filter(
             id__in=AfricaMatch.objects.values_list('match_id', flat=True),
-            datetime__gte=start_date
-        ).distinct().order_by('-datetime')
+            datetime__gte=start_date).distinct().order_by('-datetime')
         if filter_q is not None:
-            queryset = queryset.filter(
-                Q(home_team__name__unaccent__icontains=filter_q) | Q(away_team__name__unaccent__icontains=filter_q))
+            queryset = queryset.filter(Q(home_team__name__unaccent__icontains=filter_q) |
+                                       Q(away_team__name__unaccent__icontains=filter_q))
         return queryset
 
 
@@ -153,18 +150,17 @@ class AfricaTeamSearchView(generics.ListAPIView):
 
     def get_queryset(self):
         filter_q = self.request.query_params.get('filter', None)
-        query_string = ''' select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
-                           from matches_team t
-                           inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
-                           inner join africa_match am on m.id = am.match_id ''' + (
-            '' if filter_q is None
-            else
-            f''
-            f'where UPPER(UNACCENT(t.name)::text) '
-            f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
-        ) + '''
-                            group by t.id, name, logo_url, logo_file, name_code
-                            order by matches_count desc
-                        '''
+        query_string = '''
+        select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+        from matches_team t
+        inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+        inner join africa_match am on m.id = am.match_id ''' + \
+                       ('' if filter_q is None else
+                        f' where UPPER(UNACCENT(t.name)::text) '
+                        f'LIKE \'%%\' || UPPER(UNACCENT(\'{filter_q}\')::text) || \'%%\''
+                        ) + '''
+        group by t.id, name, logo_url, logo_file, name_code
+        order by matches_count desc
+        '''
         queryset = Team.objects.raw(query_string)
         return queryset

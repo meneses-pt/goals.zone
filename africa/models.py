@@ -13,20 +13,16 @@ class AfricaMatch(models.Model):
 class AfricaMatchesFilter(models.Model):
     include_tournaments = models.ManyToManyField(Tournament,
                                                  related_name='%(class)s_include_tournaments',
-                                                 default=None,
-                                                 blank=True)
+                                                 default=None, blank=True)
     include_categories = models.ManyToManyField(Category,
                                                 related_name='%(class)s_include_categories',
-                                                default=None,
-                                                blank=True)
+                                                default=None, blank=True)
     exclude_tournaments = models.ManyToManyField(Tournament,
                                                  related_name='%(class)s_exclude_tournaments',
-                                                 default=None,
-                                                 blank=True)
+                                                 default=None, blank=True)
     exclude_categories = models.ManyToManyField(Category,
                                                 related_name='%(class)s_exclude_categories',
-                                                default=None,
-                                                blank=True)
+                                                default=None, blank=True)
 
     @classmethod
     def object(cls):

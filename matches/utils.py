@@ -77,7 +77,8 @@ def get_proxies_freeproxycz():
 def get_proxies_proxyscrape():
     headers_list = Headers(headers=True).generate()
     headers_list['Accept-Encoding'] = 'gzip, deflate, br'
-    url = 'https://api.proxyscrape.com/?request=displayproxies&proxytype=http&timeout=10000&country=all&ssl=yes&anonymity=elite'
+    url = 'https://api.proxyscrape.com/' \
+          '?request=displayproxies&proxytype=http&timeout=10000&country=all&ssl=yes&anonymity=elite'
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
@@ -131,7 +132,8 @@ def get_proxies_proxynova():
                 continue
             ip = res.group(1)
             # Grabbing IP and corresponding PORT
-            proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())]).replace("' + '", "")
+            proxy = ":".join([ip, ''.join(i.xpath('.//td[2]/text()')[0].split())]) \
+                .replace("' + '", "")
             proxies.append(proxy)
     except Exception as e:
         print(f'Error getting proxies ({url}): {e}', flush=True)
