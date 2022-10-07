@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0014_auto_20200129_1530'),
+        ("matches", "0014_auto_20200129_1530"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='affiliateterm',
-            name='is_prefix',
+            model_name="affiliateterm",
+            name="is_prefix",
             field=models.BooleanField(default=False),
         ),
     ]

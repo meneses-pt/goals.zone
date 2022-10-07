@@ -6,33 +6,44 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0006_auto_20191108_1625'),
+        ("matches", "0006_auto_20191108_1625"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Team',
+            name="Team",
             fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False, unique=True)),
-                ('name', models.CharField(max_length=256)),
-                ('logo', models.CharField(max_length=256)),
+                (
+                    "id",
+                    models.IntegerField(primary_key=True, serialize=False, unique=True),
+                ),
+                ("name", models.CharField(max_length=256)),
+                ("logo", models.CharField(max_length=256)),
             ],
         ),
         migrations.AlterField(
-            model_name='videogoal',
-            name='permalink',
+            model_name="videogoal",
+            name="permalink",
             field=models.CharField(max_length=256, unique=True),
         ),
         migrations.AddField(
-            model_name='match',
-            name='away_team_link',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='away_team',
-                                    to='matches.Team'),
+            model_name="match",
+            name="away_team_link",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="away_team",
+                to="matches.Team",
+            ),
         ),
         migrations.AddField(
-            model_name='match',
-            name='home_team_link',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='home_team',
-                                    to='matches.Team'),
-        )
+            model_name="match",
+            name="home_team_link",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="home_team",
+                to="matches.Team",
+            ),
+        ),
     ]

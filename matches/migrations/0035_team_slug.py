@@ -16,14 +16,14 @@ def migrate_data_backward(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0034_auto_20200309_1511'),
+        ("matches", "0034_auto_20200309_1511"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='team',
-            name='slug',
-            field=models.SlugField(default='to-replace', max_length=200),
+            model_name="team",
+            name="slug",
+            field=models.SlugField(default="to-replace", max_length=200),
             preserve_default=False,
         ),
         migrations.RunPython(

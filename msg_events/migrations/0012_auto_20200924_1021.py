@@ -6,29 +6,49 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0039_auto_20200909_0918'),
-        ('msg_events', '0011_auto_20200308_1729'),
+        ("matches", "0039_auto_20200909_0918"),
+        ("msg_events", "0011_auto_20200308_1729"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tweet',
-            name='exclude_teams',
-            field=models.ManyToManyField(blank=True, default=None, related_name='tweet_exclude_teams', to='matches.Category'),
+            model_name="tweet",
+            name="exclude_teams",
+            field=models.ManyToManyField(
+                blank=True,
+                default=None,
+                related_name="tweet_exclude_teams",
+                to="matches.Category",
+            ),
         ),
         migrations.AddField(
-            model_name='tweet',
-            name='include_teams',
-            field=models.ManyToManyField(blank=True, default=None, related_name='tweet_include_teams', to='matches.Team'),
+            model_name="tweet",
+            name="include_teams",
+            field=models.ManyToManyField(
+                blank=True,
+                default=None,
+                related_name="tweet_include_teams",
+                to="matches.Team",
+            ),
         ),
         migrations.AddField(
-            model_name='webhook',
-            name='exclude_teams',
-            field=models.ManyToManyField(blank=True, default=None, related_name='webhook_exclude_teams', to='matches.Category'),
+            model_name="webhook",
+            name="exclude_teams",
+            field=models.ManyToManyField(
+                blank=True,
+                default=None,
+                related_name="webhook_exclude_teams",
+                to="matches.Category",
+            ),
         ),
         migrations.AddField(
-            model_name='webhook',
-            name='include_teams',
-            field=models.ManyToManyField(blank=True, default=None, related_name='webhook_include_teams', to='matches.Team'),
+            model_name="webhook",
+            name="include_teams",
+            field=models.ManyToManyField(
+                blank=True,
+                default=None,
+                related_name="webhook_include_teams",
+                to="matches.Team",
+            ),
         ),
     ]

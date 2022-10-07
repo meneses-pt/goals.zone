@@ -6,27 +6,27 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0047_auto_20211107_1834'),
+        ("matches", "0047_auto_20211107_1834"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='videogoal',
-            name='permalink',
+            model_name="videogoal",
+            name="permalink",
         ),
         migrations.AddField(
-            model_name='postmatch',
-            name='away_team_str',
+            model_name="postmatch",
+            name="away_team_str",
             field=models.CharField(max_length=256, null=True),
         ),
         migrations.AddField(
-            model_name='postmatch',
-            name='home_team_str',
+            model_name="postmatch",
+            name="home_team_str",
             field=models.CharField(max_length=256, null=True),
         ),
         migrations.AddField(
-            model_name='postmatch',
-            name='title',
+            model_name="postmatch",
+            name="title",
             field=models.CharField(max_length=200, null=True),
         ),
     ]

@@ -3,9 +3,9 @@ from django.conf import settings
 
 
 def get_doc_result(doc):
-    teams = [d.text for d in doc.ents if d.label_ == 'Team']
-    players = [d.text for d in doc.ents if d.label_ == 'Player']
-    minutes = [d.text for d in doc.ents if d.label_ == 'Minute']
+    teams = [d.text for d in doc.ents if d.label_ == "Team"]
+    players = [d.text for d in doc.ents if d.label_ == "Player"]
+    minutes = [d.text for d in doc.ents if d.label_ == "Minute"]
     if len(teams) == 2:
         home_team = teams[0]
         away_team = teams[1]

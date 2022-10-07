@@ -13,40 +13,56 @@ class NerLog(models.Model):
 
     @property
     def type(self):
-        if self.regex_home_team and \
-                self.regex_away_team and \
-                self.ner_home_team and \
-                self.ner_away_team and \
-                self.regex_home_team == self.ner_home_team and \
-                self.regex_away_team == self.ner_away_team:
-            return 'Correct'
-        if self.regex_home_team and \
-                self.regex_away_team and \
-                self.ner_home_team and \
-                self.ner_away_team and \
-                (self.regex_home_team != self.ner_home_team or
-                 self.regex_away_team != self.ner_away_team):
-            return 'Conflict'
-        if (not self.regex_home_team or
-            not self.regex_away_team) and \
-                self.ner_home_team and \
-                self.ner_away_team:
-            return 'Failed Regex'
-        if (not self.ner_home_team or
-            not self.ner_away_team) and \
-                self.regex_home_team and \
-                self.regex_away_team:
-            return 'Failed NER'
-        return 'Not Identified'
+        if (
+            self.regex_home_team
+            and self.regex_away_team
+            and self.ner_home_team
+            and self.ner_away_team
+            and self.regex_home_team == self.ner_home_team
+            and self.regex_away_team == self.ner_away_team
+        ):
+            return "Correct"
+        if (
+            self.regex_home_team
+            and self.regex_away_team
+            and self.ner_home_team
+            and self.ner_away_team
+            and (
+                self.regex_home_team != self.ner_home_team
+                or self.regex_away_team != self.ner_away_team
+            )
+        ):
+            return "Conflict"
+        if (
+            (not self.regex_home_team or not self.regex_away_team)
+            and self.ner_home_team
+            and self.ner_away_team
+        ):
+            return "Failed Regex"
+        if (
+            (not self.ner_home_team or not self.ner_away_team)
+            and self.regex_home_team
+            and self.regex_away_team
+        ):
+            return "Failed NER"
+        return "Not Identified"
 
     # noinspection PyPep8Naming
     def toJSON(self):
         return {
-            **model_to_dict(self,
-                            fields=['title', 'regex_home_team', 'regex_away_team',
-                                    'ner_home_team', 'ner_away_team', 'created_at',
-                                    'reviewed']),
-            **{'type': self.type}
+            **model_to_dict(
+                self,
+                fields=[
+                    "title",
+                    "regex_home_team",
+                    "regex_away_team",
+                    "ner_home_team",
+                    "ner_away_team",
+                    "created_at",
+                    "reviewed",
+                ],
+            ),
+            **{"type": self.type},
         }
 
     def __str__(self):

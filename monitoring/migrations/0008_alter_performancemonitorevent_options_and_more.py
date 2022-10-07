@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('monitoring', '0007_performancemonitorevent'),
+        ("monitoring", "0007_performancemonitorevent"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='performancemonitorevent',
-            options={'ordering': ('-timestamp',)},
+            name="performancemonitorevent",
+            options={"ordering": ("-timestamp",)},
         ),
         migrations.AlterField(
-            model_name='performancemonitorevent',
-            name='name',
+            model_name="performancemonitorevent",
+            name="name",
             field=models.CharField(max_length=200),
         ),
     ]

@@ -6,14 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0022_discordwebhookurl'),
+        ("matches", "0022_discordwebhookurl"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='discordwebhookurl',
-            name='message',
-            field=models.CharField(default='', max_length=2000),
+            model_name="discordwebhookurl",
+            name="message",
+            field=models.CharField(default="", max_length=2000),
             preserve_default=False,
         ),
     ]

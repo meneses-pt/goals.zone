@@ -6,20 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('msg_events', '0001_initial'),
+        ("msg_events", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Tweet',
+            name="Tweet",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100, unique=True)),
-                ('consumer_key', models.CharField(max_length=100, unique=True)),
-                ('consumer_secret', models.CharField(max_length=100, unique=True)),
-                ('access_token_key', models.CharField(max_length=100, unique=True)),
-                ('access_token_secret', models.CharField(max_length=100, unique=True)),
-                ('message', models.CharField(max_length=2000)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100, unique=True)),
+                ("consumer_key", models.CharField(max_length=100, unique=True)),
+                ("consumer_secret", models.CharField(max_length=100, unique=True)),
+                ("access_token_key", models.CharField(max_length=100, unique=True)),
+                ("access_token_secret", models.CharField(max_length=100, unique=True)),
+                ("message", models.CharField(max_length=2000)),
             ],
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0019_team_name_code'),
+        ("matches", "0019_team_name_code"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='match',
-            name='tweet_sent',
+            model_name="match",
+            name="tweet_sent",
             field=models.BooleanField(default=False),
         ),
     ]

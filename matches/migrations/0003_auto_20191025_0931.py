@@ -6,33 +6,33 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0002_videogoal'),
+        ("matches", "0002_videogoal"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='videogoal',
-            name='description',
+            model_name="videogoal",
+            name="description",
         ),
         migrations.AddField(
-            model_name='videogoal',
-            name='permalink',
+            model_name="videogoal",
+            name="permalink",
             field=models.CharField(default=None, max_length=256),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='videogoal',
-            name='title',
+            model_name="videogoal",
+            name="title",
             field=models.CharField(max_length=200, null=True),
         ),
         migrations.AlterField(
-            model_name='videogoal',
-            name='minute',
+            model_name="videogoal",
+            name="minute",
             field=models.CharField(max_length=10, null=True),
         ),
         migrations.AlterField(
-            model_name='videogoal',
-            name='url',
+            model_name="videogoal",
+            name="url",
             field=models.CharField(max_length=256, null=True),
         ),
     ]

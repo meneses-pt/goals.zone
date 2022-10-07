@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0029_auto_20200304_1236'),
+        ("matches", "0029_auto_20200304_1236"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='category',
-            name='priority',
+            model_name="category",
+            name="priority",
             field=models.IntegerField(default=None, null=True),
         ),
     ]

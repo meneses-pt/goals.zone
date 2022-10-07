@@ -6,16 +6,16 @@ from matches.models import Category, Season, Tournament
 
 
 def migrate_data_forward(apps, schema_editor):
-    Category.objects.all().update(slug='to-replace')
-    Season.objects.all().update(slug='to-replace')
-    Tournament.objects.all().update(slug='to-replace')
-    for instance in Category.objects.all().order_by('id'):
+    Category.objects.all().update(slug="to-replace")
+    Season.objects.all().update(slug="to-replace")
+    Tournament.objects.all().update(slug="to-replace")
+    for instance in Category.objects.all().order_by("id"):
         print(f"Generating slug for category {instance} (id: {instance.id})", flush=True)
         instance.save()  # Will trigger slug update
-    for instance in Season.objects.all().order_by('id'):
+    for instance in Season.objects.all().order_by("id"):
         print(f"Generating slug for season {instance} (id: {instance.id})", flush=True)
         instance.save()  # Will trigger slug update
-    for instance in Tournament.objects.all().order_by('id'):
+    for instance in Tournament.objects.all().order_by("id"):
         print(f"Generating slug for tournament {instance} (id: {instance.id})", flush=True)
         instance.save()  # Will trigger slug update
 
@@ -26,24 +26,24 @@ def migrate_data_backward(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0036_auto_20200807_1457'),
+        ("matches", "0036_auto_20200807_1457"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='category',
-            name='slug',
-            field=models.SlugField(default='to-replace', max_length=200),
+            model_name="category",
+            name="slug",
+            field=models.SlugField(default="to-replace", max_length=200),
         ),
         migrations.AlterField(
-            model_name='season',
-            name='slug',
-            field=models.SlugField(default='to-replace', max_length=200),
+            model_name="season",
+            name="slug",
+            field=models.SlugField(default="to-replace", max_length=200),
         ),
         migrations.AlterField(
-            model_name='tournament',
-            name='slug',
-            field=models.SlugField(default='to-replace', max_length=200),
+            model_name="tournament",
+            name="slug",
+            field=models.SlugField(default="to-replace", max_length=200),
         ),
         migrations.RunPython(
             migrate_data_forward,

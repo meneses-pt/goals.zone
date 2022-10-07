@@ -5,13 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0004_auto_20191025_1120'),
+        ("matches", "0004_auto_20191025_1120"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='match',
-            name='slug',
+            model_name="match",
+            name="slug",
             field=models.SlugField(null=True, default=None, max_length=200, unique=True),
             preserve_default=False,
         )

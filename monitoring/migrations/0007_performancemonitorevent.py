@@ -6,17 +6,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('monitoring', '0006_delete_matchnotfound'),
+        ("monitoring", "0006_delete_matchnotfound"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='PerformanceMonitorEvent',
+            name="PerformanceMonitorEvent",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=200, unique=True)),
-                ('elapsed_time', models.DecimalField(decimal_places=5, max_digits=8)),
-                ('timestamp', models.DateTimeField(auto_now_add=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=200, unique=True)),
+                ("elapsed_time", models.DecimalField(decimal_places=5, max_digits=8)),
+                ("timestamp", models.DateTimeField(auto_now_add=True)),
             ],
         ),
     ]

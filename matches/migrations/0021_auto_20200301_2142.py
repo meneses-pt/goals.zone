@@ -6,23 +6,23 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0020_match_tweet_sent'),
+        ("matches", "0020_match_tweet_sent"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='videogoal',
-            name='permalink',
+            model_name="videogoal",
+            name="permalink",
             field=models.CharField(max_length=1024, unique=True),
         ),
         migrations.AlterField(
-            model_name='videogoal',
-            name='url',
+            model_name="videogoal",
+            name="url",
             field=models.CharField(max_length=1024, null=True),
         ),
         migrations.AlterField(
-            model_name='videogoalmirror',
-            name='url',
+            model_name="videogoalmirror",
+            name="url",
             field=models.CharField(max_length=1024, null=True),
         ),
     ]

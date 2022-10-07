@@ -6,21 +6,32 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0023_discordwebhookurl_message'),
+        ("matches", "0023_discordwebhookurl_message"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='WebhookUrl',
+            name="WebhookUrl",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.CharField(max_length=100, unique=True)),
-                ('webhook', models.CharField(max_length=2000, unique=True)),
-                ('message', models.CharField(max_length=2000)),
-                ('destination', models.IntegerField(choices=[(1, 'Discord'), (2, 'Slack')], default=1)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.CharField(max_length=100, unique=True)),
+                ("webhook", models.CharField(max_length=2000, unique=True)),
+                ("message", models.CharField(max_length=2000)),
+                (
+                    "destination",
+                    models.IntegerField(choices=[(1, "Discord"), (2, "Slack")], default=1),
+                ),
             ],
         ),
         migrations.DeleteModel(
-            name='DiscordWebhookUrl',
+            name="DiscordWebhookUrl",
         ),
     ]

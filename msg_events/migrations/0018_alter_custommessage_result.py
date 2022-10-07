@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('msg_events', '0017_alter_custommessage_id'),
+        ("msg_events", "0017_alter_custommessage_id"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='custommessage',
-            name='result',
+            model_name="custommessage",
+            name="result",
             field=models.CharField(blank=True, default=None, max_length=2000, null=True),
         ),
     ]

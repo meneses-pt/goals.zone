@@ -22,16 +22,13 @@ To build the database structure you'll run the command:
 
 ### Running
 
-To run the server run the command:
-```python manage.py runserver```
-
-To run the job that updates the data run the command:
-```python manage.py process_tasks```
+* To run the server run the command: ```python manage.py runserver```
+* To run the job that updates the data run the command: ```python manage.py process_tasks```
 
 ### Prerequisites
 
- * Python 3.6
- * All the packages in the requirements.txt file
+* Python 3.6
+* All the packages in the requirements.txt file
 
 ## License
 
@@ -39,7 +36,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## Webhooks/Twitter
 
-If you want to add variables in your messages, you should use curly brackets and you can use the variables below:
+If you want to add variables in your messages, you should use curly brackets, and you can use the variables below:
 
 * {vg.match.home_team.name} - Videogoal Home Team Name
 * {vg.match.away_team.name} - Videogoal Away Team Name

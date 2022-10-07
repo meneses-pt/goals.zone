@@ -6,11 +6,11 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0024_auto_20200303_1227'),
+        ("matches", "0024_auto_20200303_1227"),
     ]
 
     operations = [
         migrations.DeleteModel(
-            name='WebhookUrl',
+            name="WebhookUrl",
         ),
     ]

@@ -7,18 +7,28 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Webhook',
+            name="Webhook",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=100, unique=True)),
-                ('webhook_url', models.CharField(max_length=2000, unique=True)),
-                ('message', models.CharField(max_length=2000)),
-                ('destination', models.IntegerField(choices=[(1, 'Discord'), (2, 'Slack')], default=1)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=100, unique=True)),
+                ("webhook_url", models.CharField(max_length=2000, unique=True)),
+                ("message", models.CharField(max_length=2000)),
+                (
+                    "destination",
+                    models.IntegerField(choices=[(1, "Discord"), (2, "Slack")], default=1),
+                ),
             ],
         ),
     ]

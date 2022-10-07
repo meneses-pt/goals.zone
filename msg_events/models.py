@@ -4,44 +4,45 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from slack_webhook import Slack
 
-from matches.models import Tournament, Category, Team
+from matches.models import Category, Team, Tournament
 
 
 class MessageObject(models.Model):
     class MessageEventType(models.IntegerChoices):
-        MatchFirstVideo = 1, 'MatchFirstVideo'
-        Video = 2, 'Video'
-        Mirror = 3, 'Mirror'
-        MatchHighlights = 4, 'MatchHighlights'
-        MatchScoreChanged = 5, 'MatchScoreChanged'
-        MatchResult = 6, 'MatchResult'
+        MatchFirstVideo = 1, "MatchFirstVideo"
+        Video = 2, "Video"
+        Mirror = 3, "Mirror"
+        MatchHighlights = 4, "MatchHighlights"
+        MatchScoreChanged = 5, "MatchScoreChanged"
+        MatchResult = 6, "MatchResult"
 
-    include_tournaments = models.ManyToManyField(Tournament,
-                                                 related_name='%(class)s_include_tournaments',
-                                                 default=None,
-                                                 blank=True)
-    include_categories = models.ManyToManyField(Category,
-                                                related_name='%(class)s_include_categories',
-                                                default=None,
-                                                blank=True)
-    include_teams = models.ManyToManyField(Team,
-                                           related_name='%(class)s_include_teams',
-                                           default=None,
-                                           blank=True)
-    exclude_tournaments = models.ManyToManyField(Tournament,
-                                                 related_name='%(class)s_exclude_tournaments',
-                                                 default=None,
-                                                 blank=True)
-    exclude_categories = models.ManyToManyField(Category,
-                                                related_name='%(class)s_exclude_categories',
-                                                default=None,
-                                                blank=True)
-    exclude_teams = models.ManyToManyField(Category,
-                                           related_name='%(class)s_exclude_teams',
-                                           default=None,
-                                           blank=True)
-    event_type = models.IntegerField(choices=MessageEventType.choices,
-                                     default=MessageEventType.MatchFirstVideo)
+    include_tournaments = models.ManyToManyField(
+        Tournament,
+        related_name="%(class)s_include_tournaments",
+        default=None,
+        blank=True,
+    )
+    include_categories = models.ManyToManyField(
+        Category, related_name="%(class)s_include_categories", default=None, blank=True
+    )
+    include_teams = models.ManyToManyField(
+        Team, related_name="%(class)s_include_teams", default=None, blank=True
+    )
+    exclude_tournaments = models.ManyToManyField(
+        Tournament,
+        related_name="%(class)s_exclude_tournaments",
+        default=None,
+        blank=True,
+    )
+    exclude_categories = models.ManyToManyField(
+        Category, related_name="%(class)s_exclude_categories", default=None, blank=True
+    )
+    exclude_teams = models.ManyToManyField(
+        Category, related_name="%(class)s_exclude_teams", default=None, blank=True
+    )
+    event_type = models.IntegerField(
+        choices=MessageEventType.choices, default=MessageEventType.MatchFirstVideo
+    )
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
 
@@ -64,14 +65,15 @@ class Tweet(MessageObject):
 
 class Webhook(MessageObject):
     class WebhookDestinations(models.IntegerChoices):
-        Discord = 1, 'Discord'
-        Slack = 2, 'Slack'
+        Discord = 1, "Discord"
+        Slack = 2, "Slack"
 
     title = models.CharField(max_length=100, unique=True)
     webhook_url = models.CharField(max_length=2000, unique=False)
     message = models.CharField(max_length=2000)
-    destination = models.IntegerField(choices=WebhookDestinations.choices,
-                                      default=WebhookDestinations.Discord)
+    destination = models.IntegerField(
+        choices=WebhookDestinations.choices, default=WebhookDestinations.Discord
+    )
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -81,10 +83,9 @@ class Webhook(MessageObject):
 class CustomMessage(models.Model):
     id = models.BigAutoField(unique=True, primary_key=True)
     message = models.CharField(max_length=2000)
-    webhooks = models.ManyToManyField(Webhook,
-                                      related_name='%(class)s_webhooks',
-                                      default=None,
-                                      blank=True)
+    webhooks = models.ManyToManyField(
+        Webhook, related_name="%(class)s_webhooks", default=None, blank=True
+    )
     result = models.CharField(max_length=2000, default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -94,9 +95,9 @@ class CustomMessage(models.Model):
 
 @receiver(m2m_changed, sender=CustomMessage.webhooks.through)
 def send_message(_sender, instance, **kwargs):
-    if kwargs['action'] != 'post_add':
+    if kwargs["action"] != "post_add":
         return
-    result = ''
+    result = ""
     for wh in instance.webhooks.all():
         if not wh.active:
             continue

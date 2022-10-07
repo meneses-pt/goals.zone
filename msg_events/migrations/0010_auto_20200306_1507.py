@@ -6,18 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('msg_events', '0009_auto_20200304_1745'),
+        ("msg_events", "0009_auto_20200304_1745"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='tweet',
-            name='author_filter',
+            model_name="tweet",
+            name="author_filter",
             field=models.CharField(default=None, max_length=200, null=True),
         ),
         migrations.AddField(
-            model_name='webhook',
-            name='author_filter',
+            model_name="webhook",
+            name="author_filter",
             field=models.CharField(default=None, max_length=200, null=True),
         ),
     ]

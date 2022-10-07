@@ -12,8 +12,8 @@ admin.site.register(MonitoringAccount)
 def export_performance_monitor_events(self, request, queryset):
     meta = self.model._meta
     field_names = [field.name for field in meta.fields]
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = "attachment; filename={}.csv".format(meta)
     writer = csv.writer(response)
 
     writer.writerow(field_names)
@@ -29,5 +29,8 @@ export_performance_monitor_events.short_description = "Export selected"
 @admin.register(PerformanceMonitorEvent)
 class PerformanceMonitorEventAdmin(admin.ModelAdmin):
     list_display = ("name", "timestamp", "elapsed_time")
-    list_filter = ("name", ("timestamp", DateRangeFilter),)
+    list_filter = (
+        "name",
+        ("timestamp", DateRangeFilter),
+    )
     actions = [export_performance_monitor_events]

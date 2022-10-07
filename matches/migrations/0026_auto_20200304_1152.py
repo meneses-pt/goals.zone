@@ -6,13 +6,13 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0025_delete_webhookurl'),
+        ("matches", "0025_delete_webhookurl"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='match',
-            old_name='tweet_sent',
-            new_name='msg_sent',
+            model_name="match",
+            old_name="tweet_sent",
+            new_name="msg_sent",
         ),
     ]

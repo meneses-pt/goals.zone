@@ -6,14 +6,17 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0016_videogoalmirror'),
+        ("matches", "0016_videogoalmirror"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='videogoalmirror',
-            name='videogoal',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='mirrors',
-                                    to='matches.VideoGoal'),
+            model_name="videogoalmirror",
+            name="videogoal",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="mirrors",
+                to="matches.VideoGoal",
+            ),
         ),
     ]

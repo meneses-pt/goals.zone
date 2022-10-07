@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0049_videogoal_auto_moderator_comment_id'),
+        ("matches", "0049_videogoal_auto_moderator_comment_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='match',
-            name='first_video_datetime',
+            model_name="match",
+            name="first_video_datetime",
             field=models.DateTimeField(blank=True, null=True),
         ),
     ]

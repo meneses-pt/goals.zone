@@ -6,24 +6,80 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0051_match_matches_mat_first_v_9623a2_idx'),
-        ('africa', '0001_initial'),
+        ("matches", "0051_match_matches_mat_first_v_9623a2_idx"),
+        ("africa", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AfricaMatchesFilter',
+            name="AfricaMatchesFilter",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('exclude_categories', models.ManyToManyField(blank=True, default=None, related_name='%(class)s_exclude_categories', to='matches.Category')),
-                ('exclude_teams', models.ManyToManyField(blank=True, default=None, related_name='%(class)s_exclude_teams', to='matches.Category')),
-                ('exclude_tournaments', models.ManyToManyField(blank=True, default=None, related_name='%(class)s_exclude_tournaments', to='matches.Tournament')),
-                ('include_categories', models.ManyToManyField(blank=True, default=None, related_name='%(class)s_include_categories', to='matches.Category')),
-                ('include_teams', models.ManyToManyField(blank=True, default=None, related_name='%(class)s_include_teams', to='matches.Team')),
-                ('include_tournaments', models.ManyToManyField(blank=True, default=None, related_name='%(class)s_include_tournaments', to='matches.Tournament')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "exclude_categories",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="%(class)s_exclude_categories",
+                        to="matches.Category",
+                    ),
+                ),
+                (
+                    "exclude_teams",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="%(class)s_exclude_teams",
+                        to="matches.Category",
+                    ),
+                ),
+                (
+                    "exclude_tournaments",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="%(class)s_exclude_tournaments",
+                        to="matches.Tournament",
+                    ),
+                ),
+                (
+                    "include_categories",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="%(class)s_include_categories",
+                        to="matches.Category",
+                    ),
+                ),
+                (
+                    "include_teams",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="%(class)s_include_teams",
+                        to="matches.Team",
+                    ),
+                ),
+                (
+                    "include_tournaments",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="%(class)s_include_tournaments",
+                        to="matches.Tournament",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
     ]

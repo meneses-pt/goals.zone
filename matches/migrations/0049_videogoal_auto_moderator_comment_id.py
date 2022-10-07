@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0048_auto_20211107_1852'),
+        ("matches", "0048_auto_20211107_1852"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='videogoal',
-            name='auto_moderator_comment_id',
+            model_name="videogoal",
+            name="auto_moderator_comment_id",
             field=models.CharField(max_length=20, null=True),
         ),
     ]

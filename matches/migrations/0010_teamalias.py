@@ -6,17 +6,31 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0009_auto_20191112_1431'),
+        ("matches", "0009_auto_20191112_1431"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TeamAlias',
+            name="TeamAlias",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('alias', models.CharField(max_length=256)),
-                ('team', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='alias',
-                                           to='matches.Team')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("alias", models.CharField(max_length=256)),
+                (
+                    "team",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="alias",
+                        to="matches.Team",
+                    ),
+                ),
             ],
         ),
     ]

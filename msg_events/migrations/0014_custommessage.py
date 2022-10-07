@@ -6,18 +6,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('msg_events', '0013_auto_20210410_1529'),
+        ("msg_events", "0013_auto_20210410_1529"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CustomMessage',
+            name="CustomMessage",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message', models.CharField(max_length=2000)),
-                ('result', models.CharField(max_length=2000)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('webhooks', models.ManyToManyField(blank=True, default=None, related_name='custommessage_webhooks', to='msg_events.Webhook')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("message", models.CharField(max_length=2000)),
+                ("result", models.CharField(max_length=2000)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                (
+                    "webhooks",
+                    models.ManyToManyField(
+                        blank=True,
+                        default=None,
+                        related_name="custommessage_webhooks",
+                        to="msg_events.Webhook",
+                    ),
+                ),
             ],
         ),
     ]

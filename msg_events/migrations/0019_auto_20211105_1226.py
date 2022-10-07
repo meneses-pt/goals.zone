@@ -6,38 +6,54 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('msg_events', '0018_alter_custommessage_result'),
+        ("msg_events", "0018_alter_custommessage_result"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='tweet',
-            name='access_token_key',
+            model_name="tweet",
+            name="access_token_key",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='tweet',
-            name='access_token_secret',
+            model_name="tweet",
+            name="access_token_secret",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='tweet',
-            name='consumer_key',
+            model_name="tweet",
+            name="consumer_key",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='tweet',
-            name='consumer_secret',
+            model_name="tweet",
+            name="consumer_secret",
             field=models.CharField(max_length=100),
         ),
         migrations.AlterField(
-            model_name='tweet',
-            name='event_type',
-            field=models.IntegerField(choices=[(1, 'MatchFirstVideo'), (2, 'Video'), (3, 'Mirror'), (4, 'MatchHighlights')], default=1),
+            model_name="tweet",
+            name="event_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "MatchFirstVideo"),
+                    (2, "Video"),
+                    (3, "Mirror"),
+                    (4, "MatchHighlights"),
+                ],
+                default=1,
+            ),
         ),
         migrations.AlterField(
-            model_name='webhook',
-            name='event_type',
-            field=models.IntegerField(choices=[(1, 'MatchFirstVideo'), (2, 'Video'), (3, 'Mirror'), (4, 'MatchHighlights')], default=1),
+            model_name="webhook",
+            name="event_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "MatchFirstVideo"),
+                    (2, "Video"),
+                    (3, "Mirror"),
+                    (4, "MatchHighlights"),
+                ],
+                default=1,
+            ),
         ),
     ]

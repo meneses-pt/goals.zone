@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0028_auto_20200304_1233'),
+        ("matches", "0028_auto_20200304_1233"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='tournament',
-            name='uid',
+            model_name="tournament",
+            name="uid",
         ),
         migrations.AddField(
-            model_name='tournament',
-            name='unique_id',
+            model_name="tournament",
+            name="unique_id",
             field=models.IntegerField(default=None, null=True),
         ),
     ]

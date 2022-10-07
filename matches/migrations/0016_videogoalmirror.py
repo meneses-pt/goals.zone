@@ -6,18 +6,32 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('matches', '0015_affiliateterm_is_prefix'),
+        ("matches", "0015_affiliateterm_is_prefix"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='VideoGoalMirror',
+            name="VideoGoalMirror",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=200, null=True)),
-                ('url', models.CharField(max_length=256, null=True)),
-                ('videogoal', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='videogoal',
-                                                to='matches.VideoGoal')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=200, null=True)),
+                ("url", models.CharField(max_length=256, null=True)),
+                (
+                    "videogoal",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="videogoal",
+                        to="matches.VideoGoal",
+                    ),
+                ),
             ],
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0011_auto_20200128_1553'),
+        ("matches", "0011_auto_20200128_1553"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='team',
-            name='logo_file',
-            field=models.ImageField(default=None, upload_to='logos'),
+            model_name="team",
+            name="logo_file",
+            field=models.ImageField(default=None, upload_to="logos"),
         ),
     ]

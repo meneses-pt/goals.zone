@@ -6,22 +6,38 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('msg_events', '0007_auto_20200304_1718'),
+        ("msg_events", "0007_auto_20200304_1718"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='tweet',
-            name='destination',
+            model_name="tweet",
+            name="destination",
         ),
         migrations.AddField(
-            model_name='tweet',
-            name='event_type',
-            field=models.IntegerField(choices=[(1, 'Match'), (2, 'Video'), (3, 'Mirror'), (4, 'Video and Mirror')], default=1),
+            model_name="tweet",
+            name="event_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "Match"),
+                    (2, "Video"),
+                    (3, "Mirror"),
+                    (4, "Video and Mirror"),
+                ],
+                default=1,
+            ),
         ),
         migrations.AddField(
-            model_name='webhook',
-            name='event_type',
-            field=models.IntegerField(choices=[(1, 'Match'), (2, 'Video'), (3, 'Mirror'), (4, 'Video and Mirror')], default=1),
+            model_name="webhook",
+            name="event_type",
+            field=models.IntegerField(
+                choices=[
+                    (1, "Match"),
+                    (2, "Video"),
+                    (3, "Mirror"),
+                    (4, "Video and Mirror"),
+                ],
+                default=1,
+            ),
         ),
     ]

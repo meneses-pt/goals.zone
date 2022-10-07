@@ -6,16 +6,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0021_auto_20200301_2142'),
+        ("matches", "0021_auto_20200301_2142"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='DiscordWebhookUrl',
+            name="DiscordWebhookUrl",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('description', models.CharField(max_length=100, unique=True)),
-                ('webhook', models.CharField(max_length=2000, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("description", models.CharField(max_length=100, unique=True)),
+                ("webhook", models.CharField(max_length=2000, unique=True)),
             ],
         ),
     ]

@@ -1,15 +1,15 @@
 from django.contrib import admin
 
-from .models import Match, VideoGoal, Team, TeamAlias, AffiliateTerm
+from .models import AffiliateTerm, Match, Team, TeamAlias, VideoGoal
 
 
 class TeamAdmin(admin.ModelAdmin):
-    search_fields = ['name']
+    search_fields = ["name"]
 
 
 class TeamAliasAdmin(admin.ModelAdmin):
-    autocomplete_fields = ['team']
-    search_fields = ['alias', 'team__name']
+    autocomplete_fields = ["team"]
+    search_fields = ["alias", "team__name"]
 
 
 # Register your models here.

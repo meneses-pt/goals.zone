@@ -7,19 +7,26 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='MatchNotFound',
+            name="MatchNotFound",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('permalink', models.CharField(max_length=1024, unique=True)),
-                ('url', models.CharField(max_length=1024, null=True)),
-                ('title', models.CharField(max_length=200, null=True)),
-                ('home_team_str', models.CharField(max_length=256)),
-                ('away_team_str', models.CharField(max_length=256)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("permalink", models.CharField(max_length=1024, unique=True)),
+                ("url", models.CharField(max_length=1024, null=True)),
+                ("title", models.CharField(max_length=200, null=True)),
+                ("home_team_str", models.CharField(max_length=256)),
+                ("away_team_str", models.CharField(max_length=256)),
             ],
         ),
     ]

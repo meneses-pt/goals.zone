@@ -6,12 +6,14 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0050_match_first_video_datetime'),
+        ("matches", "0050_match_first_video_datetime"),
     ]
 
     operations = [
         migrations.AddIndex(
-            model_name='match',
-            index=models.Index(fields=['first_video_datetime'], name='matches_mat_first_v_9623a2_idx'),
+            model_name="match",
+            index=models.Index(
+                fields=["first_video_datetime"], name="matches_mat_first_v_9623a2_idx"
+            ),
         ),
     ]

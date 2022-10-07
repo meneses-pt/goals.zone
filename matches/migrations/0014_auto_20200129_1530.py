@@ -6,20 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0013_auto_20200128_1725'),
+        ("matches", "0013_auto_20200128_1725"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='AffiliateTerm',
+            name="AffiliateTerm",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('term', models.CharField(max_length=25, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("term", models.CharField(max_length=25, unique=True)),
             ],
         ),
         migrations.AlterField(
-            model_name='team',
-            name='logo_file',
-            field=models.ImageField(default=None, upload_to='logos'),
+            model_name="team",
+            name="logo_file",
+            field=models.ImageField(default=None, upload_to="logos"),
         ),
     ]

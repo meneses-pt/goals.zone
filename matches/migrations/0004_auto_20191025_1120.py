@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('matches', '0003_auto_20191025_0931'),
+        ("matches", "0003_auto_20191025_0931"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='videogoal',
-            name='permalink',
+            model_name="videogoal",
+            name="permalink",
             field=models.CharField(max_length=255, unique=True),
         ),
     ]

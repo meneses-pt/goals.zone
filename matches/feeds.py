@@ -5,7 +5,7 @@ from matches.models import Match, VideoGoal
 
 
 class CorrectMimeTypeFeed(Rss201rev2Feed):
-    mime_type = 'application/rss+xml'
+    mime_type = "application/rss+xml"
 
 
 class LatestMatchesFeed(Feed):
@@ -16,7 +16,7 @@ class LatestMatchesFeed(Feed):
 
     @staticmethod
     def items():
-        return Match.objects.order_by('-first_video_datetime')[:30]
+        return Match.objects.order_by("-first_video_datetime")[:30]
 
     def item_title(self, item):
         return item.simple_title
@@ -33,7 +33,7 @@ class LatestVideosFeed(Feed):
 
     @staticmethod
     def items():
-        return VideoGoal.objects.order_by('-created_at')[:30]
+        return VideoGoal.objects.order_by("-created_at")[:30]
 
     def item_title(self, item):
         return item.title

@@ -6,28 +6,28 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ner', '0001_initial'),
+        ("ner", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='nerlog',
-            name='ner_away_team',
+            model_name="nerlog",
+            name="ner_away_team",
             field=models.CharField(blank=True, default=None, max_length=256, null=True),
         ),
         migrations.AlterField(
-            model_name='nerlog',
-            name='ner_home_team',
+            model_name="nerlog",
+            name="ner_home_team",
             field=models.CharField(blank=True, default=None, max_length=256, null=True),
         ),
         migrations.AlterField(
-            model_name='nerlog',
-            name='regex_away_team',
+            model_name="nerlog",
+            name="regex_away_team",
             field=models.CharField(blank=True, default=None, max_length=256, null=True),
         ),
         migrations.AlterField(
-            model_name='nerlog',
-            name='regex_home_team',
+            model_name="nerlog",
+            name="regex_home_team",
             field=models.CharField(blank=True, default=None, max_length=256, null=True),
         ),
     ]
