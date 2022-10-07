@@ -297,9 +297,3 @@ class PostMatch(models.Model):
         indexes = [
             models.Index(fields=['permalink']),
         ]
-
-
-class MatchTweet(models.Model):
-    match = models.ForeignKey(Match, on_delete=models.CASCADE)
-    id_str = models.CharField(max_length=25, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)

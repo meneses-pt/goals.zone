@@ -26,8 +26,7 @@ from django.utils import timezone
 from fake_headers import Headers
 from slack_webhook import Slack
 
-from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch, \
-    MatchTweet
+from matches.models import Match, VideoGoal, AffiliateTerm, VideoGoalMirror, Team, PostMatch
 from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
 from msg_events.models import Webhook, Tweet, MessageObject
 from ner.models import NerLog
@@ -403,30 +402,12 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             is_sent = False
             attempts = 0
             last_exception_str = ""
-            tweets = MatchTweet.objects.filter(match_id=match.id).order_by('created_at')
-            tweets_to_delete = tweets[MAX_TWEETS_PER_MATCH-1:]
-            for tweet_to_delete in tweets_to_delete:
-                try:
-                    api = get_tweepy_auth(tw)
-                    result = api.destroy_status(tweet_to_delete.id_str)
-                    try:
-                        api.get_status(tweet_to_delete.id_str)
-                        print(f'Tweet delete didn\'t go as planned', flush=True)
-                    except Exception:
-                        print(f'Successful Tweet delete {tweet_to_delete.id_str}! '
-                              f'Tweets count: {result.user.statuses_count}',
-                              flush=True)
-                        tweet_to_delete.delete()
-                except Exception as ex:
-                    last_exception_str = str(ex) + "\nId: " + tweet_to_delete.id_str
-                    print("Error on Tweet delete single message", str(ex), flush=True)
             while not is_sent and attempts < 10:
                 message = ""
                 try:
                     message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
                     api = get_tweepy_auth(tw)
                     result = api.update_status(status=message)
-                    MatchTweet.objects.create(match=match, id_str=result.id_str)
                     print(f'Successful tweet! Tweets count: {result.user.statuses_count}',
                           flush=True)
                     is_sent = True
