@@ -1,5 +1,8 @@
 name: Restart app
-on: [workflow_dispatch]
+on:
+  issues:
+    types: [labeled]
+  workflow_dispatch:
 jobs:
   build:
     name: Restart app
