@@ -36,7 +36,7 @@ EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
-ALLOWED_HOSTS = ["goals.zone", "goals.africa", "videogoals.meneses.pt", "127.0.0.1"]
+ALLOWED_HOSTS = ["goals.zone", "videogoals.meneses.pt", "127.0.0.1"]
 CSRF_TRUSTED_ORIGINS = ["https://goals.zone"]
 
 # Application definition
@@ -75,7 +75,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "goals_zone.urls"
 ROOT_HOSTCONF = "goals_zone.hosts"
-DEFAULT_HOST = "africa"
+DEFAULT_HOST = "goals_zone"
 
 TEMPLATES = [
     {

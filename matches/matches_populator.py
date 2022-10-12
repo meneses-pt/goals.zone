@@ -8,14 +8,11 @@ from background_task import background
 from background_task.models import CompletedTask, Task
 from fake_headers import Headers
 
-from africa.models import AfricaMatch, AfricaMatchesFilter
 from monitoring.models import PerformanceMonitorEvent
 
 from .goals_populator import _handle_messages_to_send
 from .models import Category, Match, Season, Team, Tournament
 from .proxy_request import ProxyRequest
-
-africa_match_filter = AfricaMatchesFilter.objects.first()
 
 
 @background(schedule=60 * 5)
@@ -85,8 +82,6 @@ def fetch_live():
 # To fetch yesterday and today: days_ago=1, days_amount=2
 # To fetch today and tomorrow: days_ago=0, days_amount=2
 def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
-    global africa_match_filter
-    africa_match_filter = AfricaMatchesFilter.objects.first()
     start = timeit.default_timer()
     completed = CompletedTask.objects.filter(
         task_name="matches.matches_populator.fetch_new_matches"
@@ -378,8 +373,6 @@ def _save_or_update_match(match):
             _handle_messages_to_send(i_match, videogoal=None, score_changed=score_changed)
     else:
         match.save()
-        if matches_filter_conditions(africa_match_filter, match):
-            AfricaMatch.objects.create(match=match)
         _handle_messages_to_send(match)
 
 
