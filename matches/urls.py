@@ -10,11 +10,13 @@ urlpatterns = [
     path("<slug:slug>", views.MatchDetailView.as_view(), name="match-detail"),
     path("teams/<slug:slug>", views.TeamsDetailView.as_view(), name="teams-detail"),
     # api
-    path("api/matches/", views.MatchSearchView.as_view(), name="api-matches-list"),
+    path("api/matches/", views.MatchesApiListView.as_view(), name="api-matches-list"),
+    path("api/matches/<int:pk>", views.MatchesApiDetailView.as_view(), name="api-match-detail"),
+    path("api/matches-search/", views.MatchSearchView.as_view(), name="api-matches-search"),
     path(
-        "api/matches-week/",
+        "api/matches-search-week/",
         views.MatchWeekSearchView.as_view(),
-        name="api-matches-week-list",
+        name="api-matches-week-search",
     ),
     path("api/teams/", views.TeamSearchView.as_view(), name="api-teams-list"),
     # rss

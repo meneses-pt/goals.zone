@@ -9,11 +9,11 @@ urlpatterns = [
     path("<slug:slug>", views.AfricaMatchDetailView.as_view(), name="match-detail"),
     path("teams/<slug:slug>", views.AfricaTeamsDetailView.as_view(), name="teams-detail"),
     # api
-    path("api/matches/", views.AfricaMatchSearchView.as_view(), name="api-matches-list"),
+    path("api/matches-search/", views.AfricaMatchSearchView.as_view(), name="api-matches-search"),
     path(
-        "api/matches-week/",
+        "api/matches-search-week/",
         views.AfricaMatchWeekSearchView.as_view(),
-        name="api-matches-week-list",
+        name="api-matches-week-search",
     ),
     path("api/teams/", views.AfricaTeamSearchView.as_view(), name="api-teams-list"),
 ]
