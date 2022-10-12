@@ -45,7 +45,7 @@ class MatchSerializer(serializers.ModelSerializer):
 class MatchDetailSerializer(serializers.ModelSerializer):
     home_team = TeamSerializer(many=False, read_only=True)
     away_team = TeamSerializer(many=False, read_only=True)
-    videos = VideoGoalSerializer(many=True, read_only=True, source="videogoal")
+    videos = VideoGoalSerializer(many=True, read_only=True, source="videogoal_set")
 
     class Meta:
         model = Match
