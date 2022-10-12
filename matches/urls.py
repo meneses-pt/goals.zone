@@ -16,7 +16,7 @@ urlpatterns = [
     path(
         "api/matches-search-week/",
         views.MatchWeekSearchView.as_view(),
-        name="api-matches-week-search",
+        name="api-matches-search-week",
     ),
     path("api/teams/", views.TeamSearchView.as_view(), name="api-teams-list"),
     # rss

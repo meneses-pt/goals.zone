@@ -60,7 +60,7 @@
         $(document).ready(function () {
             $('#select-match').select2({
                 ajax: {
-                    url: '/api/matches-week/',
+                    url: '/api/matches-search-week/',
                     data: function (params) {
                         return {
                             filter: params.term,
