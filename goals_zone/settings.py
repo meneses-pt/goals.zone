@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.postgres",
     "matches.apps.MatchesConfig",
-    "africa.apps.AfricaConfig",
     "msg_events.apps.MsgEventsConfig",
     "monitoring.apps.MonitoringConfig",
     "ner.apps.NerConfig",
