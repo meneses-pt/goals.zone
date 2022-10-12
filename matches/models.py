@@ -269,6 +269,17 @@ class VideoGoal(models.Model):
         result = re.search(r"[^/]+(?=/[^/]+/?$)", self.post_match.permalink)
         return result[0] if result else None
 
+    @property
+    def calculated_mirrors(self):
+        first_mirror = VideoGoalMirror(title="Original Link", url=self.url)
+        mirrors = list(self.mirrors.all())
+        mirrors.insert(0, first_mirror)
+        return mirrors
+
+    @property
+    def reddit_link(self):
+        return f"https://reddit.com{self.post_match.permalink}"
+
     def __str__(self):
         return str(self.title)
 

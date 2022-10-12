@@ -7,7 +7,7 @@ from django.views import generic
 from rest_framework import generics
 
 from .models import Match, Team
-from .serializers import MatchSerializer, TeamSerializer
+from .serializers import MatchDetailSerializer, MatchSerializer, TeamSerializer
 from .utils import localize_date
 
 
@@ -60,6 +60,18 @@ class MatchesListView(generic.ListView):
 class MatchDetailView(generic.DetailView):
     template_name = "matches/match_detail.html"
     model = Match
+
+
+class MatchesApiListView(generics.ListAPIView):
+    serializer_class = MatchSerializer
+
+    def get_queryset(self):
+        return Match.objects.filter(videogoal__isnull=False).distinct().order_by("-datetime")
+
+
+class MatchesApiDetailView(generics.RetrieveAPIView):
+    serializer_class = MatchDetailSerializer
+    queryset = Match.objects.all()
 
 
 class MatchSearchView(generics.ListAPIView):
@@ -181,3 +193,15 @@ class TeamSearchView(generics.ListAPIView):
         )
         queryset = Team.objects.raw(query_string)
         return queryset
+
+
+# TODO LatestMatchesList /api/matches (paginated) -> MatchesListView
+#   - Hour
+#   - Score
+#   - ID
+# TODO Match /api/matches/ID -> MatchDetailView
+#   - Hour
+#   - Score
+#   - ID
+#   - List of goals
+#      - List of mirrors
