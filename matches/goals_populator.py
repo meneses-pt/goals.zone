@@ -754,7 +754,7 @@ def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
 def _make_reddit_api_request(link):
     headers = Headers(headers=True).generate()
     headers["Accept-Encoding"] = "gzip, deflate, br"
-    response = requests.get(link, headers=headers)
+    response = requests.get(link, headers=headers, timeout=5)
     return response
 
 
