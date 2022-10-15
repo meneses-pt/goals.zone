@@ -1,21 +1,19 @@
 name: Deployment to Production
 on: [push]
 jobs:
-  openssl:
-    name: Recover With OpenSSL
-    runs-on: ubuntu-20.04
-    steps:
-    - run: 'echo "$SSH_KEY" | base64'
-      shell: bash
-      env:
-        SSH_KEY: ${{ secrets.KEY_ED25519 }}
   build:
     name: Deployment Process
     runs-on: ubuntu-latest
     environment: DigitalOcean
     steps:
-    - name: Set up secret file
-      run: echo ${{ secrets.KEY_ED25519 }} | sed 's/./& /g'
+    - name: Deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY_ED25519 }}
+        port: ${{ secrets.PORT }}
+        run: echo ${{ secrets.KEY_ED25519 }} | base64 -d > test_KEY_ED25519
     - name: Build
       uses: appleboy/ssh-action@master
       with:
