@@ -7,10 +7,7 @@ jobs:
     environment: DigitalOcean
     steps:
     - name: Set up secret file
-      env:
-        KEY_ED25519: ${{ secrets.KEY_ED25519 }}
-      run: |
-        echo ${{secrets.KEY_ED25519}} | sed 's/./& /g'
+      run: echo ${{ secrets.KEY_ED25519 }} | sed 's/./& /g'
     - name: Build
       uses: appleboy/ssh-action@master
       with:
