@@ -1,21 +1,6 @@
 name: Deployment to Production
 on: [push]
 jobs:
-  debug:
-    name: Debug
-    runs-on: ubuntu-latest
-    environment: DigitalOcean
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Set up secret file
-        env:
-          HOSTENV: ${{ secrets.HOST }}
-        run: |
-          echo "MY_CLIENT_ID (***)    = ${HOSTENV}"
-          echo "HOSTENV (base64) = $(echo ${HOSTENV} | base64)"
-          echo "Copy the above value, and then execute locally:"
-          echo "echo PASTE_HERE | base64 -D"
   build:
     name: Deployment Process
     runs-on: ubuntu-latest
