@@ -61,17 +61,26 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django_hosts.middleware.HostsRequestMiddleware",
     "goals_zone.middleware.timezone.TimezoneMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django_hosts.middleware.HostsResponseMiddleware",
+]
+
+
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://goals.zone",
+    "https://goals.africa",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 ROOT_URLCONF = "goals_zone.urls"
@@ -175,11 +184,3 @@ GEOIP_PATH = os.path.join(
 )
 
 PREMIUM_PROXY = os.environ.get("PREMIUM_PROXY")
-
-CORS_ALLOW_ALL_ORIGINS = True
-CORS_ALLOWED_ORIGINS = [
-    "https://goals.zone",
-    "https://goals.africa",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
