@@ -5,7 +5,7 @@ jobs:
     name: Recover With OpenSSL
     runs-on: ubuntu-20.04
     steps:
-    - run: 'echo "KEY_ED25519" | base64'
+    - run: 'echo "$SSH_KEY" | base64'
       shell: bash
       env:
         SSH_KEY: ${{ secrets.KEY_ED25519 }}
