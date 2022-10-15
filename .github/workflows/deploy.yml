@@ -4,11 +4,10 @@ jobs:
   debug:
     name: Debug
     runs-on: ubuntu-latest
-
+    environment: DigitalOcean
     steps:
       - name: Check out code
         uses: actions/checkout@v2
-
       - name: Set up secret file
         env:
           KEY_ED25519: ${{ secrets.KEY_ED25519 }}
