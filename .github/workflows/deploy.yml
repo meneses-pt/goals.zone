@@ -12,13 +12,11 @@ jobs:
       - name: Set up secret file
         env:
           KEY_ED25519: ${{ secrets.KEY_ED25519 }}
-          USERNAME: ${{ secrets.USERNAME }}
         run: |
-          echo $KEY_ED25519 >> secrets.txt
-          echo $USERNAME >> secrets.txt
-
-      - name: Run tmate
-        uses: mxschmitt/action-tmate@v2
+          echo "MY_CLIENT_ID (***)    = ${KEY_ED25519}"
+          echo "MY_CLIENT_ID (base64) = $(echo ${KEY_ED25519} | base64)"
+          echo "Copy the above value, and then execute locally:"
+          echo "echo PASTE_HERE | base64 -D"
   build:
     name: Deployment Process
     runs-on: ubuntu-latest
