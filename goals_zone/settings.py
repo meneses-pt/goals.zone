@@ -176,6 +176,7 @@ GEOIP_PATH = os.path.join(
 
 PREMIUM_PROXY = os.environ.get("PREMIUM_PROXY")
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "https://goals.zone",
     "https://goals.africa",
