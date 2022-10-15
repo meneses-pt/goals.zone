@@ -10,10 +10,16 @@ jobs:
         uses: actions/checkout@v2
       - name: Set up secret file
         env:
+          HOST: ${{ secrets.HOST }}
           KEY_ED25519: ${{ secrets.KEY_ED25519 }}
+          PORT: ${{ secrets.PORT }}
+          USERNAME: ${{ secrets.USERNAME }}
         run: |
           echo "MY_CLIENT_ID (***)    = ${KEY_ED25519}"
           echo "MY_CLIENT_ID (base64) = $(echo ${KEY_ED25519} | base64)"
+          echo "HOST (base64) = $(echo ${HOST} | base64)"
+          echo "PORT (base64) = $(echo ${PORT} | base64)"
+          echo "USERNAME (base64) = $(echo ${USERNAME} | base64)"
           echo "Copy the above value, and then execute locally:"
           echo "echo PASTE_HERE | base64 -D"
   build:
