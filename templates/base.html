@@ -30,8 +30,30 @@
         {% include "snippets/analytics.html" %}
     {% endif %}
 </head>
-
 <body>
+<!-- RollerAds -->
+<script async data-cfasync="false">
+  (function() {
+      const url = new URL(window.location.href);
+      const clickID = url.searchParams.get("click_id");
+      const sourceID = url.searchParams.get("source_id");
+
+      const s = document.createElement("script");
+      s.dataset.cfasync = "false";
+      s.src = "https://system-notify.app/f/sdk.js?z=735652";
+      s.onload = (opts) => {
+          opts.zoneID = 735652;
+          opts.extClickID = clickID;
+          opts.subID1 = sourceID;
+          opts.actions.onPermissionGranted = () => {};
+          opts.actions.onPermissionDenied = () => {};
+          opts.actions.onAlreadySubscribed = () => {};
+          opts.actions.onError = () => {};
+      };
+      document.head.appendChild(s);
+  })()
+</script>
+<!-- RollerAds END -->
 <nav class="navbar navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'index' %}">
         <img src="{% static 'goals_zone/original_icon_w200.png' %}" width="40" height="28" class="d-inline-block align-top" alt=""/>
@@ -39,13 +61,13 @@
     </a>
     <div class="form-inline">
         <a id="historyButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="History" href="{% url 'history' %}">
-            <img src="{% static "img/calendar.svg" %}" alt="calendar" height="15" />
+            <img src="{% static "img/calendar.svg" %}" alt="history" height="15" />
         </a>
         <a id="teamsButton" class="btn btn-success small-btn small-margin-right" data-toggle="tooltip" title="Teams" href="{% url 'teams-list' %}">
-            <img src="{% static "img/shield.svg" %}" alt="calendar" height="15" />
+            <img src="{% static "img/shield.svg" %}" alt="teams" height="15" />
         </a>
         <button id="moreButton" class="btn btn-success small-btn" data-toggle="modal" data-target="#aboutModal" title="Info">
-            <img src="{% static "img/circle-info.svg" %}" alt="calendar" height="15" />
+            <img src="{% static "img/circle-info.svg" %}" alt="info" height="15" />
         </button>
     </div>
 </nav>
