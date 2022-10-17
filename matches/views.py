@@ -72,6 +72,7 @@ class MatchesApiListView(generics.ListAPIView):
 class MatchesApiDetailView(generics.RetrieveAPIView):
     serializer_class = MatchDetailSerializer
     queryset = Match.objects.all()
+    lookup_field = "slug"
 
 
 class MatchSearchView(generics.ListAPIView):
@@ -193,15 +194,3 @@ class TeamSearchView(generics.ListAPIView):
         )
         queryset = Team.objects.raw(query_string)
         return queryset
-
-
-# TODO LatestMatchesList /api/matches (paginated) -> MatchesListView
-#   - Hour
-#   - Score
-#   - ID
-# TODO Match /api/matches/ID -> MatchDetailView
-#   - Hour
-#   - Score
-#   - ID
-#   - List of goals
-#      - List of mirrors

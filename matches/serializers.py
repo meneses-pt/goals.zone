@@ -17,11 +17,12 @@ class VideoGoalMirrorSerializer(serializers.ModelSerializer):
 
 class VideoGoalSerializer(serializers.ModelSerializer):
     reddit_link = serializers.CharField()
+    simple_permalink = serializers.CharField()
     mirrors = VideoGoalMirrorSerializer(many=True, read_only=True, source="calculated_mirrors")
 
     class Meta:
         model = VideoGoal
-        fields = ["title", "reddit_link", "mirrors"]
+        fields = ["title", "reddit_link", "mirrors", "simple_permalink"]
 
 
 class MatchSerializer(serializers.ModelSerializer):

@@ -11,7 +11,7 @@ urlpatterns = [
     path("teams/<slug:slug>", views.TeamsDetailView.as_view(), name="teams-detail"),
     # api
     path("api/matches/", views.MatchesApiListView.as_view(), name="api-matches-list"),
-    path("api/matches/<int:pk>", views.MatchesApiDetailView.as_view(), name="api-match-detail"),
+    path("api/matches/<slug:slug>", views.MatchesApiDetailView.as_view(), name="api-match-detail"),
     path("api/matches-search/", views.MatchSearchView.as_view(), name="api-matches-search"),
     path(
         "api/matches-search-week/",
