@@ -7,7 +7,12 @@ from django.views import generic
 from rest_framework import generics
 
 from .models import Match, Team
-from .serializers import MatchDetailSerializer, MatchSerializer, TeamSerializer
+from .serializers import (
+    MatchDetailSerializer,
+    MatchSerializer,
+    TeamDetailSerializer,
+    TeamSerializer,
+)
 from .utils import localize_date
 
 
@@ -177,9 +182,9 @@ class TeamSearchView(generics.ListAPIView):
         query_string = (
             """
             select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
-           from matches_team t
-           inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
-           inner join matches_videogoal vg on m.id = vg.match_id """
+            from matches_team t
+            inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
+            inner join matches_videogoal vg on m.id = vg.match_id """
             + (
                 ""
                 if filter_q is None
@@ -194,3 +199,9 @@ class TeamSearchView(generics.ListAPIView):
         )
         queryset = Team.objects.raw(query_string)
         return queryset
+
+
+class TeamApiDetailView(generics.RetrieveAPIView):
+    serializer_class = TeamDetailSerializer
+    queryset = Team.objects.all()
+    lookup_field = "slug"

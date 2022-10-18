@@ -19,6 +19,7 @@ urlpatterns = [
         name="api-matches-search-week",
     ),
     path("api/teams/", views.TeamSearchView.as_view(), name="api-teams-list"),
+    path("api/teams/<slug:slug>", views.TeamApiDetailView.as_view(), name="api-teams-detail"),
     # rss
     path("rss/matches", LatestMatchesFeed()),
     path("rss/videos", LatestVideosFeed()),
