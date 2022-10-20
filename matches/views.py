@@ -80,38 +80,6 @@ class MatchesApiDetailView(generics.RetrieveAPIView):
     lookup_field = "slug"
 
 
-class MatchSearchView(generics.ListAPIView):
-    serializer_class = MatchSerializer
-
-    def get_queryset(self):
-        query_date_str = self.request.query_params.get("date", None)
-        filter_q = self.request.query_params.get("filter", None)
-        try:
-            query_date_obj = datetime.strptime(query_date_str, "%Y-%m-%d")
-            start_date = query_date_obj
-            end_date = query_date_obj + timedelta(days=1)
-        except (ValueError, TypeError):
-            start_date = datetime.combine(datetime.today(), datetime.min.time())
-            end_date = start_date + timedelta(days=1)
-        start_date = localize_date(start_date)
-        end_date = localize_date(end_date)
-        queryset = (
-            Match.objects.filter(
-                datetime__gte=start_date,
-                datetime__lte=end_date,
-                videogoal__isnull=False,
-            )
-            .distinct()
-            .order_by("datetime")
-        )
-        if filter_q is not None:
-            queryset = queryset.filter(
-                Q(home_team__name__unaccent__icontains=filter_q)
-                | Q(away_team__name__unaccent__icontains=filter_q)
-            )
-        return queryset
-
-
 class MatchWeekSearchView(generics.ListAPIView):
     serializer_class = MatchSerializer
 
