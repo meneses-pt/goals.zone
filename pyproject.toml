@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "goals-zone"
 version = "0.1.0"
-description = "goals.zone"
+description = "gz.meneses.pt"
 authors = ["meneses-pt <andre@meneses.pt>"]
 readme = "README.md"
 

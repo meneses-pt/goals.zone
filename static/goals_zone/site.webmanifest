@@ -1,6 +1,6 @@
 {
-    "name": "goals.zone",
-    "short_name": "goals.zone",
+    "name": "gz.meneses.pt",
+    "short_name": "gz.meneses.pt",
     "icons": [
         {
             "src": "/static/goals_zone/android-chrome-192x192.png?v=BGm2LQ4N3q",
@@ -15,6 +15,6 @@
     ],
     "theme_color": "#00bc8c",
     "background_color": "#00bc8c",
-    "start_url": "https://goals.zone",
+    "start_url": "https://gz.meneses.pt",
     "display": "standalone"
 }
