@@ -149,7 +149,8 @@ class TeamSearchView(generics.ListAPIView):
         filter_q = self.request.query_params.get("filter", None)
         query_string = (
             """
-            select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
+            select t.id, t.name, t.logo_url, t.logo_file, t.name_code, 
+            count(distinct m.id) as matches_count
             from matches_team t
             inner join matches_match m on t.id = m.home_team_id or t.id = m.away_team_id
             inner join matches_videogoal vg on m.id = vg.match_id """
