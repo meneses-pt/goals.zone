@@ -843,6 +843,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "pymemcache"
+version = "4.0.0"
+description = "A comprehensive, fast, pure Python memcached client"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[[package]]
 name = "pyparsing"
 version = "3.0.9"
 description = "pyparsing module - Classes and methods to define and execute parsing grammars"
@@ -1307,7 +1315,7 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "1ced5e768687cf6d5390add513f0096dbe58d7e8e064dc3d2baf57e0b97a734d"
+content-hash = "3e4972b2bc3a1fbfb09016d9747110b64b363cc9be33d2ae20eff3069c35fe30"
 
 [metadata.files]
 aiohttp = [
@@ -2418,6 +2426,10 @@ Pygments = [
 pyjsparser = [
     {file = "pyjsparser-2.7.1-py2-none-any.whl", hash = "sha256:2b12842df98d83f65934e0772fa4a5d8b123b3bc79f1af1789172ac70265dd21"},
     {file = "pyjsparser-2.7.1.tar.gz", hash = "sha256:be60da6b778cc5a5296a69d8e7d614f1f870faf94e1b1b6ac591f2ad5d729579"},
+]
+pymemcache = [
+    {file = "pymemcache-4.0.0-py2.py3-none-any.whl", hash = "sha256:f507bc20e0dc8d562f8df9d872107a278df049fa496805c1431b926f3ddd0eab"},
+    {file = "pymemcache-4.0.0.tar.gz", hash = "sha256:27bf9bd1bbc1e20f83633208620d56de50f14185055e49504f4f5e94e94aff94"},
 ]
 pyparsing = [
     {file = "pyparsing-3.0.9-py3-none-any.whl", hash = "sha256:5026bae9a10eeaefb61dab2f09052b9f4307d44aee4eda64b309723d8d206bbc"},

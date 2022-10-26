@@ -128,6 +128,15 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.memcached.PyMemcacheCache",
+        "LOCATION": "127.0.0.1:11211",
+        "TIMEOUT": 30,
+    }
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -175,7 +184,7 @@ MAX_RUN_TIME = 300
 BACKGROUND_TASK_RUN_ASYNC = False
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
+# https://docs.djangoproject.com/en/2.2/howto/static-file<s/
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]

@@ -37,6 +37,7 @@ flake8-comprehensions = "^3.10.0"
 flake8-isort = "^5.0.0"
 flake8-mutable = "^1.2.0"
 django-cors-headers = "^3.13.0"
+pymemcache = "^4.0.0"
 
 [build-system]
 requires = ["poetry-core"]
