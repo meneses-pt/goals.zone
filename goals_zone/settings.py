@@ -162,13 +162,13 @@ REST_FRAMEWORK = {
 }
 
 LOGTAIL_FILES = {
-    "Background Tasks": "/home/goals_zone/logs/background_tasks.log",
-    "Background Tasks Errors": "/home/goals_zone/logs/background_tasks-error.log",
+    "BackgroundTasks": "/home/goals_zone/logs/background_tasks.log",
+    "BackgroundTasksErrors": "/home/goals_zone/logs/background_tasks-error.log",
     "Gunicorn": "/home/goals_zone/logs/gunicorn-error.log",
-    "goals.zone": "/home/goals_zone/logs/goals_zone.log",
-    "goals.zone Errors": "/home/goals_zone/logs/goals_zone-error.log",
-    "nginx Access": "/home/goals_zone/logs/nginx-access.log",
-    "nginx Errors": "/home/goals_zone/logs/nginx-error.log",
+    "goalsZone": "/home/goals_zone/logs/goals_zone.log",
+    "goalsZoneErrors": "/home/goals_zone/logs/goals_zone-error.log",
+    "nginxAccess": "/home/goals_zone/logs/nginx-access.log",
+    "nginxErrors": "/home/goals_zone/logs/nginx-error.log",
     "Supervisor": "/var/log/supervisor/supervisord.log",
 }
 
