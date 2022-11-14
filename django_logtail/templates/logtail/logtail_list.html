@@ -1,0 +1,78 @@
+{% extends "admin/change_list.html" %}
+
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+  <a href="{% url 'admin:index' %}">Home</a>
+</div>
+{% endblock %}
+
+{% block content %}
+  <div id="content-main">
+    <div class="module">
+      <table id="change-history">
+        <thead>
+          <tr>
+            <th scope="col">Log</th>
+            <th scope="col">Path</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for log, path in logfiles %}
+            <tr>
+              <th scope="row"><a href="#" class="logfile_change">{{ log }}</a></th>
+              <td>{{ path }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <div>
+<div id="log-tail">
+</div>
+    </div>
+  </div>
+  <ul class="object-tools">
+    <li><a href="#" id="auto-scroll-toggle" class="historylink">Turn Auto-Scroll On</a></li>
+    <li><a href="#" id="auto-poll-toggle" class="historylink">Turn Auto-Poll Off</a></li>
+  </ul>
+
+  <script type="text/javascript">
+  (function($) {
+    var baseUrl = "{% url 'admin:django_logtail_log_changelist' %}";
+    var updateInterval = {{ update_interval }};
+    window.tailer = new window.LogTailer(baseUrl, updateInterval);
+
+    // Configure JQuery Events
+    $('.logfile_change').on('click', function() {
+      var log = $(this).text();
+      window.tailer.poll(log);
+    });
+
+    $('#auto-scroll-toggle').on('click', function(e) {
+      e.preventDefault();
+      if (window.tailer.autoScroll) {
+        window.tailer.autoScroll = false;
+        $(this).text('Turn Auto-Scroll On');
+      }
+      else {
+        window.tailer.autoScroll = true;
+        $(this).text('Turn Auto-Scroll Off');
+      }
+    });
+
+    $('#auto-poll-toggle').on('click', function(e) {
+      e.preventDefault();
+      if (window.tailer.autoPoll) {
+        window.tailer.autoPoll = false;
+        $(this).text('Turn Auto-Poll On');
+      }
+      else {
+        window.tailer.autoPoll = true;
+        $(this).text('Turn Auto-Poll Off');
+      }
+    });
+  })(django.jQuery);
+
+  </script>
+{% endblock %}

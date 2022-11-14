@@ -67,15 +67,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
+    "background_task",
     "matches.apps.MatchesConfig",
     "msg_events.apps.MsgEventsConfig",
     "monitoring.apps.MonitoringConfig",
     "corsheaders",
     "ner.apps.NerConfig",
-    "background_task",
     "rest_framework",
     "rangefilter",
     "django_hosts",
+    "django_logtail",
 ]
 
 MIDDLEWARE = [
@@ -158,6 +159,17 @@ AUTH_PASSWORD_VALIDATORS = [
 REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "matches.pagination.OnlyDataLimitOffsetPagination",
     "PAGE_SIZE": 50,
+}
+
+LOGTAIL_FILES = {
+    "Background Tasks": "/home/goals_zone/logs/background_tasks.log",
+    "Background Tasks Errors": "/home/goals_zone/logs/background_tasks-error.log",
+    "Gunicorn": "/home/goals_zone/logs/gunicorn-error.log",
+    "goals.zone": "/home/goals_zone/logs/goals_zone.log",
+    "goals.zone Errors": "/home/goals_zone/logs/goals_zone-error.log",
+    "nginx Access": "/home/goals_zone/logs/nginx-access.log",
+    "nginx Errors": "/home/goals_zone/logs/nginx-error.log",
+    "Supervisor": "/var/log/supervisor/supervisord.log",
 }
 
 # Internationalization

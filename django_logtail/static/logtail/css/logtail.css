@@ -1,0 +1,9 @@
+#log-tail {
+  height: auto;
+  overflow-x: scroll;
+  white-space: pre;
+  font-family: monospace;
+}
+.object-tools {
+  margin-top: 5px;
+}
