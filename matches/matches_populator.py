@@ -8,7 +8,7 @@ from background_task import background
 from background_task.models import CompletedTask, Task
 from fake_headers import Headers
 
-from monitoring.models import PerformanceMonitorEvent
+from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
 
 from .goals_populator import _handle_messages_to_send
 from .models import Category, Match, Season, Team, Tournament
@@ -23,6 +23,17 @@ def fetch_new_matches():
         flush=True,
     )
     fetch_matches_from_sofascore()
+    send_heartbeat()
+
+
+def send_heartbeat():
+    try:
+        monitoring_accounts = MonitoringAccount.objects.all()
+        for ma in monitoring_accounts:
+            if ma.matches_heartbeat_url:
+                requests.get(ma.matches_heartbeat_url)
+    except Exception as ex:
+        print("Error sending monitoring message: " + str(ex), flush=True)
 
 
 def try_load_json_content(content):

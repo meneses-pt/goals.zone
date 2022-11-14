@@ -45,6 +45,17 @@ def fetch_videogoals():
         flush=True,
     )
     _fetch_reddit_goals()
+    send_heartbeat()
+
+
+def send_heartbeat():
+    try:
+        monitoring_accounts = MonitoringAccount.objects.all()
+        for ma in monitoring_accounts:
+            if ma.goals_heartbeat_url:
+                requests.get(ma.goals_heartbeat_url)
+    except Exception as ex:
+        print("Error sending monitoring message: " + str(ex), flush=True)
 
 
 def _fetch_reddit_goals():
