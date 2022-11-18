@@ -27,7 +27,7 @@ from fake_headers import Headers
 from slack_webhook import Slack
 
 from matches.models import AffiliateTerm, Match, PostMatch, Team, VideoGoal, VideoGoalMirror
-from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
+from monitoring.models import MonitoringAccount
 from msg_events.models import MessageObject, Tweet, Webhook
 from ner.models import NerLog
 from ner.utils import extract_names_from_title_ner
@@ -699,7 +699,6 @@ def find_match(home_team, away_team, to_date, from_date=None):
     suffix_affiliate_away = re.findall(suffix_regex_string, away_team)
     prefix_affiliate_home = re.findall(prefix_regex_string, home_team)
     prefix_affiliate_away = re.findall(prefix_regex_string, away_team)
-    start = timeit.default_timer()
     matches = Match.objects.filter(
         datetime__gte=(from_date - timedelta(hours=72)), datetime__lte=to_date
     ).filter(
@@ -708,12 +707,28 @@ def find_match(home_team, away_team, to_date, from_date=None):
         Q(away_team__name__unaccent__trigram_similar=away_team)
         | Q(away_team__alias__alias__unaccent__trigram_similar=away_team),
     )
-    end = timeit.default_timer()
-    PerformanceMonitorEvent.objects.create(
-        name="FIND_MATCH_TRIGRAM_SEARCH", elapsed_time=(end - start)
+    matches = process_prefix_suffix(
+        matches,
+        prefix_affiliate_home,
+        prefix_affiliate_terms,
+        suffix_affiliate_home,
+        suffix_affiliate_terms,
     )
-    if len(suffix_affiliate_home) > 0:
-        matches = matches.filter(home_team__name__iendswith=suffix_affiliate_home[0])
+    matches = process_prefix_suffix(
+        matches,
+        prefix_affiliate_away,
+        prefix_affiliate_terms,
+        suffix_affiliate_away,
+        suffix_affiliate_terms,
+    )
+    return matches
+
+
+def process_prefix_suffix(
+    matches, prefix_affiliate, prefix_affiliate_terms, suffix_affiliate, suffix_affiliate_terms
+):
+    if len(suffix_affiliate) > 0:
+        matches = matches.filter(home_team__name__iendswith=suffix_affiliate[0])
     else:
         matches = matches.exclude(
             reduce(
@@ -721,32 +736,13 @@ def find_match(home_team, away_team, to_date, from_date=None):
                 (Q(home_team__name__iendswith=f" {term}") for term in suffix_affiliate_terms),
             )
         )
-    if len(prefix_affiliate_home) > 0:
-        matches = matches.filter(home_team__name__istartswith=prefix_affiliate_home[0])
+    if len(prefix_affiliate) > 0:
+        matches = matches.filter(home_team__name__istartswith=prefix_affiliate[0])
     else:
         matches = matches.exclude(
             reduce(
                 operator.or_,
                 (Q(home_team__name__istartswith=f" {term}") for term in prefix_affiliate_terms),
-            )
-        )
-
-    if len(suffix_affiliate_away) > 0:
-        matches = matches.filter(away_team__name__iendswith=suffix_affiliate_away[0])
-    else:
-        matches = matches.exclude(
-            reduce(
-                operator.or_,
-                (Q(away_team__name__iendswith=f" {term}") for term in suffix_affiliate_terms),
-            )
-        )
-    if len(prefix_affiliate_away) > 0:
-        matches = matches.filter(away_team__name__istartswith=prefix_affiliate_away[0])
-    else:
-        matches = matches.exclude(
-            reduce(
-                operator.or_,
-                (Q(away_team__name__istartswith=f" {term}") for term in prefix_affiliate_terms),
             )
         )
     return matches

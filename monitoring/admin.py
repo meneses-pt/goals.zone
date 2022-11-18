@@ -3,9 +3,8 @@ import csv
 from background_task.models import Task
 from django.contrib import admin
 from django.http import HttpResponse
-from rangefilter.filters import DateRangeFilter
 
-from monitoring.models import MonitoringAccount, PerformanceMonitorEvent
+from monitoring.models import MonitoringAccount
 
 admin.site.register(MonitoringAccount)
 
@@ -25,16 +24,6 @@ def export_performance_monitor_events(self, request, queryset):
 
 
 export_performance_monitor_events.short_description = "Export selected"
-
-
-@admin.register(PerformanceMonitorEvent)
-class PerformanceMonitorEventAdmin(admin.ModelAdmin):
-    list_display = ("name", "timestamp", "elapsed_time")
-    list_filter = (
-        "name",
-        ("timestamp", DateRangeFilter),
-    )
-    actions = [export_performance_monitor_events]
 
 
 def reset_background_task(self, request, queryset):
