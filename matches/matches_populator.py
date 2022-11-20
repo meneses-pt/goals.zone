@@ -108,7 +108,32 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     end = timeit.default_timer()
     print(f"{(end - start):.2f} elapsed fetching events\n", flush=True)
     start = timeit.default_timer()
-    for fixture in events:
+    failed_matches = []
+    for match in events:
+        success = process_match(match)
+        if not success:
+            failed_matches.append(match)
+    if len(failed_matches) > 0:
+        print(f"Start processing {len(failed_matches)} failed matches\n", flush=True)
+        for match in failed_matches:
+            process_match(match, raise_exception=True)
+        print(f"Stopped processing {len(failed_matches)} failed matches\n", flush=True)
+    end = timeit.default_timer()
+    print(f"{(end - start):.2f} elapsed processing {len(events)} events\n", flush=True)
+    print("Going to delete old matches without videos", flush=True)
+    delete = (
+        Match.objects.annotate(videos_count=Count("videogoal"))
+        .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7))
+        .delete()
+    )
+    print(f"Deleted {delete} old matches without videos", flush=True)
+    print("Finished processing matches\n\n", flush=True)
+
+
+def process_match(fixture, raise_exception=False):
+    home_team = None
+    away_team = None
+    try:
         category_obj = _get_or_create_category_sofascore(fixture["tournament"]["category"])
         tournament_obj = _get_or_create_tournament_sofascore(fixture["tournament"], category_obj)
         if "season" in fixture and fixture["season"] is not None:
@@ -149,16 +174,12 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         match.season = season_obj
         match.status = status
         _save_or_update_match(match)
-    end = timeit.default_timer()
-    print(f"{(end - start):.2f} elapsed processing {len(events)} events\n", flush=True)
-    print("Going to delete old matches without videos", flush=True)
-    delete = (
-        Match.objects.annotate(videos_count=Count("videogoal"))
-        .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7))
-        .delete()
-    )
-    print(f"Deleted {delete} old matches without videos", flush=True)
-    print("Finished processing matches\n\n", flush=True)
+    except Exception as e:
+        print(f"Error processing match [{home_team} - {away_team}]: {e}\n", flush=True)
+        if raise_exception:
+            raise e
+        return False
+    return True
 
 
 def _get_or_create_away_team_sofascore(fixture):
