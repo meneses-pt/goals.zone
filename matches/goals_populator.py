@@ -437,7 +437,7 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         now = timezone.now()
-        if match.last_tweet_time is not None:
+        if match.last_tweet_time is not None and videogoal is not None:
             last_tweeted_how_long = now - match.last_tweet_time
             text_similarity = SequenceMatcher(None, match.last_tweet_text, videogoal.title).ratio()
             if (
