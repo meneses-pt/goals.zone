@@ -114,10 +114,10 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         if not success:
             failed_matches.append(match)
     if len(failed_matches) > 0:
-        print(f"Start processing {len(failed_matches)} failed matches\n", flush=True)
+        print(f"Start processing {len(failed_matches)} failed matches...", flush=True)
         for match in failed_matches:
             process_match(match, raise_exception=True)
-        print(f"Stopped processing {len(failed_matches)} failed matches\n", flush=True)
+        print(f"Finished processing {len(failed_matches)} failed matches!", flush=True)
     end = timeit.default_timer()
     print(f"{(end - start):.2f} elapsed processing {len(events)} events\n", flush=True)
     print("Going to delete old matches without videos", flush=True)
