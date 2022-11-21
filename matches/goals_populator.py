@@ -435,13 +435,14 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         now = timezone.now()
-        last_tweeted_how_long = now - match.last_sent_tweet
-        if last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD):
-            print(
-                f"Last tweet for match {match} send {last_tweeted_how_long} ago. Skipping!",
-                flush=True,
-            )
-            return
+        if match.last_sent_tweet is not None:
+            last_tweeted_how_long = now - match.last_sent_tweet
+            if last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD):
+                print(
+                    f"Last tweet for match {match} send {last_tweeted_how_long} ago. Skipping!",
+                    flush=True,
+                )
+                return
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
             to_send = (
