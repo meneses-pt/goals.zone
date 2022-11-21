@@ -10,6 +10,7 @@ import timeit
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, timedelta
+from difflib import SequenceMatcher
 from functools import reduce
 from xml.etree import ElementTree as ETree
 
@@ -34,7 +35,8 @@ from ner.utils import extract_names_from_title_ner
 
 executor = ThreadPoolExecutor(max_workers=10)
 
-TWEET_MINUTES_THRESHOLD = 3
+TWEET_MINUTES_THRESHOLD = 5
+TWEET_SIMILARITY_THRESHOLD = 0.8
 
 
 @background(schedule=60)
@@ -435,11 +437,16 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         now = timezone.now()
-        if match.last_sent_tweet is not None:
-            last_tweeted_how_long = now - match.last_sent_tweet
-            if last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD):
+        if match.last_tweet_time is not None:
+            last_tweeted_how_long = now - match.last_tweet_time
+            text_similarity = SequenceMatcher(None, match.last_tweet_text, videogoal.title).ratio()
+            if (
+                last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD)
+                and text_similarity > TWEET_SIMILARITY_THRESHOLD
+            ):
                 print(
-                    f"Last tweet for match {match} send {last_tweeted_how_long} ago. Skipping!",
+                    f"Last tweet for match {match} send {last_tweeted_how_long} ago "
+                    f"and text similarity = {text_similarity}. Skipping!",
                     flush=True,
                 )
                 return
@@ -473,7 +480,8 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 attempts += 1
             if not is_sent:
                 send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
-            match.last_sent_tweet = now
+            match.last_tweet_time = now
+            match.last_tweet_text = videogoal.title
             match.save()
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex), flush=True)
