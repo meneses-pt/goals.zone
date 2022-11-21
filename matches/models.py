@@ -187,6 +187,7 @@ class Match(models.Model):
     highlights_msg_sent = models.BooleanField(default=False)
     status = models.CharField(max_length=50, default="finished")
     first_video_datetime = models.DateTimeField(null=True, blank=True)
+    last_sent_tweet = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         indexes = [

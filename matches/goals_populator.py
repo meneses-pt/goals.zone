@@ -34,7 +34,7 @@ from ner.utils import extract_names_from_title_ner
 
 executor = ThreadPoolExecutor(max_workers=10)
 
-MAX_TWEETS_PER_MATCH = 5
+TWEET_MINUTES_THRESHOLD = 3
 
 
 @background(schedule=60)
@@ -434,6 +434,14 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
+        now = timezone.now()
+        last_tweeted_how_long = now - match.last_sent_tweet
+        if last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD):
+            print(
+                f"Last tweet for match {match} send {last_tweeted_how_long} ago. Skipping!",
+                flush=True,
+            )
+            return
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
             to_send = (
@@ -464,6 +472,8 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 attempts += 1
             if not is_sent:
                 send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
+            match.last_sent_tweet = now
+            match.save()
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex), flush=True)
 
