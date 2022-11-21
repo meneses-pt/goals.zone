@@ -437,7 +437,11 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         now = timezone.now()
-        if match.last_tweet_time is not None and videogoal is not None:
+        if (
+            match.last_tweet_time is not None
+            and match.last_tweet_text is not None
+            and videogoal is not None
+        ):
             last_tweeted_how_long = now - match.last_tweet_time
             text_similarity = SequenceMatcher(None, match.last_tweet_text, videogoal.title).ratio()
             if (
@@ -480,9 +484,10 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 attempts += 1
             if not is_sent:
                 send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
-            match.last_tweet_time = now
-            match.last_tweet_text = videogoal.title
-            match.save()
+            if videogoal is not None:
+                match.last_tweet_time = now
+                match.last_tweet_text = videogoal.title
+                match.save()
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex), flush=True)
 
