@@ -36,7 +36,7 @@ from ner.utils import extract_names_from_title_ner
 executor = ThreadPoolExecutor(max_workers=10)
 
 TWEET_MINUTES_THRESHOLD = 5
-TWEET_SIMILARITY_THRESHOLD = 0.8
+TWEET_SIMILARITY_THRESHOLD = 0.75
 
 
 @background(schedule=60)
@@ -454,6 +454,12 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     flush=True,
                 )
                 return
+            elif last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD):
+                print(
+                    f"Last tweet for match {match} send {last_tweeted_how_long} ago "
+                    f"but text similarity = {text_similarity}. NOT Skipping!",
+                    flush=True,
+                )
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
             to_send = (
