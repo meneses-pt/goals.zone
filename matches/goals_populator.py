@@ -436,6 +436,7 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
+        match.refresh_from_db()
         now = timezone.now()
         if (
             match.last_tweet_time is not None
