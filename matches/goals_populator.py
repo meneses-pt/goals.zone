@@ -435,9 +435,9 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
 
         print(
             f"SEND TWEET LOG: Match {match}\n"
+            f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n",
             f"| last_tweet_time: {match.last_tweet_time}\n"
-            f"| last_tweet_text: {match.last_tweet_text}\n",
-            f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}",
+            f"| last_tweet_text: {match.last_tweet_text}",
             flush=True,
         )
 
@@ -500,9 +500,9 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 match.last_tweet_text = videogoal.title
                 print(
                     f"SEND TWEET LOG | MATCH SAVE: Match {match}\n"
+                    f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n",
                     f"| last_tweet_time: {match.last_tweet_time}\n"
-                    f"| last_tweet_text: {match.last_tweet_text}\n",
-                    f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}",
+                    f"| last_tweet_text: {match.last_tweet_text}",
                     flush=True,
                 )
                 match.save()
