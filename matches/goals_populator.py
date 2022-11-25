@@ -291,7 +291,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
 
 
 def send_messages(match, videogoal, videogoal_mirror, event_filter):
-    print(f"SEND MESSAGES {str(event_filter)}", flush=True)
+    print(f"SEND MESSAGES -> {event_filter.label}", flush=True)
     send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
@@ -437,6 +437,12 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         match.refresh_from_db()
+        print(
+            f"SEND TWEET LOG: Match {match} "
+            f"| last_tweet_time {match.last_tweet_time} "
+            f"| last_tweet_text {match.last_tweet_text}",
+            flush=True,
+        )
         now = timezone.now()
         if (
             match.last_tweet_time is not None
@@ -494,6 +500,12 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             if videogoal is not None:
                 match.last_tweet_time = now
                 match.last_tweet_text = videogoal.title
+                print(
+                    f"SEND TWEET LOG | MATCH SAVE: Match {match} "
+                    f"| last_tweet_time {match.last_tweet_time} "
+                    f"| last_tweet_text {match.last_tweet_text}",
+                    flush=True,
+                )
                 match.save()
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex), flush=True)
