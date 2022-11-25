@@ -291,7 +291,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
 
 
 def send_messages(match, videogoal, videogoal_mirror, event_filter):
-    print(f"SEND MESSAGES -> {event_filter.label}", flush=True)
+    print(f"SEND MESSAGES => {event_filter.label}", flush=True)
     send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
@@ -305,11 +305,6 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter):
         videogoal_mirror.msg_sent = True
         videogoal_mirror.save()
     if MessageObject.MessageEventType.MatchHighlights == event_filter and match is not None:
-        match.highlights_msg_sent = True
-        match.save()
-    if MessageObject.MessageEventType.MatchScoreChanged == event_filter and match is not None:
-        pass
-    if MessageObject.MessageEventType.MatchResult == event_filter and match is not None:
         match.highlights_msg_sent = True
         match.save()
 
@@ -438,9 +433,10 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
         match.refresh_from_db()
         print(
-            f"SEND TWEET LOG: Match {match} "
-            f"| last_tweet_time {match.last_tweet_time} "
-            f"| last_tweet_text {match.last_tweet_text}",
+            f"SEND TWEET LOG: Match {match}\n"
+            f"| last_tweet_time: {match.last_tweet_time}\n"
+            f"| last_tweet_text: {match.last_tweet_text}\n",
+            f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}",
             flush=True,
         )
         now = timezone.now()
@@ -501,9 +497,10 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 match.last_tweet_time = now
                 match.last_tweet_text = videogoal.title
                 print(
-                    f"SEND TWEET LOG | MATCH SAVE: Match {match} "
-                    f"| last_tweet_time {match.last_tweet_time} "
-                    f"| last_tweet_text {match.last_tweet_text}",
+                    f"SEND TWEET LOG | MATCH SAVE: Match {match}\n"
+                    f"| last_tweet_time: {match.last_tweet_time}\n"
+                    f"| last_tweet_text: {match.last_tweet_text}\n",
+                    f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}",
                     flush=True,
                 )
                 match.save()
@@ -656,23 +653,6 @@ def _handle_messages_to_send(match, videogoal=None, score_changed=False):
             and match.away_team.name_code is not None
         ):
             send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights)
-        # If a match has videos, do not post score changed tweet
-        if (
-            match.videogoal_set.count() == 0
-            and score_changed
-            and match.home_team.name_code is not None
-            and match.away_team.name_code is not None
-        ):
-            send_messages(match, None, None, MessageObject.MessageEventType.MatchScoreChanged)
-        if (
-            match.videogoal_set.count() == 0
-            and not match.highlights_msg_sent
-            and match.status.lower() == "finished"
-            and match.score is not None
-            and match.home_team.name_code is not None
-            and match.away_team.name_code is not None
-        ):
-            send_messages(match, None, None, MessageObject.MessageEventType.MatchResult)
 
 
 def _handle_not_found_match(away_team, home_team, post):
