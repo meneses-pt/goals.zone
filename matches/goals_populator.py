@@ -9,9 +9,11 @@ import time
 import timeit
 import traceback
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import nullcontext
 from datetime import date, timedelta
 from difflib import SequenceMatcher
 from functools import reduce
+from threading import Lock
 from xml.etree import ElementTree as ETree
 
 import markdown as markdown
@@ -96,6 +98,7 @@ def _fetch_reddit_goals():
             return
         results = data["data"]["dist"]
         print(f"{results} posts fetched...", flush=True)
+        lock = Lock()
         futures = []
         old_posts_to_check_count = 0
         for post in data["data"]["children"]:
@@ -121,7 +124,7 @@ def _fetch_reddit_goals():
                     title = _fix_title(title)
                     post_created_date = datetime.datetime.fromtimestamp(post["created_utc"])
                     future = executor.submit(
-                        find_and_store_videogoal, post, title, post_created_date
+                        find_and_store_videogoal, post, title, post_created_date, lock
                     )
                     futures.append(future)
         concurrent.futures.wait(futures)
@@ -290,9 +293,11 @@ def _insert_or_update_mirror(videogoal, text, url, author):
         send_messages(mirror.videogoal.match, None, mirror, MessageObject.MessageEventType.Mirror)
 
 
-def send_messages(match, videogoal, videogoal_mirror, event_filter):
+def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
     print(f"SEND MESSAGES => {event_filter.label}", flush=True)
-    send_tweet(match, videogoal, videogoal_mirror, event_filter)
+    with lock if lock is not None else nullcontext():
+        print(f"SEND TWEET LOG: Using Lock [{lock}]", flush=True)
+        send_tweet(match, videogoal, videogoal_mirror, event_filter)
     send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
@@ -557,7 +562,7 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
     log.save()
 
 
-def find_and_store_videogoal(post, title, max_match_date, match_date=None):
+def find_and_store_videogoal(post, title, max_match_date, lock, match_date=None):
     if match_date is None:
         match_date = datetime.datetime.utcnow()
     regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
@@ -593,7 +598,7 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
                 from_date=match_date,
             )
     if matches_results and matches_results.exists():
-        _save_found_match(matches_results, minute_str, post)
+        _save_found_match(matches_results, minute_str, post, lock)
     elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
         try:
             home_team = regex_home_team
@@ -608,7 +613,7 @@ def find_and_store_videogoal(post, title, max_match_date, match_date=None):
         PostMatch.objects.create(permalink=post["permalink"])
 
 
-def _save_found_match(matches_results, minute_str, post):
+def _save_found_match(matches_results, minute_str, post, lock=None):
     match = matches_results.first()
     if match.videogoal_set.count() == 0:
         match.first_video_datetime = timezone.now()
@@ -626,19 +631,19 @@ def _save_found_match(matches_results, minute_str, post):
     videogoal.author = post["author"]
     videogoal.save()
     PostMatch.objects.create(permalink=post["permalink"], videogoal=videogoal)
-    _handle_messages_to_send(match, videogoal)
+    _handle_messages_to_send(match, videogoal, lock)
     find_mirrors(videogoal)
     # print('Saved: ' + title, flush=True)
 
 
-def _handle_messages_to_send(match, videogoal=None, score_changed=False):
+def _handle_messages_to_send(match, videogoal=None, lock=None):
     if videogoal:
         if (
             not videogoal.msg_sent
             and match.home_team.name_code is not None
             and match.away_team.name_code is not None
         ):
-            send_messages(match, videogoal, None, MessageObject.MessageEventType.Video)
+            send_messages(match, videogoal, None, MessageObject.MessageEventType.Video, lock)
         if (
             match.videogoal_set.count() > 0
             and not match.first_msg_sent

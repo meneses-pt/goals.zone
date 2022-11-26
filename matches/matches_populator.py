@@ -389,11 +389,11 @@ def _save_or_update_match(match):
         datetime__lte=match.datetime + timedelta(days=1),
     )
     if matches.exists():
-        score_changed = False
-        for old_match in matches:
-            if old_match.score != match.score and match.score != "0:0":
-                score_changed = True
-                break
+        # score_changed = False
+        # for old_match in matches:
+        #     if old_match.score != match.score and match.score != "0:0":
+        #         score_changed = True
+        #         break
         matches.update(
             datetime=match.datetime,
             score=match.score,
@@ -403,7 +403,7 @@ def _save_or_update_match(match):
             status=match.status,
         )
         for i_match in matches:
-            _handle_messages_to_send(i_match, videogoal=None, score_changed=score_changed)
+            _handle_messages_to_send(i_match, videogoal=None)
     else:
         match.save()
         _handle_messages_to_send(match)
