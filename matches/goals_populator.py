@@ -38,7 +38,7 @@ from ner.utils import extract_names_from_title_ner
 executor = ThreadPoolExecutor(max_workers=10)
 
 TWEET_MINUTES_THRESHOLD = 5
-TWEET_SIMILARITY_THRESHOLD = 0.75
+TWEET_SIMILARITY_THRESHOLD = 0.85
 
 
 @background(schedule=60)
