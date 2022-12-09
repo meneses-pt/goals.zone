@@ -109,12 +109,14 @@ def _fetch_reddit_goals():
                 and post["link_flair_text"].lower() != "media"
                 and post["link_flair_text"].lower() != "mirror"
             ):
-                send_monitoring_message(
-                    f"URL with wrong flair\n"
-                    f"Title: {post['title']}"
-                    f"Flair: {post['link_flair_text']}"
-                    f"URL: {post['url']}"
-                )
+                # Possible false negative
+                pass
+                # send_monitoring_message(
+                #     f"URL with wrong flair\n"
+                #     f"Title: {post['title']}"
+                #     f"Flair: {post['link_flair_text']}"
+                #     f"URL: {post['url']}"
+                # )
             if (
                 post["url"] is not None
                 and post["link_flair_text"] is not None
