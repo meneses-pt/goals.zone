@@ -104,25 +104,15 @@ def _fetch_reddit_goals():
         for post in data["data"]["children"]:
             post = post["data"]
             # This if is to evaluate remove filter to flairs
-            if (
-                post["url"] is not None
-                and post["link_flair_text"].lower() != "media"
-                and post["link_flair_text"].lower() != "mirror"
-            ):
-                # Possible false negative
-                pass
-                # send_monitoring_message(
-                #     f"URL with wrong flair\n"
-                #     f"Title: {post['title']}"
-                #     f"Flair: {post['link_flair_text']}"
-                #     f"URL: {post['url']}"
-                # )
+            if post["url"] is not None and post["link_flair_text"] is None:
+                print(f"URL WITH NO FLAIR\nTitle: {post['title']}\nURL: {post['url']}")
             if (
                 post["url"] is not None
                 and post["link_flair_text"] is not None
                 and (
                     post["link_flair_text"].lower() == "media"
                     or post["link_flair_text"].lower() == "mirror"
+                    or post["link_flair_text"].lower() == "great goal"
                 )
             ):
                 try:
