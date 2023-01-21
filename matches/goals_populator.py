@@ -301,9 +301,10 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
     print(f"SEND MESSAGES => {event_filter.label}", flush=True)
     with lock if lock is not None else nullcontext():
         print(f"SEND TWEET LOG: Using Lock [{lock}]", flush=True)
+        match.refresh_from_db()
         send_tweet(match, videogoal, videogoal_mirror, event_filter)
-    send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
-    send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
+        send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
+        send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
     if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
         match.first_msg_sent = True
         match.save()
@@ -440,8 +441,6 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
 
 def send_tweet(match, videogoal, videogoal_mirror, event_filter):
     try:
-        match.refresh_from_db()
-
         print(
             f"SEND TWEET LOG: Match {match}\n"
             f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n"
@@ -449,7 +448,6 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             f"| last_tweet_text: {match.last_tweet_text}",
             flush=True,
         )
-
         now = timezone.now()
         if (
             match.last_tweet_time is not None
