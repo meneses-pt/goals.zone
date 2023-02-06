@@ -300,7 +300,7 @@ def _insert_or_update_mirror(videogoal, text, url, author):
 def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
     print(f"SEND MESSAGES => {event_filter.label}", flush=True)
     with lock if lock is not None else nullcontext():
-        print(f"SEND TWEET LOG: Using Lock [{lock}]", flush=True)
+        print(f"SEND MESSAGE LOG: Using Lock [{lock}]", flush=True)
         match.refresh_from_db()
         send_tweet(match, videogoal, videogoal_mirror, event_filter)
         send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
@@ -652,7 +652,7 @@ def _handle_messages_to_send(match, videogoal=None, lock=None):
             and match.home_team.name_code is not None
             and match.away_team.name_code is not None
         ):
-            send_messages(match, None, None, MessageObject.MessageEventType.MatchFirstVideo)
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchFirstVideo, lock)
     else:
         if (
             match.videogoal_set.count() > 0
@@ -661,7 +661,7 @@ def _handle_messages_to_send(match, videogoal=None, lock=None):
             and match.home_team.name_code is not None
             and match.away_team.name_code is not None
         ):
-            send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights)
+            send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights, lock)
 
 
 def _handle_not_found_match(away_team, home_team, post):
