@@ -8,7 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 discord-webhook = "^1.0"
-Django = "^4.1.2"
+Django = "^4.1.7"
 django4_background_tasks = "^1.2.7"
 django_admin_rangefilter = "^0.8.8"
 django_hosts = "^5.1"
