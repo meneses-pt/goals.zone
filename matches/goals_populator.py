@@ -785,6 +785,9 @@ def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
     headers = Headers(headers=True).generate()
     headers["User-Agent"] = REDDIT_USER_AGENT
     headers["Accept-Encoding"] = "gzip, deflate, br"
+    print("-------HEADERS-------")
+    print(headers)
+    print("---------------------")
     response = requests.get(
         f"https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
         headers=headers,
@@ -796,6 +799,9 @@ def _make_reddit_api_request(link):
     headers = Headers(headers=True).generate()
     headers["User-Agent"] = REDDIT_USER_AGENT
     headers["Accept-Encoding"] = "gzip, deflate, br"
+    print("-------HEADERS-------")
+    print(headers)
+    print("---------------------")
     response = requests.get(link, headers=headers, timeout=5)
     return response
 
@@ -806,6 +812,9 @@ def _fetch_historic_data_from_reddit_api(from_date):
     headers = Headers(headers=True).generate()
     headers["User-Agent"] = REDDIT_USER_AGENT
     headers["Accept-Encoding"] = "gzip, deflate, br"
+    print("-------HEADERS-------")
+    print(headers)
+    print("---------------------")
     response = requests.get(
         f"https://api.pushshift.io/reddit/search/submission/"
         f"?subreddit=soccer&sort=desc&sort_type=created_utc"
