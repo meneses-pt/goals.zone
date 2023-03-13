@@ -26,7 +26,6 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
 from django.utils import timezone
-from fake_headers import Headers
 from slack_webhook import Slack
 
 from matches.models import AffiliateTerm, Match, PostMatch, Team, VideoGoal, VideoGoalMirror
@@ -39,7 +38,14 @@ executor = ThreadPoolExecutor(max_workers=10)
 
 TWEET_MINUTES_THRESHOLD = 5
 TWEET_SIMILARITY_THRESHOLD = 0.85
-REDDIT_USER_AGENT = "api:pt.meneses.goals.zone:v1 (by /u/meneses_pt)"
+REDDIT_HEADERS = {
+    "Accept": "*/*",
+    "Connection": "keep-alive",
+    "User-Agent": "api:pt.meneses.goals.zone:v1 (by /u/meneses_pt)",
+    "Accept-Language": "en-US;q=0.5,en;q=0.3",
+    "Cache-Control": "max-age=0",
+    "Accept-Encoding": "gzip, deflate, br",
+}
 
 
 @background(schedule=60)
@@ -782,44 +788,26 @@ def process_prefix_suffix(
 
 
 def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
-    headers = Headers(headers=True).generate()
-    headers["User-Agent"] = REDDIT_USER_AGENT
-    headers["Accept-Encoding"] = "gzip, deflate, br"
-    print("-------HEADERS-------")
-    print(headers)
-    print("---------------------")
     response = requests.get(
         f"https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
-        headers=headers,
+        headers=REDDIT_HEADERS,
     )
     return response
 
 
 def _make_reddit_api_request(link):
-    headers = Headers(headers=True).generate()
-    headers["User-Agent"] = REDDIT_USER_AGENT
-    headers["Accept-Encoding"] = "gzip, deflate, br"
-    print("-------HEADERS-------")
-    print(headers)
-    print("---------------------")
-    response = requests.get(link, headers=headers, timeout=5)
+    response = requests.get(link, headers=REDDIT_HEADERS, timeout=5)
     return response
 
 
 def _fetch_historic_data_from_reddit_api(from_date):
     after = int(time.mktime(from_date.timetuple()))
     before = int(after + 86400)  # a day
-    headers = Headers(headers=True).generate()
-    headers["User-Agent"] = REDDIT_USER_AGENT
-    headers["Accept-Encoding"] = "gzip, deflate, br"
-    print("-------HEADERS-------")
-    print(headers)
-    print("---------------------")
     response = requests.get(
         f"https://api.pushshift.io/reddit/search/submission/"
         f"?subreddit=soccer&sort=desc&sort_type=created_utc"
         f"&after={after}&before={before}&size=1000",
-        headers=headers,
+        headers=REDDIT_HEADERS,
     )
     return response
 
