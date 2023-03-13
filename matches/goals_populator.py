@@ -39,6 +39,7 @@ executor = ThreadPoolExecutor(max_workers=10)
 
 TWEET_MINUTES_THRESHOLD = 5
 TWEET_SIMILARITY_THRESHOLD = 0.85
+REDDIT_USER_AGENT = "api:pt.meneses.goals.zone:v1 (by /u/meneses_pt)"
 
 
 @background(schedule=60)
@@ -782,6 +783,7 @@ def process_prefix_suffix(
 
 def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
     headers = Headers(headers=True).generate()
+    headers["User-Agent"] = REDDIT_USER_AGENT
     headers["Accept-Encoding"] = "gzip, deflate, br"
     response = requests.get(
         f"https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
@@ -792,6 +794,7 @@ def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
 
 def _make_reddit_api_request(link):
     headers = Headers(headers=True).generate()
+    headers["User-Agent"] = REDDIT_USER_AGENT
     headers["Accept-Encoding"] = "gzip, deflate, br"
     response = requests.get(link, headers=headers, timeout=5)
     return response
@@ -801,6 +804,7 @@ def _fetch_historic_data_from_reddit_api(from_date):
     after = int(time.mktime(from_date.timetuple()))
     before = int(after + 86400)  # a day
     headers = Headers(headers=True).generate()
+    headers["User-Agent"] = REDDIT_USER_AGENT
     headers["Accept-Encoding"] = "gzip, deflate, br"
     response = requests.get(
         f"https://api.pushshift.io/reddit/search/submission/"
