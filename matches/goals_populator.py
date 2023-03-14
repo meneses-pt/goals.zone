@@ -92,14 +92,9 @@ def _fetch_reddit_goals():
             print("No response retrieved", flush=True)
             continue
         if response.status_code >= 300:
+            print(f"####### Error from reddit.com! #######", flush=True)
             print(f"Status Code: {response.status_code}", flush=True)
             print(response.content, flush=True)
-            send_monitoring_message(
-                f"Getting message from reddit\n"
-                f"Status Code: {response.status_code}\n\n"
-                f"response.content",
-                disable_notification=False,
-            )
             continue
         try:
             data = json.loads(response.content)
