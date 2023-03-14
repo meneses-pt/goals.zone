@@ -68,6 +68,16 @@ def send_heartbeat():
         print("Error sending monitoring message: " + str(ex), flush=True)
 
 
+def send_reddit_response_heartbeat():
+    try:
+        monitoring_accounts = MonitoringAccount.objects.all()
+        for ma in monitoring_accounts:
+            if ma.goals_reddit_heartbeat_url:
+                requests.get(ma.goals_reddit_heartbeat_url)
+    except Exception as ex:
+        print("Error sending monitoring message: " + str(ex), flush=True)
+
+
 def _fetch_reddit_goals():
     i = 0
     after = None
@@ -92,10 +102,10 @@ def _fetch_reddit_goals():
             print("No response retrieved", flush=True)
             continue
         if response.status_code >= 300:
-            print(f"####### Error from reddit.com! #######", flush=True)
+            print("####### Error from reddit.com! #######", flush=True)
             print(f"Status Code: {response.status_code}", flush=True)
             print(response.content, flush=True)
-            continue
+            return
         try:
             data = json.loads(response.content)
         except Exception as e:
@@ -109,6 +119,7 @@ def _fetch_reddit_goals():
             print(f"No data in response: {response.content}", flush=True)
             return
         results = data["data"]["dist"]
+        send_reddit_response_heartbeat()
         print(f"{results} posts fetched...", flush=True)
         lock = Lock()
         futures = []
