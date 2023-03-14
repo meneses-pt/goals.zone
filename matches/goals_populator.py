@@ -96,6 +96,10 @@ def _fetch_reddit_goals():
             data = json.loads(response.content)
         except Exception as e:
             tb = traceback.format_exc()
+            print("===========CONTENT===========")
+            print(response.content, flush=True)
+            print("=============================")
+            print("Status Code: {response.status_code}", flush=True)
             print(tb, flush=True)
             print(e, flush=True)
             print(response.content, file=sys.stderr, flush=True)
