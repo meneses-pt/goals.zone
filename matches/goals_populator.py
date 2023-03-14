@@ -102,9 +102,10 @@ def _fetch_reddit_goals():
             print("No response retrieved", flush=True)
             continue
         if response.status_code >= 300:
-            print("####### Error from reddit.com! #######", flush=True)
+            print("####### ERROR from reddit.com! #######", flush=True)
             print(f"Status Code: {response.status_code}", flush=True)
             print(response.content, flush=True)
+            print("ERROR: Finished fetching goals\n\n", flush=True)
             return
         try:
             data = json.loads(response.content)
@@ -117,6 +118,7 @@ def _fetch_reddit_goals():
             raise e
         if "data" not in data.keys():
             print(f"No data in response: {response.content}", flush=True)
+            print("ERROR: Finished fetching goals\n\n", flush=True)
             return
         results = data["data"]["dist"]
         send_reddit_response_heartbeat()
