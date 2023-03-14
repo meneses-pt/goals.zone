@@ -4,7 +4,6 @@ import json
 import operator
 import os
 import re
-import sys
 import time
 import timeit
 import traceback
@@ -92,17 +91,24 @@ def _fetch_reddit_goals():
         if response is None or response.content is None:
             print("No response retrieved", flush=True)
             continue
+        if response.status_code >= 300:
+            print(f"Status Code: {response.status_code}", flush=True)
+            print(response.content, flush=True)
+            send_monitoring_message(
+                f"Getting message from reddit\n"
+                f"Status Code: {response.status_code}\n\n"
+                f"response.content",
+                disable_notification=False,
+            )
+            continue
         try:
             data = json.loads(response.content)
         except Exception as e:
             tb = traceback.format_exc()
-            print("===========CONTENT===========")
-            print(response.content, flush=True)
-            print("=============================")
-            print("Status Code: {response.status_code}", flush=True)
+            print(f"Status Code: {response.status_code}", flush=True)
             print(tb, flush=True)
             print(e, flush=True)
-            print(response.content, file=sys.stderr, flush=True)
+            print(response.content, flush=True)
             raise e
         if "data" not in data.keys():
             print(f"No data in response: {response.content}", flush=True)
