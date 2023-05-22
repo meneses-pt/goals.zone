@@ -780,7 +780,7 @@ def find_match(home_team, away_team, to_date, from_date=None):
         suffix_affiliate_away,
         suffix_affiliate_terms,
     )
-    return matches
+    return matches.order_by("-datetime")
 
 
 def process_prefix_suffix(
