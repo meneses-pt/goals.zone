@@ -515,8 +515,8 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 message = ""
                 try:
                     message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
-                    api = get_tweepy_auth(tw)
-                    result = api.create_tweet(text=message)
+                    client = get_tweepy_client(tw)
+                    result = client.create_tweet(text=message)
                     print(f"Successful tweet! Tweets result: {result}", flush=True)
                     is_sent = True
                 except Exception as ex:
@@ -525,7 +525,10 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     time.sleep(1)
                 attempts += 1
             if not is_sent:
-                send_monitoring_message("*Twitter message not sent!*\n" + str(last_exception_str))
+                send_monitoring_message(
+                    "*Twitter message not sent! New code with tweepy client!!!*\n"
+                    + str(last_exception_str)
+                )
             if videogoal is not None:
                 match.last_tweet_time = now
                 match.last_tweet_text = videogoal.title
@@ -541,7 +544,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
         print("Error sending twitter messages: " + str(ex), flush=True)
 
 
-def get_tweepy_auth(tw):
+def get_tweepy_client(tw):
     client = tweepy.Client(
         consumer_key=tw.consumer_key,
         consumer_secret=tw.consumer_secret,
