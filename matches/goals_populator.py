@@ -516,11 +516,8 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 try:
                     message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
                     api = get_tweepy_auth(tw)
-                    result = api.update_status(status=message)
-                    print(
-                        f"Successful tweet! Tweets count: {result.user.statuses_count}",
-                        flush=True,
-                    )
+                    result = api.create_tweet(text=message)
+                    print(f"Successful tweet! Tweets result: {result}", flush=True)
                     is_sent = True
                 except Exception as ex:
                     last_exception_str = str(ex) + "\nMessage: " + message
@@ -545,10 +542,13 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
 
 
 def get_tweepy_auth(tw):
-    auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
-    auth.set_access_token(tw.access_token_key, tw.access_token_secret)
-    api = tweepy.API(auth)
-    return api
+    client = tweepy.Client(
+        consumer_key=tw.consumer_key,
+        consumer_secret=tw.consumer_secret,
+        access_token=tw.access_token_key,
+        access_token_secret=tw.access_token_secret,
+    )
+    return client
 
 
 def send_telegram_message(bot_key, user_id, message, disable_notification=False):

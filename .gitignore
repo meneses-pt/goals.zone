@@ -147,3 +147,4 @@ dmypy.json
 
 #Custom scripts
 _*.sh
+.flakeheaven_cache
