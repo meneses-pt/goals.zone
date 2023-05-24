@@ -525,10 +525,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     time.sleep(1)
                 attempts += 1
             if not is_sent:
-                send_monitoring_message(
-                    "*Twitter message not sent! New code with tweepy client!!!*\n"
-                    + str(last_exception_str)
-                )
+                send_monitoring_message("*Twitter message not sent!!*\n" + str(last_exception_str))
             if videogoal is not None:
                 match.last_tweet_time = now
                 match.last_tweet_text = videogoal.title
