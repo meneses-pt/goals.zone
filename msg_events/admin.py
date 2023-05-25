@@ -43,7 +43,7 @@ class WebhookAdmin(admin.ModelAdmin):
 class CustomMessageAdminForm(forms.ModelForm):
     class Meta:
         model = CustomMessage
-        fields = ["message", "webhooks", "result"]
+        fields = ["message", "webhooks", "tweets", "result"]
         widgets = {
             "message": forms.Textarea(attrs={"cols": 80, "rows": 3}),
             "result": forms.Textarea(attrs={"cols": 80, "rows": 3}),
@@ -51,7 +51,7 @@ class CustomMessageAdminForm(forms.ModelForm):
 
 
 class CustomMessageAdmin(admin.ModelAdmin):
-    filter_horizontal = ["webhooks"]
+    filter_horizontal = ["webhooks", "tweets"]
     form = CustomMessageAdminForm
 
 

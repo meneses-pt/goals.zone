@@ -4,6 +4,7 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from slack_webhook import Slack
 
+from matches.goals_populator import send_tweet_message
 from matches.models import Category, Team, Tournament
 
 
@@ -84,6 +85,9 @@ class CustomMessage(models.Model):
     webhooks = models.ManyToManyField(
         Webhook, related_name="%(class)s_webhooks", default=None, blank=True
     )
+    tweets = models.ManyToManyField(
+        Webhook, related_name="%(class)s_tweets", default=None, blank=True
+    )
     result = models.CharField(max_length=2000, default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -117,4 +121,13 @@ def send_message(_sender, instance, **kwargs):
             except Exception as ex:
                 print("Error sending webhook single message: " + str(ex), flush=True)
                 result += wh.title + "\n" + str(ex) + "\n\n"
+    for tw in instance.tweets.all():
+        if not tw.active:
+            continue
+        try:
+            response = send_tweet_message(tw, instance.message)
+            result += tw.title + "\n" + str(response) + "\n\n"
+        except Exception as ex:
+            print("Error sending tweet single message: " + str(ex), flush=True)
+            result += tw.title + "\n" + str(ex) + "\n\n"
     CustomMessage.objects.filter(id=instance.id).update(result=result)
