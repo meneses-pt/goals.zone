@@ -86,7 +86,7 @@ class CustomMessage(models.Model):
         Webhook, related_name="%(class)s_webhooks", default=None, blank=True
     )
     tweets = models.ManyToManyField(
-        Webhook, related_name="%(class)s_tweets", default=None, blank=True
+        Tweet, related_name="%(class)s_tweets", default=None, blank=True
     )
     result = models.CharField(max_length=2000, default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
