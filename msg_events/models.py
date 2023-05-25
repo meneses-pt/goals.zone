@@ -88,7 +88,7 @@ class CustomMessage(models.Model):
     tweets = models.ManyToManyField(
         Tweet, related_name="%(class)s_tweets", default=None, blank=True
     )
-    result = models.CharField(max_length=2000, default=None, blank=True, null=True)
+    result = models.TextField(default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -96,10 +96,10 @@ class CustomMessage(models.Model):
 
 
 @receiver(m2m_changed, sender=CustomMessage.webhooks.through)
-def send_message(_sender, instance, **kwargs):
+def send_message_webhook(sender, instance, **kwargs):
     if kwargs["action"] != "post_add":
         return
-    result = ""
+    result = instance.result or ""
     for wh in instance.webhooks.all():
         if not wh.active:
             continue
@@ -121,6 +121,14 @@ def send_message(_sender, instance, **kwargs):
             except Exception as ex:
                 print("Error sending webhook single message: " + str(ex), flush=True)
                 result += wh.title + "\n" + str(ex) + "\n\n"
+    CustomMessage.objects.filter(id=instance.id).update(result=result)
+
+
+@receiver(m2m_changed, sender=CustomMessage.tweets.through)
+def send_message_twitter(sender, instance, **kwargs):
+    if kwargs["action"] != "post_add":
+        return
+    result = instance.result or ""
     for tw in instance.tweets.all():
         if not tw.active:
             continue
