@@ -4,8 +4,8 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from slack_webhook import Slack
 
-from matches.goals_populator import send_tweet_message
 from matches.models import Category, Team, Tournament
+from matches.twitter import send_tweet_message
 
 
 class MessageObject(models.Model):

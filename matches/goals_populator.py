@@ -28,6 +28,7 @@ from django.utils import timezone
 from slack_webhook import Slack
 
 from matches.models import AffiliateTerm, Match, PostMatch, Team, VideoGoal, VideoGoalMirror
+from matches.twitter import send_tweet_message
 from monitoring.models import MonitoringAccount
 from msg_events.models import MessageObject, Tweet, Webhook
 from ner.models import NerLog
@@ -537,31 +538,6 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                 match.save()
     except Exception as ex:
         print("Error sending twitter messages: " + str(ex), flush=True)
-
-
-def send_tweet_message(tw, message):
-    return _send_tweet_message_v1(tw, message)
-
-
-def _send_tweet_message_v1(tw, message):
-    auth = tweepy.OAuthHandler(tw.consumer_key, tw.consumer_secret)
-    auth.set_access_token(tw.access_token_key, tw.access_token_secret)
-    api = tweepy.API(auth)
-    result = api.update_status(status=message)
-    print(f"Successful tweet! Tweets count: {result.user.statuses_count}", flush=True)
-    return result
-
-
-def _send_tweet_message_v2(tw, message):
-    client = tweepy.Client(
-        consumer_key=tw.consumer_key,
-        consumer_secret=tw.consumer_secret,
-        access_token=tw.access_token_key,
-        access_token_secret=tw.access_token_secret,
-    )
-    result = client.create_tweet(text=message)
-    print(f"Successful tweet! Tweets result: {result}", flush=True)
-    return result
 
 
 def send_telegram_message(bot_key, user_id, message, disable_notification=False):
