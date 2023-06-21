@@ -17,7 +17,6 @@ from xml.etree import ElementTree as ETree
 
 import markdown as markdown
 import requests
-import tweepy
 from background_task import background
 from background_task.models import CompletedTask, Task
 from discord_webhook import DiscordWebhook
@@ -333,18 +332,18 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
         send_tweet(match, videogoal, videogoal_mirror, event_filter)
         send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
         send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
-    if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
-        match.first_msg_sent = True
-        match.save()
-    if MessageObject.MessageEventType.Video == event_filter and videogoal is not None:
-        videogoal.msg_sent = True
-        videogoal.save()
-    if MessageObject.MessageEventType.Mirror == event_filter and videogoal_mirror is not None:
-        videogoal_mirror.msg_sent = True
-        videogoal_mirror.save()
-    if MessageObject.MessageEventType.MatchHighlights == event_filter and match is not None:
-        match.highlights_msg_sent = True
-        match.save()
+        if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
+            match.first_msg_sent = True
+            match.save()
+        if MessageObject.MessageEventType.Video == event_filter and videogoal is not None:
+            videogoal.msg_sent = True
+            videogoal.save()
+        if MessageObject.MessageEventType.Mirror == event_filter and videogoal_mirror is not None:
+            videogoal_mirror.msg_sent = True
+            videogoal_mirror.save()
+        if MessageObject.MessageEventType.MatchHighlights == event_filter and match is not None:
+            match.highlights_msg_sent = True
+            match.save()
 
 
 def format_event_message(match, videogoal, videogoal_mirror, message):
