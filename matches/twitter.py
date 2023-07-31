@@ -2,7 +2,7 @@ import tweepy
 
 
 def send_tweet_message(tw, message):
-    return _send_tweet_message_v1(tw, message)
+    return _send_tweet_message_v2(tw, message)
 
 
 def _send_tweet_message_v1(tw, message):
