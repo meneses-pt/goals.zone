@@ -26,6 +26,7 @@ from django.db.models import Q
 from django.utils import timezone
 from slack_webhook import Slack
 
+from goals_zone.settings import REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET
 from matches.models import AffiliateTerm, Match, PostMatch, Team, VideoGoal, VideoGoalMirror
 from matches.twitter import send_tweet_message
 from monitoring.models import MonitoringAccount
@@ -37,14 +38,39 @@ executor = ThreadPoolExecutor(max_workers=10)
 
 TWEET_MINUTES_THRESHOLD = 5
 TWEET_SIMILARITY_THRESHOLD = 0.85
-REDDIT_HEADERS = {
-    "Accept": "*/*",
-    "Connection": "keep-alive",
-    "User-Agent": "api:pt.meneses.goals.zone:v1 (by /u/meneses_pt)",
-    "Accept-Language": "en-US;q=0.5,en;q=0.3",
-    "Cache-Control": "max-age=0",
-    "Accept-Encoding": "gzip, deflate, br",
-}
+
+
+class RedditHeaders:
+    __instance = None
+    _expires_at = None
+    _headers = {
+        "Accept": "*/*",
+        "Connection": "keep-alive",
+        "User-Agent": "api:pt.meneses.goals.zone:v1 (by /u/meneses_pt)",
+        "Accept-Language": "en-US;q=0.5,en;q=0.3",
+        "Cache-Control": "max-age=0",
+        "Accept-Encoding": "gzip, deflate, br",
+    }
+
+    def __new__(cls):
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+        return cls.__instance
+
+    def _get_reddit_token(self):
+        response = requests.post(
+            "https://www.reddit.com/api/v1/access_token",
+            data={"grant_type": "client_credentials"},
+            auth=(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET),
+        )
+        self._headers["Authorization"] = "Bearer " + response.json()["access_token"]
+        # 60 seconds threshold for renewing token
+        self._expires_at = timezone.now() + timedelta(seconds=response.json()["expires_in"] - 60)
+
+    def get_headers(self):
+        if self._expires_at is None or self._expires_at < timezone.now():
+            self._get_reddit_token()
+        return self._headers
 
 
 @background(schedule=60)
@@ -207,7 +233,7 @@ def get_auto_moderator_comment_id(main_comments_link):
 def find_mirrors(videogoal):
     try:
         calculate_next_mirrors_check(videogoal)
-        main_comments_link = "https://api.reddit.com" + videogoal.post_match.permalink
+        main_comments_link = "https://oauth.reddit.com" + videogoal.post_match.permalink
         if not videogoal.auto_moderator_comment_id:
             videogoal.auto_moderator_comment_id = get_auto_moderator_comment_id(main_comments_link)
             videogoal.save()
@@ -796,26 +822,29 @@ def process_prefix_suffix(
 
 
 def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
+    headers = RedditHeaders().get_headers()
     response = requests.get(
-        f"https://api.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
-        headers=REDDIT_HEADERS,
+        f"https://oauth.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
+        headers=headers,
     )
     return response
 
 
 def _make_reddit_api_request(link):
-    response = requests.get(link, headers=REDDIT_HEADERS, timeout=5)
+    headers = RedditHeaders().get_headers()
+    response = requests.get(link, headers=headers, timeout=5)
     return response
 
 
 def _fetch_historic_data_from_reddit_api(from_date):
+    headers = RedditHeaders().get_headers()
     after = int(time.mktime(from_date.timetuple()))
     before = int(after + 86400)  # a day
     response = requests.get(
         f"https://api.pushshift.io/reddit/search/submission/"
         f"?subreddit=soccer&sort=desc&sort_type=created_utc"
         f"&after={after}&before={before}&size=1000",
-        headers=REDDIT_HEADERS,
+        headers=headers,
     )
     return response
 

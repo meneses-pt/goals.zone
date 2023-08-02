@@ -36,6 +36,9 @@ EMAIL_PORT = os.environ.get("EMAIL_PORT")
 EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 
+REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID")
+REDDIT_CLIENT_SECRET = os.environ.get("REDDIT_CLIENT_SECRET")
+
 ALLOWED_HOSTS = ["goals.zone", "goals.africa", ".meneses.pt", "127.0.0.1", "localhost"]
 
 CSRF_TRUSTED_ORIGINS = [
