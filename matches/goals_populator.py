@@ -69,6 +69,7 @@ class RedditHeaders:
 
     def get_headers(self):
         if self._expires_at is None or self._expires_at < timezone.now():
+            print(f"Fetching new reddit token! [expires_at: {self._expires_at}]", flush=True)
             self._get_reddit_token()
         return self._headers
 
