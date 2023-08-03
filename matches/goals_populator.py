@@ -24,6 +24,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db.models import Q
 from django.utils import timezone
+from retry import retry
 from slack_webhook import Slack
 
 from goals_zone.settings import REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET
@@ -57,15 +58,21 @@ class RedditHeaders:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
+    @retry(tries=10, delay=1)
     def _get_reddit_token(self):
         response = requests.post(
             "https://www.reddit.com/api/v1/access_token",
             data={"grant_type": "client_credentials"},
             auth=(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET),
         )
-        self._headers["Authorization"] = "Bearer " + response.json()["access_token"]
+        response_json = response.json()
+        print(
+            f"New Reddit Token response! [status_code: {response.status_code}]\n{response_json}",
+            flush=True,
+        )
+        self._headers["Authorization"] = "Bearer " + response_json["access_token"]
         # 60 seconds threshold for renewing token
-        self._expires_at = timezone.now() + timedelta(seconds=response.json()["expires_in"] - 60)
+        self._expires_at = timezone.now() + timedelta(seconds=response_json["expires_in"] - 60)
 
     def get_headers(self):
         if self._expires_at is None or self._expires_at < timezone.now():
