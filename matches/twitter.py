@@ -1,5 +1,7 @@
 import tweepy
 
+from matches.models import TweetSent
+
 
 def send_tweet_message(tw, message):
     return _send_tweet_message_v2(tw, message)
@@ -23,4 +25,5 @@ def _send_tweet_message_v2(tw, message):
     )
     result = client.create_tweet(text=message)
     print(f"Successful tweet! Tweets result: {result}", flush=True)
+    TweetSent.objects.create(text=message, success=True)
     return result

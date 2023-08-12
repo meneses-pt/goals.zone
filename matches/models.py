@@ -325,3 +325,9 @@ class PostMatch(models.Model):
         indexes = [
             models.Index(fields=["permalink"]),
         ]
+
+
+class TweetSent(models.Model):
+    text = models.CharField(max_length=1024)
+    success = models.BooleanField(default=True)
+    sent_at = models.DateTimeField(auto_now=True)

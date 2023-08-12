@@ -28,7 +28,15 @@ from retry import retry
 from slack_webhook import Slack
 
 from goals_zone.settings import REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET
-from matches.models import AffiliateTerm, Match, PostMatch, Team, VideoGoal, VideoGoalMirror
+from matches.models import (
+    AffiliateTerm,
+    Match,
+    PostMatch,
+    Team,
+    TweetSent,
+    VideoGoal,
+    VideoGoalMirror,
+)
 from matches.twitter import send_tweet_message
 from monitoring.models import MonitoringAccount
 from msg_events.models import MessageObject, Tweet, Webhook
@@ -545,10 +553,9 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             is_sent = False
             attempts = 0
             last_exception_str = ""
+            message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
             while not is_sent and attempts < 10:
-                message = ""
                 try:
-                    message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
                     send_tweet_message(tw, message)
                     is_sent = True
                 except Exception as ex:
@@ -557,6 +564,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     time.sleep(1)
                 attempts += 1
             if not is_sent:
+                TweetSent.objects.create(text=message, success=False)
                 send_monitoring_message("*Twitter message not sent!!*\n" + str(last_exception_str))
             if videogoal is not None:
                 match.last_tweet_time = now
