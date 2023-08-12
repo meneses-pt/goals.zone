@@ -486,7 +486,7 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
 def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
         webhooks = Webhook.objects.filter(
-            destination__exact=Webhook.WebhookDestinations.Discord,
+            destination__exact=Webhook.WebhookDestinations.IFTTT,
             event_type=event_filter,
             active=True,
         )
