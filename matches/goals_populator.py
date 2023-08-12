@@ -485,6 +485,37 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
 
 def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter):
     try:
+        print(
+            f"SEND IFTTT LOG: Match {match}\n"
+            f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n"
+            f"| last_tweet_time: {match.last_tweet_time}\n"
+            f"| last_tweet_text: {match.last_tweet_text}",
+            flush=True,
+        )
+        now = timezone.now()
+        if (
+            match.last_tweet_time is not None
+            and match.last_tweet_text is not None
+            and videogoal is not None
+        ):
+            last_tweeted_how_long = now - match.last_tweet_time
+            text_similarity = SequenceMatcher(None, match.last_tweet_text, videogoal.title).ratio()
+            if (
+                last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD)
+                and text_similarity > TWEET_SIMILARITY_THRESHOLD
+            ):
+                print(
+                    f"Last tweet for match {match} send {last_tweeted_how_long} ago "
+                    f"and text similarity = {text_similarity}. Skipping!",
+                    flush=True,
+                )
+                return
+            elif last_tweeted_how_long < timedelta(minutes=TWEET_MINUTES_THRESHOLD):
+                print(
+                    f"Last tweet for match {match} send {last_tweeted_how_long} ago "
+                    f"but text similarity = {text_similarity}. NOT Skipping!",
+                    flush=True,
+                )
         webhooks = Webhook.objects.filter(
             destination__exact=Webhook.WebhookDestinations.IFTTT,
             event_type=event_filter,
@@ -507,6 +538,17 @@ def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
             except Exception as ex:
                 print("Error sending webhook single message: " + str(ex), flush=True)
                 send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
+            if videogoal is not None:
+                match.last_tweet_time = now
+                match.last_tweet_text = videogoal.title
+                print(
+                    f"SEND IFTTT LOG | MATCH SAVE: Match {match}\n"
+                    f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n"
+                    f"| last_tweet_time: {match.last_tweet_time}\n"
+                    f"| last_tweet_text: {match.last_tweet_text}\n\n",
+                    flush=True,
+                )
+                match.save()
     except Exception as ex:
         print("Error sending webhook messages: " + str(ex), flush=True)
         send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
