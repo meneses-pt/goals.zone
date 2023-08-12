@@ -500,7 +500,7 @@ def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
                 continue
             message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
             try:
-                response = requests.post(url=wh.webhook_url, data={"message": message})
+                response = requests.post(url=wh.webhook_url, json={"message": message})
                 print(response, flush=True)
             except Exception as ex:
                 print("Error sending webhook single message: " + str(ex), flush=True)
