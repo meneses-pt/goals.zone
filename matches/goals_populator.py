@@ -534,7 +534,14 @@ def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
                 print("[IFTTT] Sending Message to tweet!", flush=True)
                 response = requests.post(url=wh.webhook_url, json={"message": message})
                 print(f"[IFTTT] Status Code! {response.status_code}", flush=True)
-                print(f"[IFTTT] Response! {response.json()}", flush=True)
+                print(f"[IFTTT] Response! {response.content}", flush=True)
+                if response.status_code >= 300:
+                    send_monitoring_message(
+                        "*IFTTT message not sent!!*\n"
+                        + str(response.status_code)
+                        + "\n"
+                        + str(response.content)
+                    )
             except Exception as ex:
                 print("Error sending webhook single message: " + str(ex), flush=True)
                 send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
