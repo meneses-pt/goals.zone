@@ -374,6 +374,7 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
         send_tweet(match, videogoal, videogoal_mirror, event_filter)
         send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter)
         send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
+        send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
         if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
             match.first_msg_sent = True
             match.save()
@@ -480,6 +481,33 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
                 print("Error sending webhook single message: " + str(ex), flush=True)
     except Exception as ex:
         print("Error sending webhook messages: " + str(ex), flush=True)
+
+
+def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter):
+    try:
+        webhooks = Webhook.objects.filter(
+            destination__exact=Webhook.WebhookDestinations.Discord,
+            event_type=event_filter,
+            active=True,
+        )
+        for wh in webhooks:
+            to_send = (
+                check_conditions(match, wh)
+                and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
+                and check_author(wh, videogoal, videogoal_mirror, event_filter)
+            )
+            if not to_send:
+                continue
+            message = format_event_message(match, videogoal, videogoal_mirror, wh.message)
+            try:
+                response = requests.post(url=wh.webhook_url, data={"message": message})
+                print(response, flush=True)
+            except Exception as ex:
+                print("Error sending webhook single message: " + str(ex), flush=True)
+                send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
+    except Exception as ex:
+        print("Error sending webhook messages: " + str(ex), flush=True)
+        send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
 
 
 def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):

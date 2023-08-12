@@ -66,6 +66,7 @@ class Webhook(MessageObject):
     class WebhookDestinations(models.IntegerChoices):
         Discord = 1, "Discord"
         Slack = 2, "Slack"
+        IFTTT = 3, "IFTTT"
 
     title = models.CharField(max_length=100, unique=True)
     webhook_url = models.CharField(max_length=2000, unique=False)
