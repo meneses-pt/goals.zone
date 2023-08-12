@@ -554,7 +554,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
             attempts = 0
             last_exception_str = ""
             message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
-            while not is_sent and attempts < 10:
+            while not is_sent and attempts < 1:  # Just try one time for now
                 try:
                     send_tweet_message(tw, message)
                     is_sent = True
