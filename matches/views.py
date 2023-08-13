@@ -3,10 +3,12 @@ from itertools import chain
 
 from django.core.paginator import Paginator
 from django.db.models import Count, Q
+from django.http import JsonResponse
+from django.utils.timezone import now
 from django.views import generic
 from rest_framework import generics
 
-from .models import Match, Team
+from .models import Match, Team, VideoGoal
 from .serializers import (
     MatchDetailSerializer,
     MatchSerializer,
@@ -174,3 +176,28 @@ class TeamApiDetailView(generics.RetrieveAPIView):
     serializer_class = TeamDetailSerializer
     queryset = Team.objects.all()
     lookup_field = "slug"
+
+
+def videogoals_per_day(request):
+    # Calculate the date range for the last week
+    today = now().date()
+    last_week = today - timedelta(days=7)
+
+    # Query the Videogoal model and group by created_at date
+    videogoals_per_day_q = (
+        VideoGoal.objects.filter(created_at__gte=last_week)
+        .extra({"day": "date(created_at)"})
+        .values("day")
+        .annotate(count=Count("id"))
+        .order_by("day")
+    )
+
+    # Create a dictionary of dates and their corresponding counts
+    data = {}
+    for videogoal in videogoals_per_day_q:
+        date_day = videogoal["day"].strftime("%Y-%m-%d")
+        count = videogoal["count"]
+        data[date_day] = count
+
+    # Return the data as a JSON response
+    return JsonResponse(data)

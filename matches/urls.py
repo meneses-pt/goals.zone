@@ -1,6 +1,7 @@
-# from django.urls import path
-#
-# from . import views
+from django.urls import path
+
+from . import views
+
 # from .feeds import LatestMatchesFeed, LatestVideosFeed
 
 urlpatterns = [
@@ -23,4 +24,5 @@ urlpatterns = [
     # # RSS
     # path("rss/matches", LatestMatchesFeed()),
     # path("rss/videos", LatestVideosFeed()),
+    path("api/videogoals-per-day/", views.videogoals_per_day, name="videogoals_per_day"),
 ]
