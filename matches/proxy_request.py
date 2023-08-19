@@ -57,7 +57,12 @@ class ProxyRequest:
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
-                    raise Exception("Wrong Status Code: " + str(response.status_code))
+                    raise Exception(
+                        "Wrong Status Code: "
+                        + str(response.status_code)
+                        + "|"
+                        + str(response.content)
+                    )
             except Exception as e:
                 print(
                     f"Exception making ProxyRequest"
