@@ -1,4 +1,5 @@
 import json
+import random
 
 import requests
 from fake_headers import Headers
@@ -41,7 +42,62 @@ class ProxyRequest:
                 and settings.PREMIUM_PROXY
                 and settings.PREMIUM_PROXY != ""
             ):
-                self.current_proxy = settings.PREMIUM_PROXY
+                ports_list = [
+                    12323,
+                    11200,
+                    11201,
+                    11202,
+                    11203,
+                    11204,
+                    11205,
+                    11206,
+                    11207,
+                    11208,
+                    11209,
+                    11210,
+                    11211,
+                    11212,
+                    11213,
+                    11214,
+                    11215,
+                    11216,
+                    11217,
+                    11218,
+                    11219,
+                    11220,
+                    11221,
+                    11222,
+                    11223,
+                    11224,
+                    11225,
+                    11226,
+                    11227,
+                    11228,
+                    11229,
+                    11230,
+                    11231,
+                    11232,
+                    11233,
+                    11234,
+                    11235,
+                    11236,
+                    11237,
+                    11238,
+                    11239,
+                    11240,
+                    11241,
+                    11242,
+                    11243,
+                    11244,
+                    11245,
+                    11246,
+                    11247,
+                    11248,
+                    11249,
+                    11250,
+                ]
+                proxy = settings.PREMIUM_PROXY[:-5] + random.choice(ports_list)
+                self.current_proxy = proxy
             else:
                 self.current_proxy = FreeProxy(rand=True).get()
             try:
