@@ -96,7 +96,7 @@ class ProxyRequest:
                     11249,
                     11250,
                 ]
-                proxy = settings.PREMIUM_PROXY[:-5] + random.choice(ports_list)
+                proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
                 self.current_proxy = proxy
             else:
                 self.current_proxy = FreeProxy(rand=True).get()
