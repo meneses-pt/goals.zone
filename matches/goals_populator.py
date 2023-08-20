@@ -50,7 +50,7 @@ class RedditHeaders:
         "User-Agent": "api:pt.meneses.goals.zone:v1 (by /u/meneses_pt)",
         "Accept-Language": "en-US;q=0.5,en;q=0.3",
         "Cache-Control": "max-age=0",
-        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Encoding": "gzip,deflate,br",
     }
 
     def __new__(cls):

@@ -43,7 +43,9 @@ class ProxyRequest:
                 and settings.PREMIUM_PROXY != ""
             ):
                 ports_list = [
+                    12322,
                     12323,
+                    22323,
                     11200,
                     11201,
                     11202,
@@ -126,7 +128,7 @@ class ProxyRequest:
                     flush=True,
                 )
                 headers = Headers(headers=True).generate()
-                headers["Accept-Encoding"] = "gzip, deflate, br"
+                headers["Accept-Encoding"] = "gzip,deflate,br"
                 pass
         if attempts == max_attempts:
             print(

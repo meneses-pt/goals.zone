@@ -341,7 +341,7 @@ def make_sofascore_request(today_str, proxy=None, inverse=False):
 
 def get_sofascore_headers():
     headers = Headers(headers=True).generate()
-    headers["Accept-Encoding"] = "gzip, deflate, br"
+    headers["Accept-Encoding"] = "gzip,deflate,br"
     headers["Referer"] = "https://www.sofascore.com/"
     return headers
 
