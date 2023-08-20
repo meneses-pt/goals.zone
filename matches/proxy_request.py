@@ -1,6 +1,7 @@
 import json
 import random
 
+import cloudscraper
 import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
@@ -11,6 +12,7 @@ from goals_zone import settings
 class ProxyRequest:
     __instance__ = None
     current_proxy = None
+    scraper = None
 
     def __init__(self):
         """
@@ -20,6 +22,7 @@ class ProxyRequest:
             ProxyRequest.__instance__ = self
         else:
             raise Exception("You cannot create another ProxyRequest class")
+        self.scraper = cloudscraper.create_scraper()
 
     @staticmethod
     def get_instance():
@@ -113,7 +116,7 @@ class ProxyRequest:
                         timeout=timeout,
                     )
                 else:
-                    response = requests.get(url, headers=headers, timeout=timeout)
+                    response = self.scraper.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
                     raise Exception(
                         "Wrong Status Code: "
