@@ -109,7 +109,7 @@ class ProxyRequest:
                 print(f"Proxy {self.current_proxy} | Attempt {attempts + 1}", flush=True)
                 attempts += 1
                 if use_proxy:
-                    response = requests.get(
+                    response = self.scraper.get(
                         url,
                         proxies={"https": f"http://{self.current_proxy}"},
                         headers=headers,
