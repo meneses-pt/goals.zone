@@ -39,6 +39,8 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 REDDIT_CLIENT_ID = os.environ.get("REDDIT_CLIENT_ID")
 REDDIT_CLIENT_SECRET = os.environ.get("REDDIT_CLIENT_SECRET")
 
+CAPSOLVER_API_KEY = os.environ.get("CAPSOLVER_API_KEY")
+
 ALLOWED_HOSTS = ["goals.zone", "goals.africa", ".meneses.pt", "127.0.0.1", "localhost"]
 
 CSRF_TRUSTED_ORIGINS = [

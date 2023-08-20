@@ -6,6 +6,7 @@ from fake_headers import Headers
 from fp.fp import FreeProxy
 
 from goals_zone import settings
+from goals_zone.settings import CAPSOLVER_API_KEY
 
 
 class ProxyRequest:
@@ -21,7 +22,9 @@ class ProxyRequest:
             ProxyRequest.__instance__ = self
         else:
             raise Exception("You cannot create another ProxyRequest class")
-        self.scraper = cloudscraper.create_scraper()
+        self.scraper = cloudscraper.create_scraper(
+            captcha={"provider": "capsolver", "api_key": CAPSOLVER_API_KEY}
+        )
 
     @staticmethod
     def get_instance():
@@ -44,62 +47,10 @@ class ProxyRequest:
                 and settings.PREMIUM_PROXY
                 and settings.PREMIUM_PROXY != ""
             ):
-                ports_list = [
-                    12322,
-                    12323,
-                    22323,
-                    11200,
-                    11201,
-                    11202,
-                    11203,
-                    11204,
-                    11205,
-                    11206,
-                    11207,
-                    11208,
-                    11209,
-                    11210,
-                    11211,
-                    11212,
-                    11213,
-                    11214,
-                    11215,
-                    11216,
-                    11217,
-                    11218,
-                    11219,
-                    11220,
-                    11221,
-                    11222,
-                    11223,
-                    11224,
-                    11225,
-                    11226,
-                    11227,
-                    11228,
-                    11229,
-                    11230,
-                    11231,
-                    11232,
-                    11233,
-                    11234,
-                    11235,
-                    11236,
-                    11237,
-                    11238,
-                    11239,
-                    11240,
-                    11241,
-                    11242,
-                    11243,
-                    11244,
-                    11245,
-                    11246,
-                    11247,
-                    11248,
-                    11249,
-                    11250,
-                ]
+                ports_list = [12322, 12323, 22323]
+                # Ports from 11200 to 11250
+                for i in range(11200, 11251):
+                    ports_list.append(i)
                 proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
                 self.current_proxy = proxy
             else:
