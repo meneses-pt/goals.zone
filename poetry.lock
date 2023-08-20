@@ -749,13 +749,13 @@ files = [
 
 [[package]]
 name = "django4-background-tasks"
-version = "1.2.7"
+version = "1.2.8"
 description = "Database backed asynchronous task queue"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django4-background-tasks-1.2.7.tar.gz", hash = "sha256:7ae7e2e698ef50757b582e1c0964a4b47cd3c162eb487ca59e0ca999625a674c"},
+    {file = "django4-background-tasks-1.2.8.tar.gz", hash = "sha256:0f496c28c3fce4ae21cbb4f3d0f481dc4f64c9b45d39ac86aef4a781d00d37e1"},
 ]
 
 [package.dependencies]
@@ -2889,4 +2889,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "827f84d5191b009249a7834ae88c00bd7132dcf12c0964ed9b939169b822b02d"
+content-hash = "0f5b627b32fb5f5ea465d8024f6ec18c0141038d90752d9da8947b8ed799be7b"
