@@ -10,7 +10,6 @@ from django.db.models.functions import Upper
 from django.urls import reverse
 from django.utils.text import slugify
 
-from matches.matches_populator import get_sofascore_headers
 from matches.proxy_request import ProxyRequest
 from matches.utils import random_string
 
@@ -56,6 +55,8 @@ class Team(models.Model):
             tzinfo=None
         ) - self.logo_updated_at.replace(tzinfo=None) > datetime.timedelta(days=90):
             print(f"Going to update team logo: {self.name} | {self.logo_url}", flush=True)
+            from matches.matches_populator import get_sofascore_headers
+
             headers = get_sofascore_headers()
             response = ProxyRequest.get_instance().make_request(
                 url=self.logo_url, headers=headers, max_attempts=10
