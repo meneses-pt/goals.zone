@@ -109,14 +109,20 @@ class ProxyRequest:
                 print(f"Proxy {self.current_proxy} | Attempt {attempts + 1}", flush=True)
                 attempts += 1
                 if use_proxy:
+                    # response = self.scraper.get(
+                    #    url,
+                    #    proxies={"https": f"http://{self.current_proxy}"},
+                    #    headers=headers,
+                    #    timeout=timeout,
+                    # )
                     response = self.scraper.get(
                         url,
                         proxies={"https": f"http://{self.current_proxy}"},
-                        headers=headers,
                         timeout=timeout,
                     )
                 else:
-                    response = self.scraper.get(url, headers=headers, timeout=timeout)
+                    # response = self.scraper.get(url, headers=headers, timeout=timeout)
+                    response = self.scraper.get(url, timeout=timeout)
                 if response.status_code != 200:
                     raise Exception(
                         "Wrong Status Code: "
