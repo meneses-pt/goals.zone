@@ -319,26 +319,6 @@ def _fetch_data_from_sofascore_api(url, headers):
     return response
 
 
-def make_sofascore_request(today_str, proxy=None, inverse=False):
-    url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}"
-    if inverse:
-        url = (
-            f"https://api.sofascore.com/api/v1/sport/football"
-            f"/scheduled-events/{today_str}/inverse"
-        )
-    headers = get_sofascore_headers()
-    if proxy:
-        response = requests.get(
-            url,
-            proxies={"http": f"http://{proxy}", "https": f"https://{proxy}"},
-            headers=headers,
-            timeout=10,
-        )
-    else:
-        response = requests.get(url, headers=headers, timeout=10)
-    return response
-
-
 def get_sofascore_headers():
     headers = Headers(headers=True).generate()
     headers["Accept-Encoding"] = "gzip,deflate,br"
@@ -352,8 +332,10 @@ def _fetch_sofascore_match_details(event_id):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
+    headers = get_sofascore_headers()
     return ProxyRequest.get_instance().make_request(
-        f"https://api.sofascore.com/mobile/v4" f"/event/{event_id}/details"
+        url=f"https://api.sofascore.com/mobile/v4/event/{event_id}/details",
+        headers=headers,
     )
 
 

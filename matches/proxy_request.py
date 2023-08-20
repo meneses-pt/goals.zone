@@ -2,7 +2,6 @@ import json
 import random
 
 import cloudscraper
-import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
 
@@ -109,20 +108,14 @@ class ProxyRequest:
                 print(f"Proxy {self.current_proxy} | Attempt {attempts + 1}", flush=True)
                 attempts += 1
                 if use_proxy:
-                    # response = self.scraper.get(
-                    #    url,
-                    #    proxies={"https": f"http://{self.current_proxy}"},
-                    #    headers=headers,
-                    #    timeout=timeout,
-                    # )
                     response = self.scraper.get(
                         url,
                         proxies={"https": f"http://{self.current_proxy}"},
+                        headers=headers,
                         timeout=timeout,
                     )
                 else:
-                    # response = self.scraper.get(url, headers=headers, timeout=timeout)
-                    response = self.scraper.get(url, timeout=timeout)
+                    response = self.scraper.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
                     raise Exception(
                         "Wrong Status Code: "
@@ -138,6 +131,7 @@ class ProxyRequest:
                 )
                 headers = Headers(headers=True).generate()
                 headers["Accept-Encoding"] = "gzip,deflate,br"
+                headers["Referer"] = "https://www.sofascore.com/"
                 pass
         if attempts == max_attempts:
             print(
