@@ -122,7 +122,7 @@ class ProxyRequest:
 
     def make_scrapfly_request(self, url, headers):
         api_response = self.scrapfly.scrape(
-            scrape_config=ScrapeConfig(url=url, headers=headers, asp=True, retry=False)
+            scrape_config=ScrapeConfig(url=url, headers=headers, asp=True)
         )
         try:
             upstream_response = api_response.upstream_result_into_response()
