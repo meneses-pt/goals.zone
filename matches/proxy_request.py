@@ -6,6 +6,7 @@ import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
 from requests import Response
+from scrapfly import ScrapeConfig, ScrapflyClient
 
 from goals_zone import settings
 from goals_zone.settings import SCRAPFLY_API_KEY
@@ -24,6 +25,7 @@ class ProxyRequest:
             ProxyRequest.__instance__ = self
         else:
             raise Exception("You cannot create another ProxyRequest class")
+        self.scrapfly = ScrapflyClient(key=SCRAPFLY_API_KEY)
 
     @staticmethod
     def get_instance():
@@ -83,7 +85,7 @@ class ProxyRequest:
                 attempts += 1
                 if use_proxy:
                     if self.current_proxy is None:  # Scrapfly
-                        response = make_scrapfly_request(url, headers, timeout)
+                        response = self.make_scrapfly_request(url, headers)
                     else:
                         response = requests.get(
                             url,
@@ -118,37 +120,68 @@ class ProxyRequest:
             raise Exception("Number of attempts exceeded trying to make request: " + str(url))
         return response
 
+    def make_scrapfly_request(self, url, headers):
+        api_response = self.scrapfly.scrape(
+            scrape_config=ScrapeConfig(url=url, headers=headers, asp=True, retry=False)
+        )
+        try:
+            upstream_response = api_response.upstream_result_into_response()
+        except AttributeError:
+            upstream_response = Response()
+            upstream_response._content = api_response.result["result"]["content"].read()
+            upstream_response.status_code = api_response.upstream_status_code
+        if not upstream_response:
+            raise Exception(
+                "No upstream response: [API] "
+                + str(api_response.status_code)
+                + "|"
+                + str(api_response.content)
+            )
+        if api_response.status_code != 200 or upstream_response.status_code != 200:
+            raise Exception(
+                "Wrong Status Code: [Upstream] "
+                + str(upstream_response.status_code)
+                + "|"
+                + str(upstream_response.content)
+                + "--- [API] "
+                + str(api_response.status_code)
+                + "|"
+                + str(api_response.content)
+            )
+        return upstream_response
 
-def make_scrapfly_request(url, headers, timeout):
-    original_url = quote(url, safe="")
-    headers_str = ""
-    for headers_key in headers:
-        headers_str += (
-            f"&headers[{quote(headers_key, safe='')}]={quote(headers[headers_key], safe='')}"
+    # Use if scrapfly sdk is not working properly
+    @staticmethod
+    def make_scrapfly_request_raw(url, headers, timeout):
+        original_url = quote(url, safe="")
+        headers_str = ""
+        for headers_key in headers:
+            headers_str += (
+                f"&headers[{quote(headers_key, safe='')}]={quote(headers[headers_key], safe='')}"
+            )
+        url = (
+            f"https://api.scrapfly.io/scrape"
+            f"?key={SCRAPFLY_API_KEY}"
+            f"&asp=true"
+            f"&url={original_url}"
         )
-    url = (
-        f"https://api.scrapfly.io/scrape"
-        f"?key={SCRAPFLY_API_KEY}"
-        f"&asp=true"
-        f"&url={original_url}"
-    )
-    url += headers_str
-    response = requests.get(url, headers=headers, timeout=timeout)
-    if response.status_code != 200 or response.json()["result"]["status_code"] != 200:
-        raise Exception(
-            "Wrong Status Code: "
-            + str(response.json()["result"]["status_code"])
-            + "|"
-            + str(response.json()["result"]["content"])
-            + "---"
-            + str(response.status_code)
-            + "|"
-            + str(response.content)
-        )
-    resp = Response()
-    resp_result = response.json()["result"]
-    str_content = resp_result["content"]
-    str_encoding = resp_result["content_encoding"]
-    resp._content = str_content.encode(str_encoding)
-    resp.status_code = resp_result["status_code"]
-    return resp
+        url += headers_str
+        response = requests.get(url, headers=headers, timeout=timeout)
+        if response.status_code != 200 or response.json()["result"]["status_code"] != 200:
+            raise Exception(
+                "Wrong Status Code: [Upstream] "
+                + str(response.json()["result"]["status_code"])
+                + "|"
+                + str(response.json()["result"]["content"])
+                + "--- [API] "
+                + str(response.status_code)
+                + "|"
+                + str(response.content)
+            )
+        resp = Response()
+        resp_result = response.json()["result"]
+        str_content = resp_result["content"]
+        str_encoding = resp_result["content_encoding"]
+        resp._content = str_content.encode(str_encoding)
+        resp.status_code = resp_result["status_code"]
+        return resp
