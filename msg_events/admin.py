@@ -82,6 +82,14 @@ class TweetAdminForm(forms.ModelForm):
 
 
 class TweetAdmin(admin.ModelAdmin):
+    filter_horizontal = [
+        "include_tournaments",
+        "include_categories",
+        "include_teams",
+        "exclude_tournaments",
+        "exclude_categories",
+        "exclude_teams",
+    ]
     form = TweetAdminForm
 
 
