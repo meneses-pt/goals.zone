@@ -44,22 +44,21 @@ class ProxyRequest:
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             # Make one third of the attempts with each strategy
             if use_proxy:
-                # if (
-                #     attempts < (max_attempts / 3)
-                #     and settings.PREMIUM_PROXY
-                #     and settings.PREMIUM_PROXY != ""
-                # ):
-                #     ports_list = [12322, 12323, 22323]
-                #     # Ports from 11200 to 11250
-                #     for i in range(11200, 11251):
-                #         ports_list.append(i)
-                #     proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
-                #     self.current_proxy = proxy
-                # elif attempts < (max_attempts * 2 / 3):
-                #     self.current_proxy = None  # Scrapfly
-                # else:
-                #     self.current_proxy = FreeProxy(rand=True).get()
-                self.current_proxy = None  # Scrapfly
+                if (
+                    attempts < (max_attempts / 3)
+                    and settings.PREMIUM_PROXY
+                    and settings.PREMIUM_PROXY != ""
+                ):
+                    ports_list = [12322, 12323, 22323]
+                    # Ports from 11200 to 11250
+                    for i in range(11200, 11251):
+                        ports_list.append(i)
+                    proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
+                    self.current_proxy = proxy
+                elif attempts < (max_attempts * 2 / 3):
+                    self.current_proxy = None  # Scrapfly
+                else:
+                    self.current_proxy = FreeProxy(rand=True).get()
             try:
                 print(
                     f"Proxy {'Scrapfly' if self.current_proxy is None else self.current_proxy} | "

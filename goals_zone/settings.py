@@ -11,6 +11,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 import os
+import sys
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 from warnings import filterwarnings
@@ -182,12 +183,16 @@ LOGGING = {
     "disable_existing_loggers": False,
     "handlers": {
         "console": {
+            "level": "DEBUG",
             "class": "logging.StreamHandler",
+            "stream": sys.stdout,
+            "formatter": "verbose",
         },
     },
     "root": {
         "handlers": ["console"],
         "level": "DEBUG",
+        "propagate": True,
     },
 }
 
