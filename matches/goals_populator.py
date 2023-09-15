@@ -137,6 +137,7 @@ def _fetch_reddit_goals():
         logger.info(
             f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}"
         )
+        logger.error(f"!!!!!!!!!!!!!!Try error message!!!!!!!!!!!!!!!!")
         response = _fetch_data_from_reddit_api(after, new_posts_to_fetch)
         if response is None or response.content is None:
             print("No response retrieved", flush=True)
