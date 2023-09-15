@@ -193,7 +193,7 @@ LOGGING = {
     },
     "handlers": {
         "console": {
-            "level": "DEBUG",
+            "level": "INFO",
             "class": "logging.StreamHandler",
             "stream": sys.stdout,
             "formatter": "simple",
@@ -201,7 +201,7 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "DEBUG",
+        "level": "INFO",
         "propagate": True,
     },
 }

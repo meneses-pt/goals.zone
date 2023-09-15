@@ -135,16 +135,7 @@ def _fetch_reddit_goals():
             flush=True,
         )
         logger.info(
-            f"LOGGING -> "
-            f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
-        )
-        logger.warning(
-            f"LOGGING -> "
-            f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
-        )
-        logger.error(
-            f"LOGGING -> "
-            f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
+            f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}"
         )
         response = _fetch_data_from_reddit_api(after, new_posts_to_fetch)
         if response is None or response.content is None:
