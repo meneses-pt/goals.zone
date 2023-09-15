@@ -1,6 +1,7 @@
 import concurrent.futures
 import datetime
 import json
+import logging
 import operator
 import os
 import re
@@ -130,6 +131,10 @@ def _fetch_reddit_goals():
         print(
             f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
             flush=True,
+        )
+        logging.info(
+            f"LOGGING -> "
+            f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
         )
         response = _fetch_data_from_reddit_api(after, new_posts_to_fetch)
         if response is None or response.content is None:
