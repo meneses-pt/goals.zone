@@ -198,9 +198,15 @@ LOGGING = {
             "stream": sys.stdout,
             "formatter": "simple",
         },
+        "console_error": {
+            "level": "ERROR",
+            "class": "logging.StreamHandler",
+            "stream": sys.stderr,
+            "formatter": "simple",
+        },
     },
     "root": {
-        "handlers": ["console"],
+        "handlers": ["console", "console_error"],
         "level": "INFO",
         "propagate": True,
     },
