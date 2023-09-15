@@ -111,6 +111,18 @@ def send_reddit_response_heartbeat():
         logger.error(f"Error sending monitoring message: {ex}")
 
 
+def _should_process_post(post):
+    return (
+        post["url"] is not None
+        and post["link_flair_text"] is not None
+        and (post["link_flair_text"].lower() in ["media", "mirror", "great goal"])
+    )
+
+
+def _is_unflaired_post(post):
+    return post["url"] is not None and post["link_flair_text"] is None
+
+
 def _fetch_reddit_goals():
     i = 0
     after = None
@@ -161,19 +173,11 @@ def _fetch_reddit_goals():
         for post in data["data"]["children"]:
             post = post["data"]
             # This if is to evaluate remove filter to flairs
-            if post["url"] is not None and post["link_flair_text"] is None:
+            if _is_unflaired_post(post):
                 logger.info("URL WITH NO FLAIR")
                 logger.info(f"Title: {post['title']}")
                 logger.info(f"URL: {post['url']}")
-            if (
-                post["url"] is not None
-                and post["link_flair_text"] is not None
-                and (
-                    post["link_flair_text"].lower() == "media"
-                    or post["link_flair_text"].lower() == "mirror"
-                    or post["link_flair_text"].lower() == "great goal"
-                )
-            ):
+            if _should_process_post(post):
                 try:
                     post_match = PostMatch.objects.get(permalink=post["permalink"])
                     if post_match.videogoal:
@@ -207,18 +211,13 @@ def _fetch_reddit_goals():
 def calculate_next_mirrors_check(videogoal):
     now = timezone.now()
     created_how_long = now - videogoal.created_at
-    if created_how_long < timedelta(minutes=10):
-        next_mirrors_check = now + datetime.timedelta(minutes=1)
-    elif created_how_long < timedelta(minutes=30):
-        next_mirrors_check = now + datetime.timedelta(minutes=5)
-    elif created_how_long < timedelta(minutes=60):
-        next_mirrors_check = now + datetime.timedelta(minutes=10)
-    elif created_how_long < timedelta(minutes=120):
-        next_mirrors_check = now + datetime.timedelta(minutes=20)
-    elif created_how_long < timedelta(minutes=240):
-        next_mirrors_check = now + datetime.timedelta(minutes=30)
-    else:
-        next_mirrors_check = now + datetime.timedelta(minutes=60)
+    intervals = [10, 30, 60, 120, 240]  # minutes
+    durations = [1, 5, 10, 20, 30, 60]  # minutes
+    next_mirrors_check = now + datetime.timedelta(minutes=durations[-1])
+    for i, interval in enumerate(intervals):
+        if created_how_long < timedelta(minutes=interval):
+            next_mirrors_check = now + datetime.timedelta(minutes=durations[i])
+            break
     videogoal.next_mirrors_check = next_mirrors_check
     videogoal.save()
 
