@@ -115,7 +115,7 @@ def send_message_webhook(sender, instance, **kwargs):
                 result += wh.title + "\n" + str(response.content) + "\n\n"
                 logger.info(response.content)
             except Exception as ex:
-                logger.error("Error sending webhook single message: " + str(ex))
+                logger.error(f"Error sending webhook single message: {ex}")
                 result += wh.title + "\n" + str(ex) + "\n\n"
         elif wh.destination == Webhook.WebhookDestinations.Slack:
             try:
@@ -124,7 +124,7 @@ def send_message_webhook(sender, instance, **kwargs):
                 logger.info(response)
                 result += wh.title + "\n" + str(response) + "\n\n"
             except Exception as ex:
-                logger.error("Error sending webhook single message: " + str(ex))
+                logger.error(f"Error sending webhook single message: {ex}")
                 result += wh.title + "\n" + str(ex) + "\n\n"
     CustomMessage.objects.filter(id=instance.id).update(result=result)
 
@@ -141,6 +141,6 @@ def send_message_twitter(sender, instance, **kwargs):
             response = send_tweet_message(tw, instance.message)
             result += tw.title + "\n" + str(response) + "\n\n"
         except Exception as ex:
-            logger.error("Error sending tweet single message: " + str(ex))
+            logger.error(f"Error sending tweet single message: {ex}")
             result += tw.title + "\n" + str(ex) + "\n\n"
     CustomMessage.objects.filter(id=instance.id).update(result=result)

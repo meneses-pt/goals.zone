@@ -106,7 +106,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     else:
         events = fetch_live()
     end = timeit.default_timer()
-    logger.info(f"{(end - start):.2f} elapsed fetching events\n")
+    logger.info(f"{(end - start):.2f} elapsed fetching events")
     start = timeit.default_timer()
     failed_matches = []
     for match in events:
@@ -119,16 +119,15 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
             process_match(match, raise_exception=True)
         logger.info(f"Finished processing {len(failed_matches)} failed matches!")
     end = timeit.default_timer()
-    logger.info(
-        f"{(end - start):.2f} elapsed processing {len(events)} events\n"
-        f"Going to delete old matches without videos"
-    )
+    logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
+    logger.info("Going to delete old matches without videos")
     delete = (
         Match.objects.annotate(videos_count=Count("videogoal"))
         .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7))
         .delete()
     )
-    logger.info(f"Deleted {delete} old matches without videos\nFinished processing matches\n\n")
+    logger.info(f"Deleted {delete} old matches without videos")
+    logger.info("Finished processing matches")
 
 
 def process_match(fixture, raise_exception=False):
@@ -176,7 +175,7 @@ def process_match(fixture, raise_exception=False):
         match.status = status
         _save_or_update_match(match)
     except Exception as e:
-        logger.error(f"Error processing match [{home_team} - {away_team}]: {e}\n")
+        logger.error(f"Error processing match [{home_team} - {away_team}]: {e}")
         if raise_exception:
             raise e
         return False

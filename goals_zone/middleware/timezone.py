@@ -27,9 +27,9 @@ class TimezoneMiddleware:
                 ip_response = g.city(str(ip))
                 time_zone = ip_response["time_zone"]
             except AddressNotFoundError as e:
-                logger.warning("AddressNotFoundError: %s" % e)
+                logger.warning(f"AddressNotFoundError: {e}")
         except ValueError:
-            logger.warning("address/netmask is invalid: %s" % ip)
+            logger.warning(f"Address/netmask is invalid: {ip}")
         except Exception as e:
             logger.warning(f"IP: {ip}. Exception: {e}")
         if time_zone:

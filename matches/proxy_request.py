@@ -88,18 +88,16 @@ class ProxyRequest:
                         + str(response.content)
                     )
             except Exception as e:
-                logger.info(
+                logger.warning(
                     f"Exception making ProxyRequest"
-                    f" ({attempts}/{max_attempts}): {str(e)}\n{url}\n{json.dumps(headers)}",
+                    f" ({attempts}/{max_attempts}): {str(e)} | {url} | {json.dumps(headers)}",
                 )
                 headers = Headers(headers=True).generate()
                 headers["Accept-Encoding"] = "gzip,deflate,br"
                 headers["Referer"] = "https://www.sofascore.com/"
                 pass
         if attempts == max_attempts:
-            logger.info(
-                "Number of attempts exceeded trying to make request: " + str(url),
-            )
+            logger.info(f"Number of attempts exceeded trying to make request: {url}")
             raise Exception("Number of attempts exceeded trying to make request: " + str(url))
         return response
 

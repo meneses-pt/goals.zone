@@ -70,7 +70,7 @@ class RedditHeaders:
         )
         response_json = response.json()
         logger.info(
-            f"New Reddit Token response! [status_code: {response.status_code}]\n{response_json}"
+            f"New Reddit Token response! [status_code: {response.status_code}] | {response_json}"
         )
         self._headers["Authorization"] = "Bearer " + response_json["access_token"]
         # 60 seconds threshold for renewing token
@@ -98,7 +98,7 @@ def send_heartbeat():
             if ma.goals_heartbeat_url:
                 requests.get(ma.goals_heartbeat_url)
     except Exception as ex:
-        logger.error("Error sending monitoring message: " + str(ex))
+        logger.error(f"Error sending monitoring message: {ex}")
 
 
 def send_reddit_response_heartbeat():
@@ -108,7 +108,7 @@ def send_reddit_response_heartbeat():
             if ma.goals_reddit_heartbeat_url:
                 requests.get(ma.goals_reddit_heartbeat_url)
     except Exception as ex:
-        logger.error("Error sending monitoring message: " + str(ex))
+        logger.error(f"Error sending monitoring message: {ex}")
 
 
 def _fetch_reddit_goals():
@@ -134,23 +134,23 @@ def _fetch_reddit_goals():
             logger.info("No response retrieved")
             continue
         if response.status_code >= 300:
-            logger.info(
-                "####### ERROR from reddit.com! #######\n"
-                "Status Code: {response.status_code}\n"
-                f"{response.content}\n"
-                "ERROR: Finished fetching goals\n\n"
-            )
+            logger.error("####### ERROR from reddit.com! #######")
+            logger.error(f"Status Code: {response.status_code}")
+            logger.error(f"{response.content}")
+            logger.error("ERROR: Finished fetching goals")
             return
         try:
             data = json.loads(response.content)
         except Exception as e:
             tb = traceback.format_exc()
-            logger.error(f"Status Code: {response.status_code}\n{tb}\n{e}\n{response.content}")
+            logger.error(f"Status Code: {response.status_code}")
+            logger.error(f"{tb}")
+            logger.error(f"{e}")
+            logger.error(f"{response.content}")
             raise e
         if "data" not in data.keys():
-            logger.error(
-                f"No data in response: {response.content}\nERROR: Finished fetching goals\n\n"
-            )
+            logger.error(f"No data in response: {response.content}")
+            logger.error("Finished fetching goals")
             return
         results = data["data"]["dist"]
         send_reddit_response_heartbeat()
@@ -162,7 +162,9 @@ def _fetch_reddit_goals():
             post = post["data"]
             # This if is to evaluate remove filter to flairs
             if post["url"] is not None and post["link_flair_text"] is None:
-                logger.info(f"URL WITH NO FLAIR\nTitle: {post['title']}\nURL: {post['url']}")
+                logger.info("URL WITH NO FLAIR")
+                logger.info(f"Title: {post['title']}")
+                logger.info(f"URL: {post['url']}")
             if (
                 post["url"] is not None
                 and post["link_flair_text"] is not None
@@ -190,16 +192,16 @@ def _fetch_reddit_goals():
                     futures.append(future)
         concurrent.futures.wait(futures)
         end = timeit.default_timer()
+        logger.info(f"{results} posts processed")
+        logger.info(f"{new_posts_count} are new posts")
         logger.info(
-            f"{results} posts processed\n"
-            f"{new_posts_count} are new posts\n"
             f"{old_posts_to_check_count}/{results - new_posts_count} "
-            f"are old posts with mirror search\n"
-            f"{(end - start):.2f} elapsed"
+            f"are old posts with mirror search"
         )
+        logger.info(f"{(end - start):.2f} elapsed")
         after = data["data"]["after"]
         i += 1
-    logger.info("Finished fetching goals\n\n")
+    logger.info("Finished fetching goals")
 
 
 def calculate_next_mirrors_check(videogoal):
@@ -231,7 +233,8 @@ def get_auto_moderator_comment_id(main_comments_link):
     ]
     auto_moderator_comment = next(iter(auto_moderator_comments or []), None)
     if len(auto_moderator_comments) > 1:
-        logger.warning(f"WARNING: More than one AutoModerator comment\n{data}")
+        logger.warning("More than one AutoModerator comment")
+        logger.warning(f"{data}")
     return auto_moderator_comment["data"]["id"]
 
 
@@ -259,11 +262,14 @@ def find_mirrors(videogoal):
                         _parse_reply_for_mirrors(reply, videogoal)
             except Exception as e:
                 tb = traceback.format_exc()
-                logger.error(f"{tb}\n{e}\n{children_response.content}")
+                logger.error(f"{tb}")
+                logger.error(f"{e}")
+                logger.error(f"{children_response.content}")
                 return True
         except Exception as e:
             tb = traceback.format_exc()
-            logger.error(f"{tb}\n{e}")
+            logger.error(f"{tb}")
+            logger.error(f"{e}")
             return True
     except Exception as e:
         logger.error(f"An exception as occurred trying to find mirrors. {e}")
@@ -281,7 +287,8 @@ def _parse_reply_for_mirrors(reply, videogoal):
     except Exception as e:
         if "junk after document element" not in str(e):
             tb = traceback.format_exc()
-            logger.error(f"{tb}\n{e}")
+            logger.error(f"{tb}")
+            logger.error(f"{e}")
     else:
         links = doc.findall(".//a")
 
@@ -357,10 +364,10 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
         logger.info(f"SEND MESSAGE LOG: Using Lock [{lock}]")
         match.refresh_from_db()
         logger.info(
-            f"SEND MESSAGE LOG: Match {match}\n"
-            f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n"
-            f"| last_tweet_time: {match.last_tweet_time}\n"
-            f"| last_tweet_text: {match.last_tweet_text}",
+            f"SEND MESSAGE LOG: Match {match} | "
+            f"videogoal: {videogoal.id if videogoal else None} => {videogoal} | "
+            f"last_tweet_time: {match.last_tweet_time} | "
+            f"last_tweet_text: {match.last_tweet_text}",
         )
         now = timezone.now()
         if (
@@ -392,10 +399,10 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
             match.last_tweet_time = now
             match.last_tweet_text = videogoal.title
             logger.info(
-                f"SEND MESSAGE LOG | MATCH SAVE: Match {match}\n"
-                f"| videogoal: {videogoal.id if videogoal else None} => {videogoal}\n"
-                f"| last_tweet_time: {match.last_tweet_time}\n"
-                f"| last_tweet_text: {match.last_tweet_text}\n\n",
+                f"SEND MESSAGE LOG | MATCH SAVE: Match {match} | "
+                f"videogoal: {videogoal.id if videogoal else None} => {videogoal} | "
+                f"last_tweet_time: {match.last_tweet_time} | "
+                f"last_tweet_text: {match.last_tweet_text}",
             )
             match.save()
         if MessageObject.MessageEventType.MatchFirstVideo == event_filter and match is not None:
@@ -475,9 +482,9 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
                 response = slack.post(text=message)
                 logger.info(response)
             except Exception as ex:
-                logger.error("Error sending webhook single message: " + str(ex))
+                logger.error(f"Error sending webhook single message: {ex}")
     except Exception as ex:
-        logger.error("Error sending webhook messages: " + str(ex))
+        logger.error(f"Error sending webhook messages: {ex}")
 
 
 def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter):
@@ -501,9 +508,9 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
                 response = webhook.execute()
                 logger.info(response)
             except Exception as ex:
-                logger.error("Error sending webhook single message: " + str(ex))
+                logger.error(f"Error sending webhook single message: {ex}")
     except Exception as ex:
-        logger.error("Error sending webhook messages: " + str(ex))
+        logger.error(f"Error sending webhook messages: {ex}")
 
 
 def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter):
@@ -526,7 +533,7 @@ def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
                 logger.info("[IFTTT] Sending Message to tweet!")
                 response = requests.post(url=wh.webhook_url, json={"message": message})
                 logger.info(
-                    f"[IFTTT] Status Code: {response.status_code}\n"
+                    f"[IFTTT] Status Code: {response.status_code} | "
                     f"[IFTTT] Response! {response.content}"
                 )
                 if response.status_code >= 300:
