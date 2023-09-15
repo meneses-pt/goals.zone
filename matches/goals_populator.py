@@ -41,6 +41,8 @@ executor = ThreadPoolExecutor(max_workers=10)
 TWEET_MINUTES_THRESHOLD = 5
 TWEET_SIMILARITY_THRESHOLD = 0.85
 
+logger = logging.getLogger(__name__)
+
 
 class RedditHeaders:
     __instance = None
@@ -132,7 +134,7 @@ def _fetch_reddit_goals():
             f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
             flush=True,
         )
-        logging.info(
+        logger.info(
             f"LOGGING -> "
             f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}",
         )
