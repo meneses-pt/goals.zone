@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 import random
 import re
 import string
@@ -8,6 +9,8 @@ import requests
 from django.utils import timezone
 from fake_headers import Headers
 from lxml.html import fromstring
+
+logger = logging.getLogger(__name__)
 
 
 def random_string(length):
@@ -20,7 +23,7 @@ def localize_date(date):
         current_timezone = timezone.get_current_timezone()
         date = current_timezone.localize(date)
     except Exception as e:
-        print(f"Exception localizing date ({e})", flush=True)
+        logger.error(f"Exception localizing date ({e})")
     return date
 
 
@@ -29,7 +32,7 @@ def get_proxies_sslproxies():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f"Connection error getting proxies ({url})", flush=True)
+        logger.warning(f"Connection error getting proxies ({url})")
         return list()
     try:
         parser = fromstring(response.text)
@@ -40,7 +43,7 @@ def get_proxies_sslproxies():
                 proxy = ":".join([i.xpath(".//td[1]/text()")[0], i.xpath(".//td[2]/text()")[0]])
                 proxies.append(proxy)
     except Exception as e:
-        print(f"Error getting proxies ({url}): {e}", flush=True)
+        logger.warning(f"Error getting proxies ({url}): {e}")
         return list()
     return proxies
 
@@ -52,7 +55,7 @@ def get_proxies_freeproxycz():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f"Connection error getting proxies ({url})", flush=True)
+        logger.warning(f"Connection error getting proxies ({url})")
         return list()
     try:
         parser = fromstring(response.text)
@@ -69,7 +72,7 @@ def get_proxies_freeproxycz():
                 proxy = ":".join([ip, port])
                 proxies.append(proxy)
     except Exception as e:
-        print(f"Error getting proxies ({url}): {e}", flush=True)
+        logger.warning(f"Error getting proxies ({url}): {e}")
         return list()
     return proxies
 
@@ -84,12 +87,12 @@ def get_proxies_proxyscrape():
     try:
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
-        print(f"Connection error getting proxies ({url})", flush=True)
+        logger.warning(f"Connection error getting proxies ({url})")
         return list()
     try:
         proxies = response.text.splitlines()[:20]
     except Exception as e:
-        print(f"Error getting proxies ({url}): {e}", flush=True)
+        logger.warning(f"Error getting proxies ({url}): {e}")
         return list()
     return proxies
 
@@ -99,7 +102,7 @@ def get_proxies_proxylist():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f"Connection error getting proxies ({url})", flush=True)
+        logger.warning(f"Connection error getting proxies ({url})")
         return list()
     try:
         proxies = list()
@@ -107,7 +110,7 @@ def get_proxies_proxylist():
         for p in res[0]["LISTA"]:
             proxies.append(":".join([p["IP"], p["PORT"]]))
     except Exception as e:
-        print(f"Error getting proxies ({url}): {e}", flush=True)
+        logger.warning(f"Error getting proxies ({url}): {e}")
         return list()
     return proxies[:20]
 
@@ -117,7 +120,7 @@ def get_proxies_proxynova():
     try:
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
-        print(f"Connection error getting proxies ({url})", flush=True)
+        logger.warning(f"Connection error getting proxies ({url})")
         return list()
     try:
         parser = fromstring(response.text)
@@ -139,7 +142,7 @@ def get_proxies_proxynova():
             )
             proxies.append(proxy)
     except Exception as e:
-        print(f"Error getting proxies ({url}): {e}", flush=True)
+        logger.warning(f"Error getting proxies ({url}): {e}")
         return list()
     return proxies
 

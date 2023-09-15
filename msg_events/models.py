@@ -1,3 +1,5 @@
+import logging
+
 from discord_webhook import DiscordWebhook
 from django.db import models
 from django.db.models.signals import m2m_changed
@@ -6,6 +8,8 @@ from slack_webhook import Slack
 
 from matches.models import Category, Team, Tournament
 from matches.twitter import send_tweet_message
+
+logger = logging.getLogger(__name__)
 
 
 class MessageObject(models.Model):
@@ -109,18 +113,18 @@ def send_message_webhook(sender, instance, **kwargs):
                 webhook = DiscordWebhook(url=wh.webhook_url, content=instance.message)
                 response = webhook.execute()
                 result += wh.title + "\n" + str(response.content) + "\n\n"
-                print(response.content, flush=True)
+                logger.info(response.content)
             except Exception as ex:
-                print("Error sending webhook single message: " + str(ex), flush=True)
+                logger.error("Error sending webhook single message: " + str(ex))
                 result += wh.title + "\n" + str(ex) + "\n\n"
         elif wh.destination == Webhook.WebhookDestinations.Slack:
             try:
                 slack = Slack(url=wh.webhook_url)
                 response = slack.post(text=instance.message)
-                print(response, flush=True)
+                logger.info(response)
                 result += wh.title + "\n" + str(response) + "\n\n"
             except Exception as ex:
-                print("Error sending webhook single message: " + str(ex), flush=True)
+                logger.error("Error sending webhook single message: " + str(ex))
                 result += wh.title + "\n" + str(ex) + "\n\n"
     CustomMessage.objects.filter(id=instance.id).update(result=result)
 
@@ -137,6 +141,6 @@ def send_message_twitter(sender, instance, **kwargs):
             response = send_tweet_message(tw, instance.message)
             result += tw.title + "\n" + str(response) + "\n\n"
         except Exception as ex:
-            print("Error sending tweet single message: " + str(ex), flush=True)
+            logger.error("Error sending tweet single message: " + str(ex))
             result += tw.title + "\n" + str(ex) + "\n\n"
     CustomMessage.objects.filter(id=instance.id).update(result=result)

@@ -1,9 +1,12 @@
 import ipaddress
+import logging
 
 import pytz
 from django.contrib.gis.geoip2 import GeoIP2
 from django.utils import timezone
 from geoip2.errors import AddressNotFoundError
+
+logger = logging.getLogger(__name__)
 
 
 class TimezoneMiddleware:
@@ -24,11 +27,11 @@ class TimezoneMiddleware:
                 ip_response = g.city(str(ip))
                 time_zone = ip_response["time_zone"]
             except AddressNotFoundError as e:
-                print("AddressNotFoundError: %s" % e)
+                logger.warning("AddressNotFoundError: %s" % e)
         except ValueError:
-            print("address/netmask is invalid: %s" % ip)
+            logger.warning("address/netmask is invalid: %s" % ip)
         except Exception as e:
-            print(f"IP: {ip}. Exception: {e}")
+            logger.warning(f"IP: {ip}. Exception: {e}")
         if time_zone:
             timezone_object = pytz.timezone(time_zone)
             timezone.activate(timezone_object)

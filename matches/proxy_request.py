@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 from urllib.parse import quote
 
@@ -10,6 +11,8 @@ from scrapfly import ScrapeConfig, ScrapflyClient
 
 from goals_zone import settings
 from goals_zone.settings import SCRAPFLY_API_KEY
+
+logger = logging.getLogger(__name__)
 
 
 class ProxyRequest:
@@ -60,10 +63,9 @@ class ProxyRequest:
                 else:
                     self.current_proxy = FreeProxy(rand=True).get()
             try:
-                print(
+                logger.info(
                     f"Proxy {'Scrapfly' if self.current_proxy is None else self.current_proxy} | "
                     f"Attempt {attempts + 1}",
-                    flush=True,
                 )
                 attempts += 1
                 if use_proxy:
@@ -86,19 +88,17 @@ class ProxyRequest:
                         + str(response.content)
                     )
             except Exception as e:
-                print(
+                logger.info(
                     f"Exception making ProxyRequest"
                     f" ({attempts}/{max_attempts}): {str(e)}\n{url}\n{json.dumps(headers)}",
-                    flush=True,
                 )
                 headers = Headers(headers=True).generate()
                 headers["Accept-Encoding"] = "gzip,deflate,br"
                 headers["Referer"] = "https://www.sofascore.com/"
                 pass
         if attempts == max_attempts:
-            print(
+            logger.info(
                 "Number of attempts exceeded trying to make request: " + str(url),
-                flush=True,
             )
             raise Exception("Number of attempts exceeded trying to make request: " + str(url))
         return response

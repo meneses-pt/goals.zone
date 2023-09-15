@@ -1,4 +1,5 @@
 import datetime
+import logging
 import os
 import re
 from io import BytesIO
@@ -12,6 +13,8 @@ from django.utils.text import slugify
 
 from matches.proxy_request import ProxyRequest
 from matches.utils import random_string
+
+logger = logging.getLogger(__name__)
 
 
 class Team(models.Model):
@@ -54,7 +57,7 @@ class Team(models.Model):
         if (self.logo_url and not self.logo_file) or datetime.datetime.now().replace(
             tzinfo=None
         ) - self.logo_updated_at.replace(tzinfo=None) > datetime.timedelta(days=90):
-            print(f"Going to update team logo: {self.name} | {self.logo_url}", flush=True)
+            logger.info(f"Going to update team logo: {self.name} | {self.logo_url}")
             from matches.matches_populator import get_sofascore_headers
 
             headers = get_sofascore_headers()
@@ -268,7 +271,7 @@ class VideoGoal(models.Model):
             try:
                 int_value = int(self.minute)
             except ValueError:
-                print("Not a valid minute", flush=True)
+                logger.debug("Not a valid minute")
         return int_value
 
     @property

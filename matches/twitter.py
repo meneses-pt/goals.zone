@@ -1,4 +1,8 @@
+import logging
+
 import tweepy
+
+logger = logging.getLogger(__name__)
 
 
 def send_tweet_message(tw, message):
@@ -10,7 +14,7 @@ def _send_tweet_message_v1(tw, message):
     auth.set_access_token(tw.access_token_key, tw.access_token_secret)
     api = tweepy.API(auth)
     result = api.update_status(status=message)
-    print(f"Successful tweet! Tweets count: {result.user.statuses_count}", flush=True)
+    logger.info(f"Successful tweet! Tweets count: {result.user.statuses_count}")
     return result
 
 
@@ -22,5 +26,5 @@ def _send_tweet_message_v2(tw, message):
         access_token_secret=tw.access_token_secret,
     )
     result = client.create_tweet(text=message)
-    print(f"Successful tweet! Tweets result: {result}", flush=True)
+    logger.info(f"Successful tweet! Tweets result: {result}")
     return result

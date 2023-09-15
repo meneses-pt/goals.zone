@@ -1,4 +1,5 @@
 import json
+import logging
 import timeit
 from datetime import date, datetime, timedelta
 from json import JSONDecodeError
@@ -15,14 +16,13 @@ from .goals_populator import _handle_messages_to_send
 from .models import Category, Match, Season, Team, Tournament
 from .proxy_request import ProxyRequest
 
+logger = logging.getLogger(__name__)
+
 
 @background(schedule=60 * 5)
 def fetch_new_matches():
     current = Task.objects.filter(task_name="matches.matches_populator.fetch_new_matches").first()
-    print(
-        f"Now: {datetime.now()} | Task: {current.id} | Fetching new matches...",
-        flush=True,
-    )
+    logger.info(f"Now: {datetime.now()} | Task: {current.id} | Fetching new matches...")
     fetch_matches_from_sofascore()
     send_heartbeat()
 
@@ -34,59 +34,59 @@ def send_heartbeat():
             if ma.matches_heartbeat_url:
                 requests.get(ma.matches_heartbeat_url)
     except Exception as ex:
-        print("Error sending monitoring message: " + str(ex), flush=True)
+        logger.error(f"Error sending monitoring message: {ex}")
 
 
 def try_load_json_content(content):
     try:
         data = json.loads(content)
     except JSONDecodeError as e:
-        print(f"Error decoding JSON content: [{content}]", flush=True)
+        logger.error(f"Error decoding JSON content: [{content}]")
         raise e
     return data
 
 
 def fetch_full_days(days_ago, days_amount, inverse=True):
-    print(f"Fetching full days events! Inverse?: {inverse}", flush=True)
+    logger.info(f"Fetching full days events! Inverse?: {inverse}")
     events = []
     start_date = date.today() - timedelta(days=days_ago)
     for single_date in (start_date + timedelta(n) for n in range(days_ago + days_amount)):
-        print(f"Fetching day {single_date}", flush=True)
+        logger.info(f"Fetching day {single_date}")
         url, headers = _fetch_full_scan_url(single_date)
         response = _fetch_data_from_sofascore_api(url, headers)
         if response is None or response.content is None:
-            print("No response retrieved", flush=True)
+            logger.warning("No response retrieved")
             continue
         content = response.content
         data = try_load_json_content(content)
         events += data["events"]
-        print(f'Fetched {len(data["events"])} events!', flush=True)
+        logger.info(f'Fetched {len(data["events"])} events!')
         if inverse:
             url, headers = _fetch_full_scan_url(single_date, inverse=True)
             inverse_response = _fetch_data_from_sofascore_api(url, headers)
             if inverse_response is None or inverse_response.content is None:
-                print("No response retrieved from inverse", flush=True)
+                logger.warning("No response retrieved from inverse")
             else:
                 inverse_content = inverse_response.content
                 inverse_data = json.loads(inverse_content)
-                print(f'Fetched {len(inverse_data["events"])} inverse events!', flush=True)
+                logger.info(f'Fetched {len(inverse_data["events"])} inverse events!')
                 events += inverse_data["events"]
-            print(f"Finished fetching day {single_date}", flush=True)
-    print(f"Fetched {len(events)} total events! Inverse?: {inverse}", flush=True)
+            logger.info(f"Finished fetching day {single_date}")
+    logger.info(f"Fetched {len(events)} total events! Inverse?: {inverse}")
     return events
 
 
 def fetch_live():
-    print("Fetching LIVE events!", flush=True)
+    logger.info("Fetching LIVE events!")
     url, headers = _fetch_live_url()
     response = _fetch_data_from_sofascore_api(url, headers)
     if response is None or response.content is None:
-        print("No response retrieved", flush=True)
+        logger.warning("No response retrieved")
         return []
     content = response.content
     data = try_load_json_content(content)
     events = data["events"]
-    print(f"Fetched {len(events)} LIVE events!", flush=True)
+    logger.info(f"Fetched {len(events)} LIVE events!")
     return events
 
 
@@ -106,7 +106,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     else:
         events = fetch_live()
     end = timeit.default_timer()
-    print(f"{(end - start):.2f} elapsed fetching events\n", flush=True)
+    logger.info(f"{(end - start):.2f} elapsed fetching events\n")
     start = timeit.default_timer()
     failed_matches = []
     for match in events:
@@ -114,20 +114,21 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         if not success:
             failed_matches.append(match)
     if len(failed_matches) > 0:
-        print(f"Start processing {len(failed_matches)} failed matches...", flush=True)
+        logger.info(f"Start processing {len(failed_matches)} failed matches...")
         for match in failed_matches:
             process_match(match, raise_exception=True)
-        print(f"Finished processing {len(failed_matches)} failed matches!", flush=True)
+        logger.info(f"Finished processing {len(failed_matches)} failed matches!")
     end = timeit.default_timer()
-    print(f"{(end - start):.2f} elapsed processing {len(events)} events\n", flush=True)
-    print("Going to delete old matches without videos", flush=True)
+    logger.info(
+        f"{(end - start):.2f} elapsed processing {len(events)} events\n"
+        f"Going to delete old matches without videos"
+    )
     delete = (
         Match.objects.annotate(videos_count=Count("videogoal"))
         .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7))
         .delete()
     )
-    print(f"Deleted {delete} old matches without videos", flush=True)
-    print("Finished processing matches\n\n", flush=True)
+    logger.info(f"Deleted {delete} old matches without videos\nFinished processing matches\n\n")
 
 
 def process_match(fixture, raise_exception=False):
@@ -150,7 +151,7 @@ def process_match(fixture, raise_exception=False):
             or datetime.now().replace(tzinfo=None) - away_team.updated_at.replace(tzinfo=None)
             > timedelta(days=30)
         ):
-            print("Going to fetch match details (update team code)", flush=True)
+            logger.info("Going to fetch match details (update team code)")
             match_details_response = _fetch_sofascore_match_details(fixture["id"])
             get_team_name_code(home_team, match_details_response, "homeTeam")
             get_team_name_code(away_team, match_details_response, "awayTeam")
@@ -163,7 +164,7 @@ def process_match(fixture, raise_exception=False):
         start_timestamp = fixture["startTimestamp"]
         status = fixture["status"]["type"]
         match_datetime = datetime.fromtimestamp(start_timestamp)
-        print(f"{home_team} - {away_team} | {score} at {match_datetime}", flush=True)
+        logger.info(f"{home_team} - {away_team} | {score} at {match_datetime}")
         match = Match()
         match.home_team = home_team
         match.away_team = away_team
@@ -175,7 +176,7 @@ def process_match(fixture, raise_exception=False):
         match.status = status
         _save_or_update_match(match)
     except Exception as e:
-        print(f"Error processing match [{home_team} - {away_team}]: {e}\n", flush=True)
+        logger.error(f"Error processing match [{home_team} - {away_team}]: {e}\n")
         if raise_exception:
             raise e
         return False
@@ -203,14 +204,14 @@ def get_team_name_code(team, response, team_tag):
                 name_code = team_data["nameCode"]
             except Exception as e:
                 name_code = ""
-                print(e, flush=True)
+                logger.error(e)
             if team.name_code is None or name_code != "":
                 team.name_code = name_code
             team.name = team_data["name"]
             team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_data['id']}/image"
             team.save()
     except Exception as e:
-        print(e, flush=True)
+        logger.error(e)
 
 
 def _get_or_create_home_team_sofascore(fixture):
@@ -243,7 +244,7 @@ def _get_or_create_tournament_sofascore(tournament, category):
         tournament_obj.save()
         return tournament_obj
     except Exception as e:
-        print("An exception as occurred getting or creating tournament", e, flush=True)
+        logger.error(f"An exception as occurred getting or creating tournament: {e}")
         return None
 
 
@@ -264,7 +265,7 @@ def _get_or_create_category_sofascore(category):
         category_obj.save()
         return category_obj
     except Exception as e:
-        print("An exception as occurred getting or creating category", e, flush=True)
+        logger.error(f"An exception as occurred getting or creating category: {e}")
         return None
 
 
@@ -283,7 +284,7 @@ def _get_or_create_season_sofascore(season):
         season_obj.save()
         return season_obj
     except Exception as e:
-        print("An exception as occurred getting or creating season", e, flush=True)
+        logger.error(f"An exception as occurred getting or creating season: {e}")
         return None
 
 
