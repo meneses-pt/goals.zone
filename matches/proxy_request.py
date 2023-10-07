@@ -45,6 +45,7 @@ class ProxyRequest:
         response = None
         attempts = 0
         scrapfly_attempts = 0
+        exception_messages = ""
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             # Make one third of the attempts with each strategy
             if use_proxy:
@@ -92,6 +93,7 @@ class ProxyRequest:
                         + str(response.content)
                     )
             except Exception as ex:
+                exception_messages += str(ex) + "\n"
                 logger.warning(
                     f"Exception making ProxyRequest"
                     f" ({attempts}/{max_attempts}): {str(ex)} | {url} | {json.dumps(headers)}",
@@ -102,7 +104,12 @@ class ProxyRequest:
                 pass
         if attempts == max_attempts:
             logger.info(f"Number of attempts exceeded trying to make request: {url}")
-            raise Exception("Number of attempts exceeded trying to make request: " + str(url))
+            raise Exception(
+                "Number of attempts exceeded trying to make request: "
+                + str(url)
+                + "\n"
+                + exception_messages
+            )
         return response
 
     def make_scrapfly_request(self, url, headers):
