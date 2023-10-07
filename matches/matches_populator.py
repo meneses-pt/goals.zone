@@ -63,7 +63,7 @@ def fetch_full_days(days_ago, days_amount, inverse=True):
         logger.info(f'Fetched {len(data["events"])} events!')
         if inverse:
             url, headers = _fetch_full_scan_url(single_date, inverse=True)
-            inverse_response = _fetch_data_from_sofascore_api(url, headers)
+            inverse_response = _fetch_data_from_sofascore_api(url, headers, max_attempts=5)
             if inverse_response is None or inverse_response.content is None:
                 logger.warning("No response retrieved from inverse")
             else:
@@ -306,12 +306,14 @@ def _fetch_live_url():
 
 
 # noinspection PyBroadException
-def _fetch_data_from_sofascore_api(url, headers):
+def _fetch_data_from_sofascore_api(url, headers, max_attempts=50):
     r"""
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=20)
+    response = ProxyRequest.get_instance().make_request(
+        url=url, headers=headers, max_attempts=max_attempts
+    )
     if not response:
         response = ProxyRequest.get_instance().make_request(
             url=url, headers=headers, max_attempts=1, use_proxy=False

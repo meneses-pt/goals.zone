@@ -44,6 +44,7 @@ class ProxyRequest:
             headers = {}
         response = None
         attempts = 0
+        scrapfly_attempts = 0
         while (response is None or response.status_code != 200) and attempts < max_attempts:
             # Make one third of the attempts with each strategy
             if use_proxy:
@@ -58,8 +59,11 @@ class ProxyRequest:
                         ports_list.append(i)
                     proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
                     self.current_proxy = proxy
-                elif attempts < (max_attempts * 2 / 3):
+                elif attempts < (max_attempts * 2 / 3) and scrapfly_attempts < 3:
+                    # Use Scrapfly. Scrpfly does various attempts that can take almost
+                    # 3 minutes each, so we will only allow 3 scrapfly attempts
                     self.current_proxy = None  # Scrapfly
+                    scrapfly_attempts += 1
                 else:
                     self.current_proxy = FreeProxy(rand=True).get()
             try:
