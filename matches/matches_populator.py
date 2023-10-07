@@ -311,7 +311,7 @@ def _fetch_data_from_sofascore_api(url, headers):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=50)
+    response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=20)
     if not response:
         response = ProxyRequest.get_instance().make_request(
             url=url, headers=headers, max_attempts=1, use_proxy=False
