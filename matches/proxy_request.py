@@ -91,10 +91,10 @@ class ProxyRequest:
                         + "|"
                         + str(response.content)
                     )
-            except Exception as e:
+            except Exception as ex:
                 logger.warning(
                     f"Exception making ProxyRequest"
-                    f" ({attempts}/{max_attempts}): {str(e)} | {url} | {json.dumps(headers)}",
+                    f" ({attempts}/{max_attempts}): {str(ex)} | {url} | {json.dumps(headers)}",
                 )
                 headers = Headers(headers=True).generate()
                 headers["Accept-Encoding"] = "gzip,deflate,br"

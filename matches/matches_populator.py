@@ -12,7 +12,7 @@ from fake_headers import Headers
 
 from monitoring.models import MonitoringAccount
 
-from .goals_populator import _handle_messages_to_send
+from .goals_populator import _handle_messages_to_send, send_monitoring_message
 from .models import Category, Match, Season, Team, Tournament
 from .proxy_request import ProxyRequest
 
@@ -62,16 +62,20 @@ def fetch_full_days(days_ago, days_amount, inverse=True):
         events += data["events"]
         logger.info(f'Fetched {len(data["events"])} events!')
         if inverse:
-            url, headers = _fetch_full_scan_url(single_date, inverse=True)
-            inverse_response = _fetch_data_from_sofascore_api(url, headers, max_attempts=5)
-            if inverse_response is None or inverse_response.content is None:
-                logger.warning("No response retrieved from inverse")
-            else:
-                inverse_content = inverse_response.content
-                inverse_data = json.loads(inverse_content)
-                logger.info(f'Fetched {len(inverse_data["events"])} inverse events!')
-                events += inverse_data["events"]
-            logger.info(f"Finished fetching day {single_date}")
+            try:
+                url, headers = _fetch_full_scan_url(single_date, inverse=True)
+                inverse_response = _fetch_data_from_sofascore_api(url, headers, max_attempts=10)
+                if inverse_response is None or inverse_response.content is None:
+                    logger.warning("No response retrieved from inverse")
+                else:
+                    inverse_content = inverse_response.content
+                    inverse_data = json.loads(inverse_content)
+                    logger.info(f'Fetched {len(inverse_data["events"])} inverse events!')
+                    events += inverse_data["events"]
+                logger.info(f"Finished fetching day {single_date}")
+            except Exception as ex:
+                logger.error(f"Error fetching inverse events: {ex}")
+                send_monitoring_message("*Error fetching inverse events!!*\n" + str(ex))
     logger.info(f"Fetched {len(events)} total events! Inverse?: {inverse}")
     return events
 
@@ -174,10 +178,10 @@ def process_match(fixture, raise_exception=False):
         match.season = season_obj
         match.status = status
         _save_or_update_match(match)
-    except Exception as e:
-        logger.error(f"Error processing match [{home_team} - {away_team}]: {e}")
+    except Exception as ex:
+        logger.error(f"Error processing match [{home_team} - {away_team}]: {ex}")
         if raise_exception:
-            raise e
+            raise ex
         return False
     return True
 
@@ -201,16 +205,16 @@ def get_team_name_code(team, response, team_tag):
             team_data = data["game"]["tournaments"][0]["events"][0][team_tag]
             try:
                 name_code = team_data["nameCode"]
-            except Exception as e:
+            except Exception as ex:
                 name_code = ""
-                logger.error(e)
+                logger.error(ex)
             if team.name_code is None or name_code != "":
                 team.name_code = name_code
             team.name = team_data["name"]
             team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_data['id']}/image"
             team.save()
-    except Exception as e:
-        logger.error(e)
+    except Exception as ex:
+        logger.error(ex)
 
 
 def _get_or_create_home_team_sofascore(fixture):
@@ -242,8 +246,8 @@ def _get_or_create_tournament_sofascore(tournament, category):
         tournament_obj.category = category
         tournament_obj.save()
         return tournament_obj
-    except Exception as e:
-        logger.error(f"An exception as occurred getting or creating tournament: {e}")
+    except Exception as ex:
+        logger.error(f"An exception as occurred getting or creating tournament: {ex}")
         return None
 
 
@@ -263,8 +267,8 @@ def _get_or_create_category_sofascore(category):
             category_obj.flag = category["flag"]
         category_obj.save()
         return category_obj
-    except Exception as e:
-        logger.error(f"An exception as occurred getting or creating category: {e}")
+    except Exception as ex:
+        logger.error(f"An exception as occurred getting or creating category: {ex}")
         return None
 
 
@@ -282,8 +286,8 @@ def _get_or_create_season_sofascore(season):
             season_obj.year = season["year"]
         season_obj.save()
         return season_obj
-    except Exception as e:
-        logger.error(f"An exception as occurred getting or creating season: {e}")
+    except Exception as ex:
+        logger.error(f"An exception as occurred getting or creating season: {ex}")
         return None
 
 

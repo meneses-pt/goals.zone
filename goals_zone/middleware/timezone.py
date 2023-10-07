@@ -26,12 +26,12 @@ class TimezoneMiddleware:
             try:
                 ip_response = g.city(str(ip))
                 time_zone = ip_response["time_zone"]
-            except AddressNotFoundError as e:
-                logger.warning(f"AddressNotFoundError: {e}")
+            except AddressNotFoundError as ex:
+                logger.warning(f"AddressNotFoundError: {ex}")
         except ValueError:
             logger.warning(f"Address/netmask is invalid: {ip}")
-        except Exception as e:
-            logger.warning(f"IP: {ip}. Exception: {e}")
+        except Exception as ex:
+            logger.warning(f"IP: {ip}. Exception: {ex}")
         if time_zone:
             timezone_object = pytz.timezone(time_zone)
             timezone.activate(timezone_object)

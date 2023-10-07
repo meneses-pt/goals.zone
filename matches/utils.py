@@ -22,8 +22,8 @@ def localize_date(date):
     try:
         current_timezone = timezone.get_current_timezone()
         date = current_timezone.localize(date)
-    except Exception as e:
-        logger.error(f"Exception localizing date ({e})")
+    except Exception as ex:
+        logger.error(f"Exception localizing date ({ex})")
     return date
 
 
@@ -42,8 +42,8 @@ def get_proxies_sslproxies():
                 # Grabbing IP and corresponding PORT
                 proxy = ":".join([i.xpath(".//td[1]/text()")[0], i.xpath(".//td[2]/text()")[0]])
                 proxies.append(proxy)
-    except Exception as e:
-        logger.warning(f"Error getting proxies ({url}): {e}")
+    except Exception as ex:
+        logger.warning(f"Error getting proxies ({url}): {ex}")
         return list()
     return proxies
 
@@ -71,8 +71,8 @@ def get_proxies_freeproxycz():
                 port = i.xpath("./td[2]/span/text()")[0]
                 proxy = ":".join([ip, port])
                 proxies.append(proxy)
-    except Exception as e:
-        logger.warning(f"Error getting proxies ({url}): {e}")
+    except Exception as ex:
+        logger.warning(f"Error getting proxies ({url}): {ex}")
         return list()
     return proxies
 
@@ -91,8 +91,8 @@ def get_proxies_proxyscrape():
         return list()
     try:
         proxies = response.text.splitlines()[:20]
-    except Exception as e:
-        logger.warning(f"Error getting proxies ({url}): {e}")
+    except Exception as ex:
+        logger.warning(f"Error getting proxies ({url}): {ex}")
         return list()
     return proxies
 
@@ -109,8 +109,8 @@ def get_proxies_proxylist():
         res = json.loads(response.text)
         for p in res[0]["LISTA"]:
             proxies.append(":".join([p["IP"], p["PORT"]]))
-    except Exception as e:
-        logger.warning(f"Error getting proxies ({url}): {e}")
+    except Exception as ex:
+        logger.warning(f"Error getting proxies ({url}): {ex}")
         return list()
     return proxies[:20]
 
@@ -141,8 +141,8 @@ def get_proxies_proxynova():
                 "' + '", ""
             )
             proxies.append(proxy)
-    except Exception as e:
-        logger.warning(f"Error getting proxies ({url}): {e}")
+    except Exception as ex:
+        logger.warning(f"Error getting proxies ({url}): {ex}")
         return list()
     return proxies
 

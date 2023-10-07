@@ -153,13 +153,13 @@ def _fetch_reddit_goals():
             return
         try:
             data = json.loads(response.content)
-        except Exception as e:
+        except Exception as ex:
             tb = traceback.format_exc()
             logger.error(f"Status Code: {response.status_code}")
             logger.error(f"{tb}")
-            logger.error(f"{e}")
+            logger.error(f"{ex}")
             logger.error(f"{response.content}")
-            raise e
+            raise ex
         if "data" not in data.keys():
             logger.error(f"No data in response: {response.content}")
             logger.error("Finished fetching goals")
@@ -259,19 +259,19 @@ def find_mirrors(videogoal):
                     ]
                     for reply in replies:
                         _parse_reply_for_mirrors(reply, videogoal)
-            except Exception as e:
+            except Exception as ex:
                 tb = traceback.format_exc()
                 logger.error(f"{tb}")
-                logger.error(f"{e}")
+                logger.error(f"{ex}")
                 logger.error(f"{children_response.content}")
                 return True
-        except Exception as e:
+        except Exception as ex:
             tb = traceback.format_exc()
             logger.error(f"{tb}")
-            logger.error(f"{e}")
+            logger.error(f"{ex}")
             return True
-    except Exception as e:
-        logger.error(f"An exception as occurred trying to find mirrors. {e}")
+    except Exception as ex:
+        logger.error(f"An exception as occurred trying to find mirrors. {ex}")
         return True
     return True
 
@@ -283,11 +283,11 @@ def _parse_reply_for_mirrors(reply, videogoal):
     links = []
     try:
         doc = ETree.fromstring(markdown.markdown(stripped_body))
-    except Exception as e:
-        if "junk after document element" not in str(e):
+    except Exception as ex:
+        if "junk after document element" not in str(ex):
             tb = traceback.format_exc()
             logger.error(f"{tb}")
-            logger.error(f"{e}")
+            logger.error(f"{ex}")
     else:
         links = doc.findall(".//a")
 
