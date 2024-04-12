@@ -383,7 +383,7 @@ def _save_or_update_match(match):
         #         score_changed = True
         #         break
         existing_match = matches.first()
-        if existing_match.datetime != match.datetime:
+        if str(match.datetime) not in str(existing_match.datetime):
             send_monitoring_message(
                 f"__Match date changed!!!__ INVESTIGATE\n"
                 f"*{match.home_team}*\n"
