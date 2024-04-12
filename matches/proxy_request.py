@@ -10,7 +10,6 @@ from scrapfly import ScrapeConfig, ScrapflyClient
 
 from goals_zone import settings
 from goals_zone.settings import SCRAPFLY_API_KEY
-from matches.goals_populator import send_monitoring_message
 
 logger = logging.getLogger(__name__)
 
@@ -132,6 +131,8 @@ class ProxyRequest:
             )
         if api_response.status_code != 200 or upstream_response.status_code != 200:
             if api_response.status_code == 429 or upstream_response.status_code == 429:
+                from matches.goals_populator import send_monitoring_message
+
                 send_monitoring_message(
                     "Scrapfly Error Code 429"
                     + str(upstream_response.status_code)
