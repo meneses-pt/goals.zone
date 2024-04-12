@@ -98,6 +98,7 @@ def fetch_live():
 # To fetch yesterday and today: days_ago=1, days_amount=2
 # To fetch today and tomorrow: days_ago=0, days_amount=2
 def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
+    live_events = False
     start = timeit.default_timer()
     completed = CompletedTask.objects.filter(
         task_name="matches.matches_populator.fetch_new_matches"
@@ -109,18 +110,19 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         events = fetch_full_days(days_ago, days_amount, inverse=False)
     else:
         events = fetch_live()
+        live_events = True
     end = timeit.default_timer()
     logger.info(f"{(end - start):.2f} elapsed fetching events")
     start = timeit.default_timer()
     failed_matches = []
     for match in events:
-        success = process_match(match)
+        success = process_match(match, live_events=live_events)
         if not success:
             failed_matches.append(match)
     if len(failed_matches) > 0:
         logger.info(f"Start processing {len(failed_matches)} failed matches...")
         for match in failed_matches:
-            process_match(match, raise_exception=True)
+            process_match(match, raise_exception=True, live_events=live_events)
         logger.info(f"Finished processing {len(failed_matches)} failed matches!")
     end = timeit.default_timer()
     logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
@@ -134,7 +136,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     logger.info("Finished processing matches")
 
 
-def process_match(fixture, raise_exception=False):
+def process_match(fixture, raise_exception=False, live_events=False):
     home_team = None
     away_team = None
     try:
@@ -177,7 +179,7 @@ def process_match(fixture, raise_exception=False):
         match.category = category_obj
         match.season = season_obj
         match.status = status
-        _save_or_update_match(match)
+        _save_or_update_match(match, live_events=live_events)
     except Exception as ex:
         logger.error(f"Error processing match [{home_team} - {away_team}]: {ex}")
         if raise_exception:
@@ -369,7 +371,7 @@ def matches_filter_conditions(match_filter, match):
     return True
 
 
-def _save_or_update_match(match):
+def _save_or_update_match(match, live_events=False):
     matches = Match.objects.filter(
         home_team=match.home_team,
         away_team=match.away_team,
@@ -383,7 +385,7 @@ def _save_or_update_match(match):
         #         score_changed = True
         #         break
         existing_match = matches.first()
-        if str(match.datetime) not in str(existing_match.datetime):
+        if live_events and (str(match.datetime) not in str(existing_match.datetime)):
             send_monitoring_message(
                 f"__Match date changed!!!__ INVESTIGATE\n"
                 f"*{match.home_team}*\n"
