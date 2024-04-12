@@ -1,6 +1,5 @@
 import json
 import logging
-import random
 from urllib.parse import quote
 
 import requests
@@ -54,12 +53,17 @@ class ProxyRequest:
                     and settings.PREMIUM_PROXY
                     and settings.PREMIUM_PROXY != ""
                 ):
-                    ports_list = [12322, 12323, 22323]
-                    # Ports from 11200 to 11250
-                    for i in range(11200, 11251):
-                        ports_list.append(i)
-                    proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
-                    self.current_proxy = proxy
+                    # Temporaryli disable this proxy because of problems with it
+
+                    # ports_list = [12322, 12323, 22323]
+                    # # Ports from 11200 to 11250
+                    # for i in range(11200, 11251):
+                    #     ports_list.append(i)
+                    # proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
+                    # self.current_proxy = proxy
+
+                    # Alternative
+                    self.current_proxy = FreeProxy(rand=True).get()
                 elif attempts < (max_attempts * 2 / 3) and scrapfly_attempts < 3:
                     # Use Scrapfly. Scrpfly does various attempts that can take almost
                     # 3 minutes each, so we will only allow 3 scrapfly attempts
