@@ -62,8 +62,9 @@ class ProxyRequest:
                     # proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
                     # self.current_proxy = proxy
 
-                    # Alternative
-                    self.current_proxy = FreeProxy(rand=True).get()
+                    # Alternative use scrapfly for now
+                    self.current_proxy = None
+                    scrapfly_attempts += 1
                 elif attempts < (max_attempts * 2 / 3) and scrapfly_attempts < 3:
                     # Use Scrapfly. Scrpfly does various attempts that can take almost
                     # 3 minutes each, so we will only allow 3 scrapfly attempts
