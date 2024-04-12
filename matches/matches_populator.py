@@ -382,6 +382,16 @@ def _save_or_update_match(match):
         #     if old_match.score != match.score and match.score != "0:0":
         #         score_changed = True
         #         break
+        existing_match = next(matches)
+        if existing_match.datetime != match.datetime:
+            send_monitoring_message(
+                f"__Match date changed!!!__ INVESTIGATE\n"
+                f"*{match.home_team}*\n"
+                f"*{match.away_team}*\n"
+                f"BEFORE: {existing_match.datetime}\n"
+                f"AFTER:  {match.datetime}",
+                False,
+            )
         matches.update(
             datetime=match.datetime,
             score=match.score,
