@@ -382,7 +382,7 @@ def _save_or_update_match(match):
         #     if old_match.score != match.score and match.score != "0:0":
         #         score_changed = True
         #         break
-        existing_match = next(matches)
+        existing_match = matches.first()
         if existing_match.datetime != match.datetime:
             send_monitoring_message(
                 f"__Match date changed!!!__ INVESTIGATE\n"
