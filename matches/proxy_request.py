@@ -1,5 +1,6 @@
 import json
 import logging
+import random
 from urllib.parse import quote
 
 import requests
@@ -38,7 +39,9 @@ class ProxyRequest:
             ProxyRequest()
         return ProxyRequest.__instance__
 
-    def make_request(self, url, headers=None, timeout=10, max_attempts=10, use_proxy=True):
+    def make_request(
+        self, url, headers=None, timeout=10, max_attempts=10, use_proxy=True, use_unsafe=False
+    ):
         if headers is None:
             headers = {}
         response = None
@@ -52,19 +55,16 @@ class ProxyRequest:
                     attempts < (max_attempts / 3)
                     and settings.PREMIUM_PROXY
                     and settings.PREMIUM_PROXY != ""
+                    and use_unsafe
                 ):
-                    # Temporaryli disable this proxy because of problems with it
-
-                    # ports_list = [12322, 12323, 22323]
-                    # # Ports from 11200 to 11250
-                    # for i in range(11200, 11251):
-                    #     ports_list.append(i)
-                    # proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
-                    # self.current_proxy = proxy
-
-                    # Alternative use scrapfly for now
-                    self.current_proxy = None
-                    scrapfly_attempts += 1
+                    # This is currently unsafe for API requests
+                    # because they are returning wrong data on purpose
+                    ports_list = [12322, 12323, 22323]
+                    # Ports from 11200 to 11250
+                    for i in range(11200, 11251):
+                        ports_list.append(i)
+                    proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
+                    self.current_proxy = proxy
                 elif attempts < (max_attempts * 2 / 3) and scrapfly_attempts < 3:
                     # Use Scrapfly. Scrpfly does various attempts that can take almost
                     # 3 minutes each, so we will only allow 3 scrapfly attempts

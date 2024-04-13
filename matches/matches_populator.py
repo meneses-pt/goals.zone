@@ -346,12 +346,7 @@ def get_sofascore_headers():
     return headers
 
 
-# noinspection PyBroadException
 def _fetch_sofascore_match_details(event_id):
-    r"""
-    :return: :class:`Response <Response>` object
-    :rtype: requests.Response
-    """
     headers = get_sofascore_headers()
     return ProxyRequest.get_instance().make_request(
         url=f"https://api.sofascore.com/mobile/v4/event/{event_id}/details",

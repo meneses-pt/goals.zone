@@ -59,7 +59,7 @@ class Team(models.Model):
 
             headers = get_sofascore_headers()
             response = ProxyRequest.get_instance().make_request(
-                url=self.logo_url, headers=headers, max_attempts=10
+                url=self.logo_url, headers=headers, max_attempts=10, use_unsafe=True
             )
             if response:
                 fp = BytesIO()
