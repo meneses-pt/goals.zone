@@ -29,58 +29,23 @@ psycopg2-binary = "^2.9.9"
 gunicorn = {extras = ["gevent"], version = "^21.2.0"}
 Brotli = "^1.0.9"
 free-proxy = "^1.1"
-black = "^24.3.0"
-isort = "^5.13.2"
-flakeheaven = "^3.0.0"
-flake8-black = "^0.3.6"
-flake8-comprehensions = "^3.14.0"
-flake8-isort = "^6.1.1"
-flake8-mutable = "^1.2.0"
 django-cors-headers = "^4.3.1"
 pymemcache = "^4.0.0"
 retry = "^0.9.2"
+ruff = "^0.3.7"
 scrapfly-sdk = {extras = ["all"], version = "^0.8.15"}
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.flakeheaven]
-# optionally inherit from remote config (or local if you want)
-base = "https://raw.githubusercontent.com/flakeheaven/flakeheaven/main/pyproject.toml"
-max_line_length = 100
-# make output nice
-format = "colored"
-# show line of source code in output
-show_source = true
-extended_default_ignore = []  # https://github.com/flakehell/flakehell/issues/10
-exclude = ["README.md", ".venv", ".git", "helm", "terraform", "build"]
-
-[tool.flakeheaven.plugins]
-flake8-black = ["+*"]
-flake8-comprehensions = ["+*", "-C408"]
-flake8-isort = ["+*"]
-flake8-mutable = ["+*"]
-flake8-quotes = ["-*"]
-flake8-commas = ["-*"]
-flake8-builtins = ["-*"]
-mccabe = ["+*"]
-pycodestyle = [
-    "+*",
-    "-W503", # black compat: line break before binary operator
-    "-E203"  # black compat: whitespace before ':'
+[tool.ruff]
+output-format = "full"
+line-length = 120
+exclude = [".venv", ".git", "helm", "terraform", "build"]
+target-version = "py38"
+lint.select = ["A", "ASYNC", "B006", "C4", "E", "F", "I", "ISC", "Q", "T20", "W"]
+lint.fixable = ["I"]
+lint.ignore = [
+    "C408",
 ]
-pyflakes = ["+*"]
-pylint = ["+*"]
-
-[tool.black]
-line-length = 100
-target-version = ["py38"]
-
-[tool.isort]
-line_length = 100
-multi_line_output = 3  # Matches black formatting
-use_parentheses = true
-include_trailing_comma = true
-force_grid_wrap = 0
-ensure_newline_before_comments = true

@@ -55,7 +55,7 @@ class LogAdmin(admin.ModelAdmin):
         return context
 
     def iter_json(self, context):
-        yield '{"starts": "%d",' '"data": "' % context["starts"]
+        yield '{"starts": "%d","data": "' % context["starts"]
 
         while True:
             line = context["log"].readline()
