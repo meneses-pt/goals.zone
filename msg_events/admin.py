@@ -29,7 +29,9 @@ class WebhookAdminForm(forms.ModelForm):
 
 
 class WebhookAdmin(admin.ModelAdmin):
-    filter_horizontal = [
+    search_fields = ["title"]
+
+    autocomplete_fields = [
         "include_tournaments",
         "include_categories",
         "include_teams",
@@ -51,7 +53,7 @@ class CustomMessageAdminForm(forms.ModelForm):
 
 
 class CustomMessageAdmin(admin.ModelAdmin):
-    filter_horizontal = ["webhooks", "tweets"]
+    autocomplete_fields = ["webhooks", "tweets"]
     form = CustomMessageAdminForm
 
 
@@ -82,7 +84,9 @@ class TweetAdminForm(forms.ModelForm):
 
 
 class TweetAdmin(admin.ModelAdmin):
-    filter_horizontal = [
+    search_fields = ["title"]
+
+    autocomplete_fields = [
         "include_tournaments",
         "include_categories",
         "include_teams",
