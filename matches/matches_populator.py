@@ -98,7 +98,6 @@ def fetch_live():
 # To fetch yesterday and today: days_ago=1, days_amount=2
 # To fetch today and tomorrow: days_ago=0, days_amount=2
 def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
-    live_events = False
     start = timeit.default_timer()
     completed = CompletedTask.objects.filter(
         task_name="matches.matches_populator.fetch_new_matches"
@@ -110,19 +109,55 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         events = fetch_full_days(days_ago, days_amount, inverse=False)
     else:
         events = fetch_live()
-        live_events = True
     end = timeit.default_timer()
     logger.info(f"{(end - start):.2f} elapsed fetching events")
     start = timeit.default_timer()
     failed_matches = []
+
+    # Check if this is wrong data
+    total_scores = 0
+    wrong_scores = 0
     for match in events:
-        success = process_match(match, live_events=live_events)
+        home_score = match.get("homeScore", {})
+        away_score = match.get("awayScore", {})
+        for score in [home_score, away_score]:
+            period1 = score.get("period1", 0)
+            period2 = score.get("period2", 0)
+            normaltime = score.get("normaltime", 0)
+            total_scores += 1
+            if period1 + period2 != normaltime:
+                wrong_scores += 1
+
+    if wrong_scores > 0:
+        if wrong_scores / total_scores > 0.2:
+            send_monitoring_message(
+                f"*HIGH* __Wrong scores detected__\n"
+                f"*Wrong scores {wrong_scores}*\n"
+                f"*Total scores {total_scores}*\n"
+                f"Percentage: {(wrong_scores/total_scores):.0%}\n",
+                False,
+            )
+            logger.info("HIGH number of wrong data. Discarding.")
+            logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
+            logger.info("Finished processing matches")
+            return
+        else:
+            send_monitoring_message(
+                f"*LOW* __Wrong scores detected__\n"
+                f"*Wrong scores {wrong_scores}*\n"
+                f"*Total scores {total_scores}*\n"
+                f"Percentage: {(wrong_scores/total_scores):.0%}\n",
+                True,
+            )
+
+    for match in events:
+        success = process_match(match)
         if not success:
             failed_matches.append(match)
     if len(failed_matches) > 0:
         logger.info(f"Start processing {len(failed_matches)} failed matches...")
         for match in failed_matches:
-            process_match(match, raise_exception=True, live_events=live_events)
+            process_match(match, raise_exception=True)
         logger.info(f"Finished processing {len(failed_matches)} failed matches!")
     end = timeit.default_timer()
     logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
@@ -136,7 +171,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     logger.info("Finished processing matches")
 
 
-def process_match(fixture, raise_exception=False, live_events=False):
+def process_match(fixture, raise_exception=False):
     home_team = None
     away_team = None
     try:
@@ -179,7 +214,7 @@ def process_match(fixture, raise_exception=False, live_events=False):
         match.category = category_obj
         match.season = season_obj
         match.status = status
-        _save_or_update_match(match, live_events=live_events)
+        _save_or_update_match(match)
     except Exception as ex:
         logger.error(f"Error processing match [{home_team} - {away_team}]: {ex}")
         if raise_exception:
@@ -371,7 +406,7 @@ def matches_filter_conditions(match_filter, match):
     return True
 
 
-def _save_or_update_match(match, live_events=False):
+def _save_or_update_match(match):
     matches = Match.objects.filter(
         home_team=match.home_team,
         away_team=match.away_team,
@@ -384,16 +419,6 @@ def _save_or_update_match(match, live_events=False):
         #     if old_match.score != match.score and match.score != "0:0":
         #         score_changed = True
         #         break
-        existing_match = matches.first()
-        if live_events and (str(match.datetime) not in str(existing_match.datetime)):
-            send_monitoring_message(
-                f"__Match date changed!!!__ INVESTIGATE\n"
-                f"*{match.home_team}*\n"
-                f"*{match.away_team}*\n"
-                f"BEFORE: {existing_match.datetime}\n"
-                f"AFTER:  {match.datetime}",
-                False,
-            )
         matches.update(
             datetime=match.datetime,
             score=match.score,
