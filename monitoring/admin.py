@@ -13,7 +13,7 @@ def export_performance_monitor_events(self, request, queryset):
     meta = self.model._meta
     field_names = [field.name for field in meta.fields]
     response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = "attachment; filename={}.csv".format(meta)
+    response["Content-Disposition"] = f"attachment; filename={meta}.csv"
     writer = csv.writer(response)
 
     writer.writerow(field_names)
@@ -34,7 +34,14 @@ reset_background_task.short_description = "Reset Background Tasks"
 
 
 class BackgroundTaskAdmin(admin.ModelAdmin):
-    list_display = ("task_name", "run_at", "has_error", "attempts", "failed_at", "last_error")
+    list_display = (
+        "task_name",
+        "run_at",
+        "has_error",
+        "attempts",
+        "failed_at",
+        "last_error",
+    )
     actions = [reset_background_task]
 
 

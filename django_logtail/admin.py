@@ -34,23 +34,23 @@ class LogAdmin(admin.ModelAdmin):
         seek_to = int(seek_to)
         try:
             log_file = app_settings.LOGTAIL_FILES[logfile]
-        except KeyError:
-            raise Http404("No such log file")
+        except KeyError as exc:
+            raise Http404("No such log file") from exc
 
         try:
             file_length = getsize(log_file)
-        except OSError:
-            raise Http404("Cannot access file")
+        except OSError as exc:
+            raise Http404("Cannot access file") from exc
 
         if seek_to > file_length:
             seek_to = file_length
 
         try:
-            context["log"] = open(log_file, "r")
-            context["log"].seek(seek_to)
-            context["starts"] = seek_to
-        except IOError:
-            raise Http404("Cannot access file")
+            with open(log_file) as context["log"]:
+                context["log"].seek(seek_to)
+                context["starts"] = seek_to
+        except OSError as exc:
+            raise Http404("Cannot access file") from exc
 
         return context
 
@@ -67,15 +67,15 @@ class LogAdmin(admin.ModelAdmin):
                 return
 
     def changelist_view(self, request, extra_context=None):
-        context = dict(
-            title="Logtail",
-            app_label=self.model._meta.app_label,
-            cl=None,
-            media=self.media,
-            has_add_permission=self.has_add_permission(request),
-            update_interval=app_settings.LOGTAIL_UPDATE_INTERVAL,
-            logfiles=((li, f) for li, f in app_settings.LOGTAIL_FILES.items() if isfile(f)),
-        )
+        context = {
+            "title": "Logtail",
+            "app_label": self.model._meta.app_label,
+            "cl": None,
+            "media": self.media,
+            "has_add_permission": self.has_add_permission(request),
+            "update_interval": app_settings.LOGTAIL_UPDATE_INTERVAL,
+            "logfiles": ((li, f) for li, f in app_settings.LOGTAIL_FILES.items() if isfile(f)),
+        }
 
         return TemplateResponse(
             request,
@@ -84,7 +84,7 @@ class LogAdmin(admin.ModelAdmin):
         )
 
     def get_urls(self):
-        urls = super(LogAdmin, self).get_urls()
+        urls = super().get_urls()
         urls.insert(
             0,
             re_path(

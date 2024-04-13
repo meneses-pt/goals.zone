@@ -40,7 +40,13 @@ class ProxyRequest:
         return ProxyRequest.__instance__
 
     def make_request(
-        self, url, headers=None, timeout=10, max_attempts=10, use_proxy=True, use_unsafe=False
+        self,
+        url,
+        headers=None,
+        timeout=10,
+        max_attempts=10,
+        use_proxy=True,
+        use_unsafe=False,
     ):
         if headers is None:
             headers = {}
@@ -91,12 +97,7 @@ class ProxyRequest:
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
-                    raise Exception(
-                        "Wrong Status Code: "
-                        + str(response.status_code)
-                        + "|"
-                        + str(response.content)
-                    )
+                    raise Exception("Wrong Status Code: " + str(response.status_code) + "|" + str(response.content))
             except Exception as ex:
                 exception_messages += str(ex) + "\n"
                 logger.warning(
@@ -110,24 +111,16 @@ class ProxyRequest:
         if attempts == max_attempts:
             logger.info(f"Number of attempts exceeded trying to make request: {url}")
             raise Exception(
-                "Number of attempts exceeded trying to make request: "
-                + str(url)
-                + "\n"
-                + exception_messages
+                "Number of attempts exceeded trying to make request: " + str(url) + "\n" + exception_messages
             )
         return response
 
     def make_scrapfly_request(self, url, headers):
-        api_response = self.scrapfly.scrape(
-            scrape_config=ScrapeConfig(url=url, headers=headers, asp=True)
-        )
+        api_response = self.scrapfly.scrape(scrape_config=ScrapeConfig(url=url, headers=headers, asp=True))
         upstream_response = api_response.upstream_result_into_response()
         if not upstream_response:
             raise Exception(
-                "No upstream response: [API] "
-                + str(api_response.status_code)
-                + "|"
-                + str(api_response.content)
+                "No upstream response: [API] " + str(api_response.status_code) + "|" + str(api_response.content)
             )
         if api_response.status_code != 200 or upstream_response.status_code != 200:
             if api_response.status_code == 429 or upstream_response.status_code == 429:
@@ -161,15 +154,8 @@ class ProxyRequest:
         original_url = quote(url, safe="")
         headers_str = ""
         for headers_key in headers:
-            headers_str += (
-                f"&headers[{quote(headers_key, safe='')}]={quote(headers[headers_key], safe='')}"
-            )
-        url = (
-            f"https://api.scrapfly.io/scrape"
-            f"?key={SCRAPFLY_API_KEY}"
-            f"&asp=true"
-            f"&url={original_url}"
-        )
+            headers_str += f"&headers[{quote(headers_key, safe='')}]={quote(headers[headers_key], safe='')}"
+        url = f"https://api.scrapfly.io/scrape?key={SCRAPFLY_API_KEY}&asp=true&url={original_url}"
         url += headers_str
         response = requests.get(url, headers=headers, timeout=timeout)
         if response.status_code != 200 or response.json()["result"]["status_code"] != 200:

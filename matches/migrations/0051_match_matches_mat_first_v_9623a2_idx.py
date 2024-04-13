@@ -12,8 +12,6 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddIndex(
             model_name="match",
-            index=models.Index(
-                fields=["first_video_datetime"], name="matches_mat_first_v_9623a2_idx"
-            ),
+            index=models.Index(fields=["first_video_datetime"], name="matches_mat_first_v_9623a2_idx"),
         ),
     ]

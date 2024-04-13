@@ -14,8 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="videogoal",
             name="match",
-            field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to="matches.match"
-            ),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="matches.match"),
         ),
     ]

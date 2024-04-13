@@ -40,27 +40,23 @@ class TypeFilter(admin.SimpleListFilter):
 
         failed_regex = queryset.filter(
             (
-                (
-                    Q(regex_home_team__isnull=True)
-                    | Q(regex_away_team__isnull=True)
-                    | Q(regex_home_team__exact="")
-                    | Q(regex_away_team__exact="")
-                )
-                & Q(ner_home_team__isnull=False)
-                & Q(ner_away_team__isnull=False)
+                Q(regex_home_team__isnull=True)
+                | Q(regex_away_team__isnull=True)
+                | Q(regex_home_team__exact="")
+                | Q(regex_away_team__exact="")
             )
+            & Q(ner_home_team__isnull=False)
+            & Q(ner_away_team__isnull=False)
         )
         failed_ner = queryset.filter(
             (
-                (
-                    Q(ner_home_team__isnull=True)
-                    | Q(ner_away_team__isnull=True)
-                    | Q(ner_home_team__exact="")
-                    | Q(ner_away_team__exact="")
-                )
-                & Q(regex_home_team__isnull=False)
-                & Q(regex_away_team__isnull=False)
+                Q(ner_home_team__isnull=True)
+                | Q(ner_away_team__isnull=True)
+                | Q(ner_home_team__exact="")
+                | Q(ner_away_team__exact="")
             )
+            & Q(regex_home_team__isnull=False)
+            & Q(regex_away_team__isnull=False)
         )
         if value == "Correct":
             return correct
@@ -97,7 +93,7 @@ make_reviewed.short_description = "Mark selected logs as reviewed"
 
 
 def export_titles(self, request, queryset):
-    titles = "\n".join("{}".format(item.title) for item in queryset.all())
+    titles = "\n".join(f"{item.title}" for item in queryset.all())
 
     response = HttpResponse(titles, content_type="text/plain")
     response["Content-Disposition"] = "attachment; filename=exported_titles.log"
@@ -124,7 +120,7 @@ class NerLogAdmin(admin.ModelAdmin):
     form = NerLogAdminForm
 
     def changelist_view(self, request, extra_context=None):
-        response = super(NerLogAdmin, self).changelist_view(request, extra_context)
+        response = super().changelist_view(request, extra_context)
         extra_context = {}
         if hasattr(response, "context_data") and "cl" in response.context_data:
             filtered_query_set = response.context_data["cl"].queryset

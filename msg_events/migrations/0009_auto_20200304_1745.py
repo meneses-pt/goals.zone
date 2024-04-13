@@ -13,16 +13,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="tweet",
             name="event_type",
-            field=models.IntegerField(
-                choices=[(1, "Match"), (2, "Video"), (3, "Mirror")], default=1
-            ),
+            field=models.IntegerField(choices=[(1, "Match"), (2, "Video"), (3, "Mirror")], default=1),
         ),
         migrations.AlterField(
             model_name="webhook",
             name="event_type",
-            field=models.IntegerField(
-                choices=[(1, "Match"), (2, "Video"), (3, "Mirror")], default=1
-            ),
+            field=models.IntegerField(choices=[(1, "Match"), (2, "Video"), (3, "Mirror")], default=1),
         ),
         migrations.AlterField(
             model_name="webhook",

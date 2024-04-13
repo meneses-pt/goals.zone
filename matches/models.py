@@ -46,7 +46,7 @@ class Team(models.Model):
         unique_slug = slug
         num = 1
         while Team.objects.exclude(id=self.id).filter(slug=unique_slug).exists():
-            unique_slug = "{}-{}".format(slug, num)
+            unique_slug = f"{slug}-{num}"
             num += 1
         self.slug = unique_slug
 
@@ -109,7 +109,7 @@ class Category(models.Model):
         unique_slug = slug
         num = 1
         while Category.objects.filter(slug=unique_slug).exists():
-            unique_slug = "{}-{}".format(slug, num)
+            unique_slug = f"{slug}-{num}"
             num += 1
         return unique_slug
 
@@ -125,9 +125,7 @@ class Tournament(models.Model):
     name = models.CharField(max_length=256, default=None, null=True)
     slug = models.SlugField(max_length=200, unique=True)
     unique_name = models.CharField(max_length=256, default=None, null=True)
-    category = models.ForeignKey(
-        Category, related_name="category", null=True, on_delete=models.SET_NULL
-    )
+    category = models.ForeignKey(Category, related_name="category", null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return str(
@@ -143,7 +141,7 @@ class Tournament(models.Model):
         unique_slug = slug
         num = 1
         while Tournament.objects.filter(slug=unique_slug).exists():
-            unique_slug = "{}-{}".format(slug, num)
+            unique_slug = f"{slug}-{num}"
             num += 1
         return unique_slug
 
@@ -167,7 +165,7 @@ class Season(models.Model):
         unique_slug = slug
         num = 1
         while Season.objects.filter(slug=unique_slug).exists():
-            unique_slug = "{}-{}".format(slug, num)
+            unique_slug = f"{slug}-{num}"
             num += 1
         return unique_slug
 
@@ -178,18 +176,10 @@ class Season(models.Model):
 
 
 class Match(models.Model):
-    home_team = models.ForeignKey(
-        Team, related_name="home_team", null=True, on_delete=models.SET_NULL
-    )
-    away_team = models.ForeignKey(
-        Team, related_name="away_team", null=True, on_delete=models.SET_NULL
-    )
-    tournament = models.ForeignKey(
-        Tournament, related_name="tournament", null=True, on_delete=models.SET_NULL
-    )
-    category = models.ForeignKey(
-        Category, related_name="match_category", null=True, on_delete=models.SET_NULL
-    )
+    home_team = models.ForeignKey(Team, related_name="home_team", null=True, on_delete=models.SET_NULL)
+    away_team = models.ForeignKey(Team, related_name="away_team", null=True, on_delete=models.SET_NULL)
+    tournament = models.ForeignKey(Tournament, related_name="tournament", null=True, on_delete=models.SET_NULL)
+    category = models.ForeignKey(Category, related_name="match_category", null=True, on_delete=models.SET_NULL)
     season = models.ForeignKey(Season, related_name="season", null=True, on_delete=models.SET_NULL)
     score = models.CharField(max_length=10, null=True)
     datetime = models.DateTimeField(null=True, blank=True)
@@ -228,25 +218,17 @@ class Match(models.Model):
         return str(self.home_team.name) + " - " + str(self.away_team.name)
 
     def __str__(self):
-        return (
-            str(self.home_team.name)
-            + " "
-            + (self.score if self.score else ":")
-            + " "
-            + str(self.away_team.name)
-        )
+        return str(self.home_team.name) + " " + (self.score if self.score else ":") + " " + str(self.away_team.name)
 
     def get_absolute_url(self):
         return reverse("match-detail", kwargs={"slug": self.slug})
 
     def _get_unique_slug(self):
-        slug = slugify(
-            f'{self.home_team.name}-{self.away_team.name}-{self.datetime.strftime("%Y%m%d")}'
-        )
+        slug = slugify(f'{self.home_team.name}-{self.away_team.name}-{self.datetime.strftime("%Y%m%d")}')
         unique_slug = slug
         num = 1
         while Match.objects.filter(slug=unique_slug).exists():
-            unique_slug = "{}-{}".format(slug, num)
+            unique_slug = f"{slug}-{num}"
             num += 1
         return unique_slug
 
@@ -297,10 +279,7 @@ class VideoGoal(models.Model):
         return str(self.title)
 
     def get_absolute_url(self):
-        return (
-            reverse("match-detail", kwargs={"slug": self.match.slug})
-            + f"?v={self.simple_permalink}"
-        )
+        return reverse("match-detail", kwargs={"slug": self.match.slug}) + f"?v={self.simple_permalink}"
 
 
 class VideoGoalMirror(models.Model):
@@ -324,9 +303,7 @@ class AffiliateTerm(models.Model):
 
 class PostMatch(models.Model):
     permalink = models.CharField(max_length=1024, unique=True)
-    videogoal = models.OneToOneField(
-        VideoGoal, related_name="post_match", on_delete=models.CASCADE, null=True
-    )
+    videogoal = models.OneToOneField(VideoGoal, related_name="post_match", on_delete=models.CASCADE, null=True)
     fetched = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=200, null=True)
     home_team_str = models.CharField(max_length=256, null=True)

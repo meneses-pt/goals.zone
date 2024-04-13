@@ -12,8 +12,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="webhook",
             name="destination",
-            field=models.IntegerField(
-                choices=[(1, "Discord"), (2, "Slack"), (3, "IFTTT")], default=1
-            ),
+            field=models.IntegerField(choices=[(1, "Discord"), (2, "Slack"), (3, "IFTTT")], default=1),
         ),
     ]

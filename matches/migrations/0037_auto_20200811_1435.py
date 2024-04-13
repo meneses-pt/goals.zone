@@ -10,13 +10,13 @@ def migrate_data_forward(apps, schema_editor):
     Season.objects.all().update(slug="to-replace")
     Tournament.objects.all().update(slug="to-replace")
     for instance in Category.objects.all().order_by("id"):
-        print(f"Generating slug for category {instance} (id: {instance.id})") # noqa E501
+        print(f"Generating slug for category {instance} (id: {instance.id})")  # noqa E501
         instance.save()  # Will trigger slug update
     for instance in Season.objects.all().order_by("id"):
-        print(f"Generating slug for season {instance} (id: {instance.id})") # noqa E501
+        print(f"Generating slug for season {instance} (id: {instance.id})")  # noqa E501
         instance.save()  # Will trigger slug update
     for instance in Tournament.objects.all().order_by("id"):
-        print(f"Generating slug for tournament {instance} (id: {instance.id})") # noqa E501
+        print(f"Generating slug for tournament {instance} (id: {instance.id})")  # noqa E501
         instance.save()  # Will trigger slug update
 
 

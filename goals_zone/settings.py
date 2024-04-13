@@ -27,7 +27,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get("SECRET_KEY", "4&h7em$riknyt&y!@9!w@j%d&3s+0gz&xq%p01jw@3g#8p_ixr")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False if os.environ.get("SECRET_KEY") is not None else True
+DEBUG = not os.environ.get("SECRET_KEY")
 
 ADMINS = [("André Meneses", "andre@meneses.pt")]
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
@@ -250,8 +250,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 NER_MODEL_FOLDER = os.path.join(BASE_DIR, "ner/goals_zone_model")
 
-GEOIP_PATH = os.path.join(
-    STATICFILES_DIRS[0] if DEBUG else STATIC_ROOT, "geoip2/GeoLite2-City.mmdb"
-)
+GEOIP_PATH = os.path.join(STATICFILES_DIRS[0] if DEBUG else STATIC_ROOT, "geoip2/GeoLite2-City.mmdb")
 
 PREMIUM_PROXY = os.environ.get("PREMIUM_PROXY")

@@ -28,9 +28,7 @@ class MessageObject(models.Model):
     include_categories = models.ManyToManyField(
         Category, related_name="%(class)s_include_categories", default=None, blank=True
     )
-    include_teams = models.ManyToManyField(
-        Team, related_name="%(class)s_include_teams", default=None, blank=True
-    )
+    include_teams = models.ManyToManyField(Team, related_name="%(class)s_include_teams", default=None, blank=True)
     exclude_tournaments = models.ManyToManyField(
         Tournament,
         related_name="%(class)s_exclude_tournaments",
@@ -40,12 +38,8 @@ class MessageObject(models.Model):
     exclude_categories = models.ManyToManyField(
         Category, related_name="%(class)s_exclude_categories", default=None, blank=True
     )
-    exclude_teams = models.ManyToManyField(
-        Category, related_name="%(class)s_exclude_teams", default=None, blank=True
-    )
-    event_type = models.IntegerField(
-        choices=MessageEventType.choices, default=MessageEventType.MatchFirstVideo
-    )
+    exclude_teams = models.ManyToManyField(Category, related_name="%(class)s_exclude_teams", default=None, blank=True)
+    event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.MatchFirstVideo)
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
 
@@ -75,9 +69,7 @@ class Webhook(MessageObject):
     title = models.CharField(max_length=100, unique=True)
     webhook_url = models.CharField(max_length=2000, unique=False)
     message = models.CharField(max_length=2000)
-    destination = models.IntegerField(
-        choices=WebhookDestinations.choices, default=WebhookDestinations.Discord
-    )
+    destination = models.IntegerField(choices=WebhookDestinations.choices, default=WebhookDestinations.Discord)
     active = models.BooleanField(default=True)
 
     def __str__(self):
@@ -87,12 +79,8 @@ class Webhook(MessageObject):
 class CustomMessage(models.Model):
     id = models.BigAutoField(unique=True, primary_key=True)
     message = models.CharField(max_length=2000)
-    webhooks = models.ManyToManyField(
-        Webhook, related_name="%(class)s_webhooks", default=None, blank=True
-    )
-    tweets = models.ManyToManyField(
-        Tweet, related_name="%(class)s_tweets", default=None, blank=True
-    )
+    webhooks = models.ManyToManyField(Webhook, related_name="%(class)s_webhooks", default=None, blank=True)
+    tweets = models.ManyToManyField(Tweet, related_name="%(class)s_tweets", default=None, blank=True)
     result = models.TextField(default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 

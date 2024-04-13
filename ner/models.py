@@ -27,28 +27,16 @@ class NerLog(models.Model):
             and self.regex_away_team
             and self.ner_home_team
             and self.ner_away_team
-            and (
-                self.regex_home_team != self.ner_home_team
-                or self.regex_away_team != self.ner_away_team
-            )
+            and (self.regex_home_team != self.ner_home_team or self.regex_away_team != self.ner_away_team)
         ):
             return "Conflict"
-        if (
-            (not self.regex_home_team or not self.regex_away_team)
-            and self.ner_home_team
-            and self.ner_away_team
-        ):
+        if (not self.regex_home_team or not self.regex_away_team) and self.ner_home_team and self.ner_away_team:
             return "Failed Regex"
-        if (
-            (not self.ner_home_team or not self.ner_away_team)
-            and self.regex_home_team
-            and self.regex_away_team
-        ):
+        if (not self.ner_home_team or not self.ner_away_team) and self.regex_home_team and self.regex_away_team:
             return "Failed NER"
         return "Not Identified"
 
-    # noinspection PyPep8Naming
-    def toJSON(self):
+    def toJSON(self):  # noqa N802
         return {
             **model_to_dict(
                 self,

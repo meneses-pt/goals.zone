@@ -99,9 +99,7 @@ def fetch_live():
 # To fetch today and tomorrow: days_ago=0, days_amount=2
 def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     start = timeit.default_timer()
-    completed = CompletedTask.objects.filter(
-        task_name="matches.matches_populator.fetch_new_matches"
-    ).count()
+    completed = CompletedTask.objects.filter(task_name="matches.matches_populator.fetch_new_matches").count()
     # 12 is every hour if task is every 5 minutes
     if completed % 12 == 0:
         events = fetch_full_days(days_ago, days_amount, inverse=True)
@@ -218,9 +216,7 @@ def process_match(fixture, raise_exception=False):
 
 def _get_or_create_team(team):
     team_id = team["id"]
-    db_team, db_team_created = Team.objects.get_or_create(
-        id=team_id, defaults={"name": team["name"]}
-    )
+    db_team, db_team_created = Team.objects.get_or_create(id=team_id, defaults={"name": team["name"]})
 
     data_updated = _update_property(db_team, "slug", team, "slug")
     data_updated |= _update_property(db_team, "name", team, "name")
@@ -249,9 +245,7 @@ def _get_or_create_tournament_sofascore(tournament, category):
         name = "(no name)"
         if "name" in tournament:
             name = tournament["name"]
-        tournament_obj, tournament_obj_created = Tournament.objects.get_or_create(
-            id=tid, defaults={"name": name}
-        )
+        tournament_obj, tournament_obj_created = Tournament.objects.get_or_create(id=tid, defaults={"name": name})
         tournament_obj.name = name
         if "uniqueId" in tournament:
             tournament_obj.unique_id = tournament["uniqueId"]
@@ -271,9 +265,7 @@ def _get_or_create_category_sofascore(category):
         name = "(no name)"
         if "name" in category:
             name = category["name"]
-        category_obj, category_obj_created = Category.objects.get_or_create(
-            id=cid, defaults={"name": name}
-        )
+        category_obj, category_obj_created = Category.objects.get_or_create(id=cid, defaults={"name": name})
         category_obj.name = name
         if "priority" in category:
             category_obj.priority = category["priority"]
@@ -292,9 +284,7 @@ def _get_or_create_season_sofascore(season):
         name = "(no name)"
         if "name" in season:
             name = season["name"]
-        season_obj, season_obj_created = Season.objects.get_or_create(
-            id=sid, defaults={"name": name}
-        )
+        season_obj, season_obj_created = Season.objects.get_or_create(id=sid, defaults={"name": name})
         season_obj.name = name
         if "year" in season:
             season_obj.year = season["year"]
@@ -309,10 +299,7 @@ def _fetch_full_scan_url(single_date, inverse=False):
     today_str = single_date.strftime("%Y-%m-%d")
     url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}"
     if inverse:
-        url = (
-            f"https://api.sofascore.com/api/v1/sport/football"
-            f"/scheduled-events/{today_str}/inverse"
-        )
+        url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse"
     headers = get_sofascore_headers()
     return url, headers
 
@@ -329,13 +316,9 @@ def _fetch_data_from_sofascore_api(url, headers, max_attempts=50):
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = ProxyRequest.get_instance().make_request(
-        url=url, headers=headers, max_attempts=max_attempts
-    )
+    response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=max_attempts)
     if not response:
-        response = ProxyRequest.get_instance().make_request(
-            url=url, headers=headers, max_attempts=1, use_proxy=False
-        )
+        response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=1, use_proxy=False)
     return response
 
 
@@ -356,23 +339,19 @@ def _fetch_sofascore_match_details(event_id):
 
 def matches_filter_conditions(match_filter, match):
     if match_filter.include_categories.all().count() > 0 and (
-        match.category is None
-        or not match_filter.include_categories.filter(id=match.category.id).exists()
+        match.category is None or not match_filter.include_categories.filter(id=match.category.id).exists()
     ):
         return False
     if match_filter.include_tournaments.all().count() > 0 and (
-        match.tournament is None
-        or not match_filter.include_tournaments.filter(id=match.tournament.id).exists()
+        match.tournament is None or not match_filter.include_tournaments.filter(id=match.tournament.id).exists()
     ):
         return False
     if match_filter.exclude_categories.all().count() > 0 and (
-        match.category is None
-        or match_filter.exclude_categories.filter(id=match.category.id).exists()
+        match.category is None or match_filter.exclude_categories.filter(id=match.category.id).exists()
     ):
         return False
     if match_filter.exclude_tournaments.all().count() > 0 and (
-        match.tournament is None
-        or match_filter.exclude_tournaments.filter(id=match.tournament.id).exists()
+        match.tournament is None or match_filter.exclude_tournaments.filter(id=match.tournament.id).exists()
     ):
         return False
     return True

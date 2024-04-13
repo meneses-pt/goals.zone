@@ -13,7 +13,10 @@ class Migration(migrations.Migration):
             model_name="custommessage",
             name="tweets",
             field=models.ManyToManyField(
-                blank=True, default=None, related_name="%(class)s_tweets", to="msg_events.webhook"
+                blank=True,
+                default=None,
+                related_name="%(class)s_tweets",
+                to="msg_events.webhook",
             ),
         ),
     ]

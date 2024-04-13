@@ -33,10 +33,10 @@ def get_proxies_sslproxies():
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
         logger.warning(f"Connection error getting proxies ({url})")
-        return list()
+        return []
     try:
         parser = fromstring(response.text)
-        proxies = list()
+        proxies = []
         for i in parser.xpath("//tbody/tr")[:20]:
             if i.xpath('.//td[7][contains(text(),"yes")]'):
                 # Grabbing IP and corresponding PORT
@@ -44,7 +44,7 @@ def get_proxies_sslproxies():
                 proxies.append(proxy)
     except Exception as ex:
         logger.warning(f"Error getting proxies ({url}): {ex}")
-        return list()
+        return []
     return proxies
 
 
@@ -56,10 +56,10 @@ def get_proxies_freeproxycz():
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
         logger.warning(f"Connection error getting proxies ({url})")
-        return list()
+        return []
     try:
         parser = fromstring(response.text)
-        proxies = list()
+        proxies = []
         for i in parser.xpath("//table[@id='proxy_list']/tbody/tr")[:20]:
             if not i.xpath('.//td[@colspan="11"]'):
                 # Grabbing IP and corresponding PORT
@@ -73,7 +73,7 @@ def get_proxies_freeproxycz():
                 proxies.append(proxy)
     except Exception as ex:
         logger.warning(f"Error getting proxies ({url}): {ex}")
-        return list()
+        return []
     return proxies
 
 
@@ -88,12 +88,12 @@ def get_proxies_proxyscrape():
         response = requests.get(url, headers=headers_list)
     except requests.exceptions.ConnectionError:
         logger.warning(f"Connection error getting proxies ({url})")
-        return list()
+        return []
     try:
         proxies = response.text.splitlines()[:20]
     except Exception as ex:
         logger.warning(f"Error getting proxies ({url}): {ex}")
-        return list()
+        return []
     return proxies
 
 
@@ -103,15 +103,15 @@ def get_proxies_proxylist():
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
         logger.warning(f"Connection error getting proxies ({url})")
-        return list()
+        return []
     try:
-        proxies = list()
+        proxies = []
         res = json.loads(response.text)
         for p in res[0]["LISTA"]:
             proxies.append(":".join([p["IP"], p["PORT"]]))
     except Exception as ex:
         logger.warning(f"Error getting proxies ({url}): {ex}")
-        return list()
+        return []
     return proxies[:20]
 
 
@@ -121,10 +121,10 @@ def get_proxies_proxynova():
         response = requests.get(url)
     except requests.exceptions.ConnectionError:
         logger.warning(f"Connection error getting proxies ({url})")
-        return list()
+        return []
     try:
         parser = fromstring(response.text)
-        proxies = list()
+        proxies = []
         for i in parser.xpath("//tbody/tr")[:20]:
             ip_script = i.xpath("./td[1]/abbr/script/text()")
             if len(ip_script) > 0:
@@ -137,18 +137,16 @@ def get_proxies_proxynova():
                 continue
             ip = res.group(1)
             # Grabbing IP and corresponding PORT
-            proxy = ":".join([ip, "".join(i.xpath(".//td[2]/text()")[0].split())]).replace(
-                "' + '", ""
-            )
+            proxy = ":".join([ip, "".join(i.xpath(".//td[2]/text()")[0].split())]).replace("' + '", "")
             proxies.append(proxy)
     except Exception as ex:
         logger.warning(f"Error getting proxies ({url}): {ex}")
-        return list()
+        return []
     return proxies
 
 
 def get_all_proxies():
-    proxies = list()
+    proxies = []
     proxies += get_proxies_sslproxies()
     proxies += get_proxies_freeproxycz()
     proxies += get_proxies_proxyscrape()

@@ -32,6 +32,7 @@ free-proxy = "^1.1"
 django-cors-headers = "^4.3.1"
 pymemcache = "^4.0.0"
 retry = "^0.9.2"
+black = "^24.3.0"
 ruff = "^0.3.7"
 scrapfly-sdk = {extras = ["all"], version = "^0.8.15"}
 
@@ -39,13 +40,14 @@ scrapfly-sdk = {extras = ["all"], version = "^0.8.15"}
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.black]
+line-length = 120
+target-version = ["py38"]
+
 [tool.ruff]
 output-format = "full"
 line-length = 120
 exclude = [".venv", ".git", "helm", "terraform", "build"]
 target-version = "py38"
-lint.select = ["A", "ASYNC", "B006", "C4", "E", "F", "I", "ISC", "Q", "T20", "W"]
-lint.fixable = ["I"]
-lint.ignore = [
-    "C408",
-]
+lint.select = ["A", "ASYNC", "B", "C4", "E", "F", "I", "ISC", "N", "Q", "SIM", "T20", "UP", "W"]
+lint.fixable = ["C4", "I"]
