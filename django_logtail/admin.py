@@ -46,9 +46,9 @@ class LogAdmin(admin.ModelAdmin):
             seek_to = file_length
 
         try:
-            with open(log_file) as context["log"]:
-                context["log"].seek(seek_to)
-                context["starts"] = seek_to
+            context["log"] = open(log_file)  # noqa: SIM115
+            context["log"].seek(seek_to)
+            context["starts"] = seek_to
         except OSError as exc:
             raise Http404("Cannot access file") from exc
 
