@@ -41,19 +41,16 @@ class Team(models.Model):
     def get_absolute_url(self):
         return reverse("match-detail", kwargs={"slug": self.slug})
 
-    def _get_unique_slug(self):
-        slug = slugify(self.name)
+    def _check_slug(self):
+        slug = self.slug or slugify(self.name)
         unique_slug = slug
         num = 1
-        while Team.objects.filter(slug=unique_slug).exists():
+        while Team.objects.exclude(id=self.id).filter(slug=unique_slug).exists():
             unique_slug = "{}-{}".format(slug, num)
             num += 1
-        return unique_slug
+        self.slug = unique_slug
 
-    # noinspection PyBroadException
-    def save(self, *args, **kwargs):
-        if not self.slug or self.slug == "to-replace":
-            self.slug = self._get_unique_slug()
+    def check_update_logo(self):
         if (self.logo_url and not self.logo_file) or datetime.datetime.now().replace(
             tzinfo=None
         ) - self.logo_updated_at.replace(tzinfo=None) > datetime.timedelta(days=90):
@@ -69,6 +66,12 @@ class Team(models.Model):
                 fp.write(response.content)
                 self.logo_file.save(os.path.basename(self.logo_url), File(fp), save=False)
                 self.logo_updated_at = datetime.datetime.now()
+                return True
+        return False
+
+    # noinspection PyBroadException
+    def save(self, *args, **kwargs):
+        self._check_slug()
         super().save(*args, **kwargs)
 
 

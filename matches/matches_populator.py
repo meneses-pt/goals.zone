@@ -187,18 +187,6 @@ def process_match(fixture, raise_exception=False):
             season_obj = None
         home_team = _get_or_create_team(fixture["homeTeam"])
         away_team = _get_or_create_team(fixture["awayTeam"])
-        if (
-            home_team.name_code is None
-            or away_team.name_code is None
-            or datetime.now().replace(tzinfo=None) - home_team.updated_at.replace(tzinfo=None)
-            > timedelta(days=30)
-            or datetime.now().replace(tzinfo=None) - away_team.updated_at.replace(tzinfo=None)
-            > timedelta(days=30)
-        ):
-            logger.info("Going to fetch match details (update team code)")
-            match_details_response = _fetch_sofascore_match_details(fixture["id"])
-            get_team_name_code(home_team, match_details_response, "homeTeam")
-            get_team_name_code(away_team, match_details_response, "awayTeam")
         score = None
         if "display" in fixture["homeScore"] and "display" in fixture["awayScore"]:
             home_goals = fixture["homeScore"]["display"]
@@ -221,6 +209,7 @@ def process_match(fixture, raise_exception=False):
         _save_or_update_match(match)
     except Exception as ex:
         logger.error(f"Error processing match [{home_team} - {away_team}]: {ex}")
+        send_monitoring_message(f"*Error processing match [{home_team} - {away_team}]\n" + str(ex))
         if raise_exception:
             raise ex
         return False
@@ -232,30 +221,26 @@ def _get_or_create_team(team):
     db_team, db_team_created = Team.objects.get_or_create(
         id=team_id, defaults={"name": team["name"]}
     )
+
+    data_updated = _update_property(db_team, "slug", team, "slug")
+    data_updated |= _update_property(db_team, "name", team, "name")
+    data_updated |= _update_property(db_team, "name_code", team, "nameCode")
+
     if db_team_created:
-        db_team.name = team["name"]
         db_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
+    else:
+        data_updated |= db_team.check_update_logo()
+    if data_updated or db_team_created:
         db_team.save()
     return db_team
 
 
-def get_team_name_code(team, response, team_tag):
-    try:
-        if response is not None and response.status_code == 200:
-            data = json.loads(response.content)
-            team_data = data["game"]["tournaments"][0]["events"][0][team_tag]
-            try:
-                name_code = team_data["nameCode"]
-            except Exception as ex:
-                name_code = ""
-                logger.error(ex)
-            if team.name_code is None or name_code != "":
-                team.name_code = name_code
-            team.name = team_data["name"]
-            team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_data['id']}/image"
-            team.save()
-    except Exception as ex:
-        logger.error(ex)
+def _update_property(db_team, db_property_name, team, property_name):
+    team_property = team.get(property_name, None)
+    if team_property and getattr(db_team, db_property_name) != team_property:
+        setattr(db_team, db_property_name, team_property)
+        return True
+    return False
 
 
 def _get_or_create_tournament_sofascore(tournament, category):
