@@ -127,9 +127,11 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
             total_scores += 1
             if period1 + period2 != normaltime:
                 wrong_scores += 1
+                logger.info(f"Wrong score detected in match: {match.get('slug')}")
 
     if wrong_scores > 0:
-        if wrong_scores / total_scores > 0.2:
+        wrong_scores_ratio = wrong_scores / total_scores
+        if wrong_scores_ratio > 0.2:
             send_monitoring_message(
                 f"*HIGH* __Wrong scores detected__\n"
                 f"*Wrong scores {wrong_scores}*\n"
@@ -141,7 +143,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
             logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
             logger.info("Finished processing matches")
             return
-        else:
+        elif wrong_scores_ratio > 0.01:
             send_monitoring_message(
                 f"*LOW* __Wrong scores detected__\n"
                 f"*Wrong scores {wrong_scores}*\n"
