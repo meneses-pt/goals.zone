@@ -121,9 +121,11 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
         home_score = match.get("homeScore", {})
         away_score = match.get("awayScore", {})
         for score in [home_score, away_score]:
-            period1 = score.get("period1", 0)
-            period2 = score.get("period2", 0)
-            normaltime = score.get("normaltime", 0)
+            period1 = score.get("period1", None)
+            period2 = score.get("period2", None)
+            normaltime = score.get("normaltime", None)
+            if not period1 or not period2 or not normaltime:
+                continue
             total_scores += 1
             if period1 + period2 != normaltime:
                 wrong_scores += 1
@@ -143,7 +145,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
             logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
             logger.info("Finished processing matches")
             return
-        elif wrong_scores_ratio > 0.01:
+        else:
             send_monitoring_message(
                 f"*LOW* __Wrong scores detected__\n"
                 f"*Wrong scores {wrong_scores}*\n"
@@ -183,8 +185,8 @@ def process_match(fixture, raise_exception=False):
             season_obj = _get_or_create_season_sofascore(fixture["season"])
         else:
             season_obj = None
-        home_team = _get_or_create_home_team_sofascore(fixture)
-        away_team = _get_or_create_away_team_sofascore(fixture)
+        home_team = _get_or_create_team(fixture["homeTeam"])
+        away_team = _get_or_create_team(fixture["awayTeam"])
         if (
             home_team.name_code is None
             or away_team.name_code is None
@@ -225,16 +227,16 @@ def process_match(fixture, raise_exception=False):
     return True
 
 
-def _get_or_create_away_team_sofascore(fixture):
-    team_id = fixture["awayTeam"]["id"]
-    away_team, away_team_created = Team.objects.get_or_create(
-        id=team_id, defaults={"name": fixture["awayTeam"]["name"]}
+def _get_or_create_team(team):
+    team_id = team["id"]
+    db_team, db_team_created = Team.objects.get_or_create(
+        id=team_id, defaults={"name": team["name"]}
     )
-    if away_team_created:
-        away_team.name = fixture["awayTeam"]["name"]
-        away_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
-        away_team.save()
-    return away_team
+    if db_team_created:
+        db_team.name = team["name"]
+        db_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
+        db_team.save()
+    return db_team
 
 
 def get_team_name_code(team, response, team_tag):
@@ -254,18 +256,6 @@ def get_team_name_code(team, response, team_tag):
             team.save()
     except Exception as ex:
         logger.error(ex)
-
-
-def _get_or_create_home_team_sofascore(fixture):
-    team_id = fixture["homeTeam"]["id"]
-    home_team, home_team_created = Team.objects.get_or_create(
-        id=team_id, defaults={"name": fixture["homeTeam"]["name"]}
-    )
-    if home_team_created:
-        home_team.name = fixture["homeTeam"]["name"]
-        home_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
-        home_team.save()
-    return home_team
 
 
 def _get_or_create_tournament_sofascore(tournament, category):
