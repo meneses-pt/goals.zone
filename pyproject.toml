@@ -24,7 +24,7 @@ requests = "^2.31.0"
 slack_webhook = "^1.0.7"
 spacy = "3.7.4"
 tweepy = "^4.14"
-Pillow = "^9.2.0"
+Pillow = "^10.3.0"
 psycopg2-binary = "^2.9.9"
 gunicorn = {extras = ["gevent"], version = "^21.2.0"}
 Brotli = "^1.0.9"
