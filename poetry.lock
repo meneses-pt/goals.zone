@@ -887,17 +887,17 @@ async = ["httpx (>=0.23.0,<0.24.0)"]
 
 [[package]]
 name = "django"
-version = "4.2.11"
+version = "5.0.4"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 files = [
-    {file = "Django-4.2.11-py3-none-any.whl", hash = "sha256:ddc24a0a8280a0430baa37aff11f28574720af05888c62b7cfe71d219f4599d3"},
-    {file = "Django-4.2.11.tar.gz", hash = "sha256:6e6ff3db2d8dd0c986b4eec8554c8e4f919b5c1ff62a5b4390c17aff2ed6e5c4"},
+    {file = "Django-5.0.4-py3-none-any.whl", hash = "sha256:916423499d75d62da7aa038d19aef23d23498d8df229775eb0a6309ee1013775"},
+    {file = "Django-5.0.4.tar.gz", hash = "sha256:4bd01a8c830bb77a8a3b0e7d8b25b887e536ad17a81ba2dce5476135c73312bd"},
 ]
 
 [package.dependencies]
-asgiref = ">=3.6.0,<4"
+asgiref = ">=3.7.0,<4"
 sqlparse = ">=0.3.1"
 tzdata = {version = "*", markers = "sys_platform == \"win32\""}
 
@@ -907,13 +907,13 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-admin-rangefilter"
-version = "0.8.8"
+version = "0.12.4"
 description = "django-admin-rangefilter app, add the filter by a custom date range on the admin UI."
 optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 files = [
-    {file = "django-admin-rangefilter-0.8.8.tar.gz", hash = "sha256:ad4ffc94e05b535ccb72372ce0f698b7890a9ae7989b6d5e5694a41a61036a50"},
-    {file = "django_admin_rangefilter-0.8.8-py2.py3-none-any.whl", hash = "sha256:26e34a6fad29876b2e6b28d5caf32970524a58ac47f27b8b1138089a901cef0a"},
+    {file = "django-admin-rangefilter-0.12.4.tar.gz", hash = "sha256:963df82cc948f938bd437df27db4b2649688034ae3045d748bbaf7686f712a70"},
+    {file = "django_admin_rangefilter-0.12.4-py2.py3-none-any.whl", hash = "sha256:1a86deda4331ee56ccec85ece2fdc166619fcf0b336195ac340b40c6f15844a4"},
 ]
 
 [[package]]
@@ -933,13 +933,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-hosts"
-version = "5.2"
+version = "6.0"
 description = "Dynamic and static host resolving for Django. Maps hostnames to URLconfs."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "django-hosts-5.2.tar.gz", hash = "sha256:32be764dbb0714878a1e6ba5c771418946eb0a17079a14f12e1afa90f182f191"},
-    {file = "django_hosts-5.2-py3-none-any.whl", hash = "sha256:cc4128b3020f059faaad6adb0f8a6784a72b74f979ef2c0d640677d872422dbe"},
+    {file = "django-hosts-6.0.tar.gz", hash = "sha256:e7aec357504d36f384c65fba67deabc4552f36f347b96bb7a3d131a1250d7299"},
+    {file = "django_hosts-6.0-py3-none-any.whl", hash = "sha256:34a97a183b3fb8a00de3e0a8af5355a25ff5203019d2e213edd8f12c330cc303"},
 ]
 
 [[package]]
@@ -4256,4 +4256,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "71dd6f5a8e4f8e2d18b8db36f654e9acf482c64eb925bda93ced0cbb35ad3e3b"
+content-hash = "f97c6acb67af9a5f8fe8ed10e5181239b90acabe3ec04db3ccd875e62cb7c3b9"
