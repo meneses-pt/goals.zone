@@ -933,13 +933,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-hosts"
-version = "5.2"
+version = "6.0"
 description = "Dynamic and static host resolving for Django. Maps hostnames to URLconfs."
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.8"
 files = [
-    {file = "django-hosts-5.2.tar.gz", hash = "sha256:32be764dbb0714878a1e6ba5c771418946eb0a17079a14f12e1afa90f182f191"},
-    {file = "django_hosts-5.2-py3-none-any.whl", hash = "sha256:cc4128b3020f059faaad6adb0f8a6784a72b74f979ef2c0d640677d872422dbe"},
+    {file = "django-hosts-6.0.tar.gz", hash = "sha256:e7aec357504d36f384c65fba67deabc4552f36f347b96bb7a3d131a1250d7299"},
+    {file = "django_hosts-6.0-py3-none-any.whl", hash = "sha256:34a97a183b3fb8a00de3e0a8af5355a25ff5203019d2e213edd8f12c330cc303"},
 ]
 
 [[package]]
@@ -4256,4 +4256,4 @@ testing = ["coverage (>=5.0.3)", "zope.event", "zope.testing"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "71dd6f5a8e4f8e2d18b8db36f654e9acf482c64eb925bda93ced0cbb35ad3e3b"
+content-hash = "b9b3b9ee3bef903db7c93d292f4d993e27774339b473739ab70aab4c30a361b7"
