@@ -2,7 +2,6 @@ import concurrent.futures
 import datetime
 import json
 import logging
-import operator
 import os
 import re
 import time
@@ -12,7 +11,6 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 from datetime import date, timedelta
 from difflib import SequenceMatcher
-from functools import reduce
 from threading import Lock
 from xml.etree import ElementTree as ETree
 
@@ -770,62 +768,76 @@ def extract_names_from_title_regex(title):
 def find_match(home_team, away_team, to_date, from_date=None):
     if from_date is None:
         from_date = date.today()
-    suffix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=False).values_list("term", flat=True)
-    suffix_regex_string = r"( " + r"| ".join(suffix_affiliate_terms) + r")$"
     prefix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=True).values_list("term", flat=True)
     prefix_regex_string = r"^(" + r" |".join(prefix_affiliate_terms) + r" )"
-    suffix_affiliate_home = re.findall(suffix_regex_string, home_team)
-    suffix_affiliate_away = re.findall(suffix_regex_string, away_team)
+
+    suffix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=False).values_list("term", flat=True)
+    suffix_regex_string = r"( " + r"| ".join(suffix_affiliate_terms) + r")$"
+
     prefix_affiliate_home = re.findall(prefix_regex_string, home_team)
     prefix_affiliate_away = re.findall(prefix_regex_string, away_team)
+
+    suffix_affiliate_home = re.findall(suffix_regex_string, home_team)
+    suffix_affiliate_away = re.findall(suffix_regex_string, away_team)
+
     matches = Match.objects.filter(datetime__gte=(from_date - timedelta(hours=72)), datetime__lte=to_date).filter(
         Q(home_team__name__unaccent__trigram_similar=home_team)
+        | Q(home_team__short_name__unaccent__trigram_similar=home_team)
         | Q(home_team__alias__alias__unaccent__trigram_similar=home_team),
         Q(away_team__name__unaccent__trigram_similar=away_team)
+        | Q(away_team__short_name__unaccent__trigram_similar=away_team)
         | Q(away_team__alias__alias__unaccent__trigram_similar=away_team),
     )
-    matches = process_prefix_suffix(
+    matches = process_prefix_suffix_home(
         matches,
         prefix_affiliate_home,
-        prefix_affiliate_terms,
+        prefix_regex_string,
         suffix_affiliate_home,
-        suffix_affiliate_terms,
+        suffix_regex_string,
     )
-    matches = process_prefix_suffix(
+    matches = process_prefix_suffix_away(
         matches,
         prefix_affiliate_away,
-        prefix_affiliate_terms,
+        prefix_regex_string,
         suffix_affiliate_away,
-        suffix_affiliate_terms,
+        suffix_regex_string,
     )
     return matches.order_by("-datetime")
 
 
-def process_prefix_suffix(
+def process_prefix_suffix_home(
     matches,
     prefix_affiliate,
-    prefix_affiliate_terms,
+    prefix_affiliate_regex,
     suffix_affiliate,
-    suffix_affiliate_terms,
+    suffix_affiliate_regex,
 ):
-    if len(suffix_affiliate) > 0:
-        matches = matches.filter(home_team__name__iendswith=suffix_affiliate[0])
-    else:
-        matches = matches.exclude(
-            reduce(
-                operator.or_,
-                (Q(home_team__name__iendswith=f" {term}") for term in suffix_affiliate_terms),
-            )
-        )
     if len(prefix_affiliate) > 0:
         matches = matches.filter(home_team__name__istartswith=prefix_affiliate[0])
     else:
-        matches = matches.exclude(
-            reduce(
-                operator.or_,
-                (Q(home_team__name__istartswith=f" {term}") for term in prefix_affiliate_terms),
-            )
-        )
+        matches = matches.exclude(home_team__name__iregex=prefix_affiliate_regex)
+    if len(suffix_affiliate) > 0:
+        matches = matches.filter(home_team__name__iendswith=suffix_affiliate[0])
+    else:
+        matches = matches.exclude(home_team__name__iregex=suffix_affiliate_regex)
+    return matches
+
+
+def process_prefix_suffix_away(
+    matches,
+    prefix_affiliate,
+    prefix_affiliate_regex,
+    suffix_affiliate,
+    suffix_affiliate_regex,
+):
+    if len(prefix_affiliate) > 0:
+        matches = matches.filter(away_team__name__istartswith=prefix_affiliate[0])
+    else:
+        matches = matches.exclude(away_team__name__iregex=prefix_affiliate_regex)
+    if len(suffix_affiliate) > 0:
+        matches = matches.filter(away_team__name__iendswith=suffix_affiliate[0])
+    else:
+        matches = matches.exclude(away_team__name__iregex=suffix_affiliate_regex)
     return matches
 
 

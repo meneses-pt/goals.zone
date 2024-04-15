@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 class Team(models.Model):
     id = models.IntegerField(unique=True, primary_key=True)
     name = models.CharField(max_length=256)
+    short_name = models.CharField(max_length=256)
     name_code = models.CharField(max_length=5, default=None, null=True)
     logo_url = models.CharField(max_length=256)
     logo_file = models.ImageField(upload_to="logos", default=None, null=True)
@@ -32,7 +33,11 @@ class Team(models.Model):
             GinIndex(
                 OpClass(Upper("name"), name="gin_trgm_ops"),
                 name="team_name_ln_gin_idx",
-            )
+            ),
+            GinIndex(
+                OpClass(Upper("short_name"), name="gin_trgm_ops"),
+                name="team_short_name_ln_gin_idx",
+            ),
         ]
 
     def __str__(self):

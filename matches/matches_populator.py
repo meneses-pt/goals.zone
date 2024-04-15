@@ -216,11 +216,19 @@ def process_match(fixture, raise_exception=False):
 
 def _get_or_create_team(team):
     team_id = team["id"]
-    db_team, db_team_created = Team.objects.get_or_create(id=team_id, defaults={"name": team["name"]})
+    short_name = team.get("shortName", "name")
+    db_team, db_team_created = Team.objects.get_or_create(
+        id=team_id, defaults={"name": team["name"], "short_name": short_name}
+    )
 
     data_updated = _update_property(db_team, "slug", team, "slug")
     data_updated |= _update_property(db_team, "name", team, "name")
+    data_updated |= _update_property(db_team, "short_name", team, "shortName")
     data_updated |= _update_property(db_team, "name_code", team, "nameCode")
+
+    if not db_team.short_name and "shortName" not in team:
+        db_team.short_name = team["name"]
+        data_updated = True
 
     if db_team_created:
         db_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
