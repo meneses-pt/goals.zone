@@ -26,7 +26,7 @@ spacy = "3.7.4"
 tweepy = "^4.14"
 Pillow = "^10.3.0"
 psycopg2-binary = "^2.9.9"
-gunicorn = {extras = ["gevent"], version = "^21.2.0"}
+gunicorn = {extras = ["gevent"], version = "^22.0.0"}
 Brotli = "^1.0.9"
 free-proxy = "^1.1"
 django-cors-headers = "^4.3.1"
