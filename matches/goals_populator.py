@@ -518,14 +518,24 @@ def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
                 logger.info(f"[IFTTT] Status Code: {response.status_code} | [IFTTT] Response! {response.content}")
                 if response.status_code >= 300:
                     send_monitoring_message(
-                        "*IFTTT message not sent!!*\n" + str(response.status_code) + "\n" + str(response.content)
+                        "*IFTTT message not sent!!*\n" + str(response.status_code) + "\n" + str(response.content),
+                        is_alert=True,
+                        disable_notification=True,
                     )
             except Exception as ex:
                 logger.error(f"Error sending webhook single message: {ex}")
-                send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
+                send_monitoring_message(
+                    "*IFTTT message not sent!!*\n" + str(ex),
+                    is_alert=True,
+                    disable_notification=False,
+                )
     except Exception as ex:
         logger.error(f"Error sending webhook messages: {ex}")
-        send_monitoring_message("*IFTTT message not sent!!*\n" + str(ex))
+        send_monitoring_message(
+            "*IFTTT message not sent!!*\n" + str(ex),
+            is_alert=True,
+            disable_notification=False,
+        )
 
 
 def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):
@@ -588,7 +598,11 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
                     time.sleep(1)
                 attempts += 1
             if not is_sent:
-                send_monitoring_message("*Twitter message not sent!!*\n" + str(last_exception_str))
+                send_monitoring_message(
+                    "*Twitter message not sent!!*\n" + str(last_exception_str),
+                    is_alert=True,
+                    disable_notification=True,
+                )
     except Exception as ex:
         logger.error(f"Error sending twitter messages: {ex}")
 
@@ -608,11 +622,12 @@ def send_telegram_message(bot_key, user_id, message, disable_notification=False)
         logger.error(f"Error sending monitoring message: {ex}")
 
 
-def send_monitoring_message(message, disable_notification=False):
+def send_monitoring_message(message, is_alert=False, disable_notification=False):
     try:
         monitoring_accounts = MonitoringAccount.objects.all()
         for ma in monitoring_accounts:
-            send_telegram_message(ma.telegram_bot_key, ma.telegram_user_id, message, disable_notification)
+            key_to_use = ma.telegram_alert_bot_key if is_alert else ma.telegram_bot_key
+            send_telegram_message(key_to_use, ma.telegram_user_id, message, disable_notification)
     except Exception as ex:
         logger.error(f"Error sending monitoring message: {ex}")
 
@@ -739,7 +754,8 @@ def _handle_not_found_match(away_team, home_team, post):
     if home_team_obj or away_team_obj:
         send_monitoring_message(
             f"__Match not found in database__\n*{home_team}*\n*{away_team}*\n{post['title']}",
-            True,
+            is_alert=False,
+            disable_notification=True,
         )
 
 

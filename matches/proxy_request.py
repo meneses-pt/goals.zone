@@ -134,7 +134,9 @@ class ProxyRequest:
                     + "--- [API] "
                     + str(api_response.status_code)
                     + "|"
-                    + str(api_response.content)
+                    + str(api_response.content),
+                    is_alert=True,
+                    disable_notification=False,
                 )
             raise Exception(
                 "Wrong Status Code: [Upstream] "

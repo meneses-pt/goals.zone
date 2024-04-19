@@ -75,7 +75,11 @@ def fetch_full_days(days_ago, days_amount, inverse=True):
                 logger.info(f"Finished fetching day {single_date}")
             except Exception as ex:
                 logger.error(f"Error fetching inverse events: {ex}")
-                send_monitoring_message("*Error fetching inverse events!!*\n" + str(ex))
+                send_monitoring_message(
+                    "*Error fetching inverse events!!*\n" + str(ex),
+                    is_alert=True,
+                    disable_notification=True,
+                )
     logger.info(f"Fetched {len(events)} total events! Inverse?: {inverse}")
     return events
 
@@ -137,7 +141,8 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
                 f"*Wrong scores {wrong_scores}*\n"
                 f"*Total scores {total_scores}*\n"
                 f"Percentage: {(wrong_scores/total_scores):.0%}\n",
-                False,
+                is_alert=True,
+                disable_notification=False,
             )
             logger.info("HIGH number of wrong data. Discarding.")
             logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
@@ -149,7 +154,8 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
                 f"*Wrong scores {wrong_scores}*\n"
                 f"*Total scores {total_scores}*\n"
                 f"Percentage: {(wrong_scores/total_scores):.0%}\n",
-                True,
+                is_alert=True,
+                disable_notification=True,
             )
 
     for match in events:
@@ -207,7 +213,11 @@ def process_match(fixture, raise_exception=False):
         _save_or_update_match(match)
     except Exception as ex:
         logger.error(f"Error processing match [{home_team} - {away_team}]: {ex}")
-        send_monitoring_message(f"*Error processing match [{home_team} - {away_team}]\n" + str(ex))
+        send_monitoring_message(
+            f"*Error processing match [{home_team} - {away_team}]\n" + str(ex),
+            is_alert=True,
+            disable_notification=False,
+        )
         if raise_exception:
             raise ex
         return False
