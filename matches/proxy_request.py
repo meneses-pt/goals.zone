@@ -71,6 +71,8 @@ class ProxyRequest:
                     # or if the `REQUESTS_SAFE_MODE` is disabled,
                     # which means the current client is not fingerprinted yet
 
+                    # NOTE: In an emergency, use `REQUESTS_SAFE_MODE = True` in settings
+
                     ports_list = [12322, 12323, 22323]
                     # Ports from 11200 to 11250
                     for i in range(11200, 11251):
