@@ -9,6 +9,7 @@ class MonitoringAccount(models.Model):
     goals_heartbeat_url = models.CharField(max_length=1024, null=True)
     matches_heartbeat_url = models.CharField(max_length=1024, null=True)
     goals_reddit_heartbeat_url = models.CharField(max_length=1024, null=True)
+    proxy_heartbeat = models.CharField(max_length=1024, null=True)
 
     def __str__(self):
         return self.title

@@ -13,6 +13,7 @@ from scrapfly import ScrapeConfig, ScrapflyClient
 
 from goals_zone import settings
 from goals_zone.settings import SCRAPFLY_API_KEY
+from monitoring.models import MonitoringAccount
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,16 @@ class ProxyRequest:
         if not ProxyRequest.__instance__:
             ProxyRequest()
         return ProxyRequest.__instance__
+
+    @staticmethod
+    def _send_proxy_response_heartbeat():
+        try:
+            monitoring_accounts = MonitoringAccount.objects.all()
+            for ma in monitoring_accounts:
+                if ma.proxy_heartbeat:
+                    requests.get(ma.proxy_heartbeat)
+        except Exception as ex:
+            logger.error(f"Error sending monitoring message: {ex}")
 
     def make_request(
         self,
@@ -103,6 +114,7 @@ class ProxyRequest:
                         #     timeout=timeout,
                         # )
                         response = self.make_aiohttp_request(url, headers, timeout)
+                        self._send_proxy_response_heartbeat()
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
@@ -170,7 +182,12 @@ class ProxyRequest:
                     timeout=timeout,
                 ) as response,
             ):
-                return await response.json()
+                response_data = await response.read()
+                requests_response = Response()
+                requests_response._content = response_data
+                requests_response.status_code = response.status
+                requests_response.headers = response.headers
+                return response
 
         loop = asyncio.get_event_loop()
         data = loop.run_until_complete(fetch_data())
