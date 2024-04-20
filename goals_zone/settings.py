@@ -253,3 +253,5 @@ NER_MODEL_FOLDER = os.path.join(BASE_DIR, "ner/goals_zone_model")
 GEOIP_PATH = os.path.join(STATICFILES_DIRS[0] if DEBUG else STATIC_ROOT, "geoip2/GeoLite2-City.mmdb")
 
 PREMIUM_PROXY = os.environ.get("PREMIUM_PROXY")
+
+REQUESTS_SAFE_MODE = False

@@ -1,8 +1,10 @@
+import asyncio
 import json
 import logging
 import random
 from urllib.parse import quote
 
+import aiohttp
 import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
@@ -61,10 +63,14 @@ class ProxyRequest:
                     attempts < (max_attempts / 3)
                     and settings.PREMIUM_PROXY
                     and settings.PREMIUM_PROXY != ""
-                    and use_unsafe
+                    and (use_unsafe or not settings.REQUESTS_SAFE_MODE)
                 ):
-                    # This is currently unsafe for API requests
-                    # because they are returning wrong data on purpose
+                    # This might be unsafe for data requests because of
+                    # fingerprinting of the client libs (They are returning random data)
+                    # Requests will come here if they are non-data requests (like images), which can `user_unsafe`
+                    # or if the `REQUESTS_SAFE_MODE` is disabled,
+                    # which means the current client is not fingerprinted yet
+
                     ports_list = [12322, 12323, 22323]
                     # Ports from 11200 to 11250
                     for i in range(11200, 11251):
@@ -88,12 +94,13 @@ class ProxyRequest:
                     if self.current_proxy is None:  # Scrapfly
                         response = self.make_scrapfly_request(url, headers)
                     else:
-                        response = requests.get(
-                            url,
-                            proxies={"https": f"http://{self.current_proxy}"},
-                            headers=headers,
-                            timeout=timeout,
-                        )
+                        # response = requests.get(
+                        #     url,
+                        #     proxies={"https": f"http://{self.current_proxy}"},
+                        #     headers=headers,
+                        #     timeout=timeout,
+                        # )
+                        response = self.make_aiohttp_request(url, headers, timeout)
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
@@ -149,6 +156,23 @@ class ProxyRequest:
                 + str(api_response.content)
             )
         return upstream_response
+
+    def make_aiohttp_request(self, url, headers, timeout=10):
+        async def fetch_data():
+            async with (
+                aiohttp.ClientSession() as session,
+                session.get(
+                    url,
+                    proxy=self.current_proxy,
+                    headers=headers,
+                    timeout=timeout,
+                ) as response,
+            ):
+                return await response.json()
+
+        loop = asyncio.get_event_loop()
+        data = loop.run_until_complete(fetch_data())
+        return data
 
     # Use if scrapfly sdk is not working properly
     @staticmethod
