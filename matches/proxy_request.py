@@ -165,7 +165,7 @@ class ProxyRequest:
                 aiohttp.ClientSession() as session,
                 session.get(
                     url,
-                    proxy=self.current_proxy,
+                    proxy=f"http://{self.current_proxy}",
                     headers=headers,
                     timeout=timeout,
                 ) as response,
