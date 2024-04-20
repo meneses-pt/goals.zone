@@ -107,14 +107,14 @@ class ProxyRequest:
                     if self.current_proxy is None:  # Scrapfly
                         response = self.make_scrapfly_request(url, headers)
                     else:
-                        # response = requests.get(
-                        #     url,
-                        #     proxies={"https": f"http://{self.current_proxy}"},
-                        #     headers=headers,
-                        #     timeout=timeout,
-                        # )
-                        response = self.make_aiohttp_request(url, headers, timeout)
-                        self._send_proxy_response_heartbeat()
+                        response = requests.get(
+                            url,
+                            proxies={"https": f"http://{self.current_proxy}"},
+                            headers=headers,
+                            timeout=timeout,
+                        )
+                        # response = self.make_aiohttp_request(url, headers, timeout)
+                        # self._send_proxy_response_heartbeat()
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
