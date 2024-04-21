@@ -8,7 +8,6 @@ import aiohttp
 import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
-from requests import Response
 from scrapfly import ScrapeConfig, ScrapflyClient
 
 from goals_zone import settings
@@ -60,7 +59,7 @@ class ProxyRequest:
         max_attempts=10,
         use_proxy=True,
         use_unsafe=False,
-    ):
+    ) -> requests.Response:
         if headers is None:
             headers = {}
         response = None
@@ -107,14 +106,14 @@ class ProxyRequest:
                     if self.current_proxy is None:  # Scrapfly
                         response = self.make_scrapfly_request(url, headers)
                     else:
-                        response = requests.get(
-                            url,
-                            proxies={"https": f"http://{self.current_proxy}"},
-                            headers=headers,
-                            timeout=timeout,
-                        )
-                        # response = self.make_aiohttp_request(url, headers, timeout)
-                        # self._send_proxy_response_heartbeat()
+                        # response = requests.get(
+                        #     url,
+                        #     proxies={"https": f"http://{self.current_proxy}"},
+                        #     headers=headers,
+                        #     timeout=timeout,
+                        # )
+                        response = self.make_aiohttp_request(url, headers, timeout)
+                        self._send_proxy_response_heartbeat()
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
                 if response.status_code != 200:
@@ -171,7 +170,7 @@ class ProxyRequest:
             )
         return upstream_response
 
-    def make_aiohttp_request(self, url, headers, timeout=10):
+    def make_aiohttp_request(self, url, headers, timeout=10) -> requests.Response:
         async def fetch_data():
             async with (
                 aiohttp.ClientSession() as session,
@@ -182,12 +181,13 @@ class ProxyRequest:
                     timeout=timeout,
                 ) as response,
             ):
-                response_data = await response.read()
-                requests_response = Response()
-                requests_response._content = response_data
+                requests_response = requests.Response()
                 requests_response.status_code = response.status
                 requests_response.headers = response.headers
-                return response
+                requests_response._content = await response.read()
+                requests_response.url = str(response.url)
+                requests_response.reason = response.reason
+                return requests_response
 
         loop = asyncio.get_event_loop()
         data = loop.run_until_complete(fetch_data())
@@ -214,7 +214,7 @@ class ProxyRequest:
                 + "|"
                 + str(response.content)
             )
-        resp = Response()
+        resp = requests.Response()
         resp_result = response.json()["result"]
         str_content = resp_result["content"]
         str_encoding = resp_result["content_encoding"]
