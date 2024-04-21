@@ -8,6 +8,7 @@ from django.urls import re_path
 
 from django_logtail import app_settings
 from django_logtail.models import Log
+from typing import Optional
 
 
 class HttpUnauthorized(HttpResponse):
@@ -66,7 +67,7 @@ class LogAdmin(admin.ModelAdmin):
                 context["log"].close()
                 return
 
-    def changelist_view(self, request: HttpRequest, extra_context: dict = None) -> TemplateResponse:
+    def changelist_view(self, request: HttpRequest, extra_context: Optional[dict] = None) -> TemplateResponse:
         context = {
             "title": "Logtail",
             "app_label": self.model._meta.app_label,

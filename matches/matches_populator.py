@@ -59,7 +59,7 @@ def fetch_full_days(days_ago: int, days_amount: int, inverse: bool = True) -> li
             logger.warning("No response retrieved")
             continue
         content = response.content
-        data = try_load_json_content(content)
+        data = try_load_json_content(content.decode("utf-8"))
         events += data["events"]
         logger.info(f'Fetched {len(data["events"])} events!')
         if inverse:
@@ -93,7 +93,7 @@ def fetch_live() -> list:
         logger.warning("No response retrieved")
         return []
     content = response.content
-    data = try_load_json_content(content)
+    data = try_load_json_content(content.decode("utf-8"))
     events = data["events"]
     logger.info(f"Fetched {len(events)} LIVE events!")
     return events
@@ -258,7 +258,7 @@ def _update_property(db_team: Team, db_property_name: str, team: dict, property_
     return False
 
 
-def _get_or_create_tournament_sofascore(tournament: dict, category: dict) -> Tournament | None:
+def _get_or_create_tournament_sofascore(tournament: dict, category: Category | None) -> Tournament | None:
     try:
         tid = tournament["id"]
         name = "(no name)"
@@ -330,7 +330,7 @@ def _fetch_live_url() -> tuple[str, dict]:
 
 
 # noinspection PyBroadException
-def _fetch_data_from_sofascore_api(url: str, headers: dict, max_attempts: int = 50) -> requests.Response:
+def _fetch_data_from_sofascore_api(url: str, headers: dict, max_attempts: int = 50) -> requests.Response | None:
     r"""
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
@@ -348,7 +348,7 @@ def get_sofascore_headers() -> dict:
     return headers
 
 
-def _fetch_sofascore_match_details(event_id: str) -> requests.Response:
+def _fetch_sofascore_match_details(event_id: str) -> requests.Response | None:
     headers = get_sofascore_headers()
     return ProxyRequest.get_instance().make_request(
         url=f"https://api.sofascore.com/mobile/v4/event/{event_id}/details",

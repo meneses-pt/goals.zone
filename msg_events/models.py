@@ -1,6 +1,7 @@
 import logging
-from typing import Unpack
 
+import requests
+import tweepy
 from discord_webhook import DiscordWebhook
 from django.db import models
 from django.db.models.signals import m2m_changed
@@ -8,7 +9,6 @@ from django.dispatch import receiver
 from slack_webhook import Slack
 
 from matches.models import Category, Team, Tournament
-from matches.twitter import send_tweet_message
 
 logger = logging.getLogger(__name__)
 
@@ -60,6 +60,28 @@ class Tweet(MessageObject):
     def __str__(self) -> str:
         return self.title
 
+    def send_tweet_message(self, message: str) -> dict | requests.Response:
+        return self._send_tweet_message_v2(message)
+
+    def _send_tweet_message_v1(self, message: str) -> dict | requests.Response:
+        auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret)
+        auth.set_access_token(self.access_token_key, self.access_token_secret)
+        api = tweepy.API(auth)
+        result = api.update_status(status=message)
+        logger.info(f"Successful tweet! Tweets count: {result.user.statuses_count}")
+        return result
+
+    def _send_tweet_message_v2(self, message: str) -> dict | requests.Response:
+        client = tweepy.Client(
+            consumer_key=self.consumer_key,
+            consumer_secret=self.consumer_secret,
+            access_token=self.access_token_key,
+            access_token_secret=self.access_token_secret,
+        )
+        result = client.create_tweet(text=message)
+        logger.info(f"Successful tweet! Tweets result: {result}")
+        return result
+
 
 class Webhook(MessageObject):
     class WebhookDestinations(models.IntegerChoices):
@@ -90,7 +112,7 @@ class CustomMessage(models.Model):
 
 
 @receiver(m2m_changed, sender=CustomMessage.webhooks.through)
-def send_message_webhook(sender: CustomMessage.webhooks.through, instance: CustomMessage, **kwargs: Unpack) -> None:
+def send_message_webhook(sender: CustomMessage, instance: CustomMessage, **kwargs: dict) -> None:
     if kwargs["action"] != "post_add":
         return
     result = instance.result or ""
@@ -119,7 +141,7 @@ def send_message_webhook(sender: CustomMessage.webhooks.through, instance: Custo
 
 
 @receiver(m2m_changed, sender=CustomMessage.tweets.through)
-def send_message_twitter(sender: CustomMessage.webhooks.through, instance: CustomMessage, **kwargs: Unpack) -> None:
+def send_message_twitter(sender: CustomMessage, instance: CustomMessage, **kwargs: dict) -> None:
     if kwargs["action"] != "post_add":
         return
     result = instance.result or ""
@@ -127,7 +149,7 @@ def send_message_twitter(sender: CustomMessage.webhooks.through, instance: Custo
         if not tw.active:
             continue
         try:
-            response = send_tweet_message(tw, instance.message)
+            response = tw.send_tweet_message(instance.message)
             result += tw.title + "\n" + str(response) + "\n\n"
         except Exception as ex:
             logger.error(f"Error sending tweet single message: {ex}")

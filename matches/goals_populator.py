@@ -37,7 +37,6 @@ from matches.models import (
     VideoGoal,
     VideoGoalMirror,
 )
-from matches.twitter import send_tweet_message
 from monitoring.models import MonitoringAccount
 from msg_events.models import MessageObject, Tweet, Webhook
 from ner.models import NerLog
@@ -70,6 +69,9 @@ class RedditHeaders:
 
     @retry(tries=10, delay=1)
     def _get_reddit_token(self) -> None:
+        if not REDDIT_CLIENT_ID or not REDDIT_CLIENT_SECRET:
+            logger.warning(f"No Reddit Client ID or Secret! {REDDIT_CLIENT_ID} | {REDDIT_CLIENT_SECRET}")
+            return
         response = requests.post(
             "https://www.reddit.com/api/v1/access_token",
             data={"grant_type": "client_credentials"},
@@ -149,7 +151,7 @@ def _fetch_reddit_goals() -> None:
         if response.status_code >= 300:
             logger.error("####### ERROR from reddit.com! #######")
             logger.error(f"Status Code: {response.status_code}")
-            logger.error(f"{response.content}")
+            logger.error(f"{response.content!r}")
             logger.error("ERROR: Finished fetching goals")
             return
         try:
@@ -159,10 +161,10 @@ def _fetch_reddit_goals() -> None:
             logger.error(f"Status Code: {response.status_code}")
             logger.error(f"{tb}")
             logger.error(f"{ex}")
-            logger.error(f"{response.content}")
+            logger.error(f"{response.content!r}")
             raise ex
         if "data" not in data:
-            logger.error(f"No data in response: {response.content}")
+            logger.error(f"No data in response: {response.content!r}")
             logger.error("Finished fetching goals")
             return
         results = data["data"]["dist"]
@@ -190,7 +192,7 @@ def _fetch_reddit_goals() -> None:
                     title = post["title"]
                     title = _fix_title(title)
                     post_created_date = datetime.datetime.fromtimestamp(post["created_utc"])
-                    future = executor.submit(find_and_store_videogoal, post, title, post_created_date, lock)
+                    future = executor.submit(find_and_store_videogoal, post, title, post_created_date, lock, None)
                     futures.append(future)
         concurrent.futures.wait(futures)
         end = timeit.default_timer()
@@ -229,6 +231,9 @@ def get_auto_moderator_comment_id(main_comments_link: str) -> str:
     if len(auto_moderator_comments) > 1:
         logger.warning("More than one AutoModerator comment")
         logger.warning(f"{data}")
+    if auto_moderator_comment is None:
+        logger.error("No AutoModerator comment found")
+        return ""
     return auto_moderator_comment["data"]["id"]
 
 
@@ -256,7 +261,7 @@ def find_mirrors(videogoal: VideoGoal) -> bool:
                 tb = traceback.format_exc()
                 logger.error(f"{tb}")
                 logger.error(f"{ex}")
-                logger.error(f"{children_response.content}")
+                logger.error(f"{children_response.content!r}")
                 return True
         except Exception as ex:
             tb = traceback.format_exc()
@@ -325,7 +330,7 @@ def _extract_links_from_comment(author: str, links: list, videogoal: VideoGoal) 
             pass
 
 
-def _insert_or_update_mirror(videogoal: VideoGoal, text: str, url: str, author: str) -> None:
+def _insert_or_update_mirror(videogoal: VideoGoal, text: str | None, url: str, author: str) -> None:
     if text and text.lower().startswith(("^", "contact us", "redditvideodl", "source code")):
         return
     try:
@@ -347,18 +352,21 @@ def _insert_or_update_mirror(videogoal: VideoGoal, text: str, url: str, author: 
         and mirror.videogoal.match.home_team.name_code is not None
         and mirror.videogoal.match.away_team.name_code is not None
     ):
-        send_messages(mirror.videogoal.match, None, mirror, MessageObject.MessageEventType.Mirror)
+        send_messages(
+            mirror.videogoal.match, None, mirror, MessageObject.MessageEventType(MessageObject.MessageEventType.Mirror)
+        )
 
 
 def send_messages(
     match: Match,
-    videogoal: VideoGoal,
-    videogoal_mirror: VideoGoalMirror,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
     event_filter: MessageObject.MessageEventType,
-    lock: Lock = None,
+    lock: Lock | None = None,
 ) -> None:
     logger.info(f"SEND MESSAGES => {event_filter.label}")
-    with lock if lock is not None else nullcontext():
+    lock_obj = lock or nullcontext()
+    with lock_obj:
         logger.info(f"SEND MESSAGE LOG: Using Lock [{lock}]")
         match.refresh_from_db()
         logger.info(
@@ -413,7 +421,9 @@ def send_messages(
             match.save()
 
 
-def format_event_message(match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, message: str) -> str:
+def format_event_message(
+    match: Match, videogoal: VideoGoal | None, videogoal_mirror: VideoGoalMirror | None, message: str
+) -> str:
     message = message.format(m=match, vg=videogoal, vgm=videogoal_mirror)
     return message
 
@@ -453,7 +463,10 @@ def check_conditions(match: Match, msg_obj: MessageObject) -> bool:
 
 
 def send_slack_webhook_message(
-    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+    match: Match,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
+    event_filter: MessageObject.MessageEventType | tuple[int, str],
 ) -> None:
     try:
         webhooks = Webhook.objects.filter(
@@ -481,7 +494,10 @@ def send_slack_webhook_message(
 
 
 def send_discord_webhook_message(
-    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+    match: Match,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
+    event_filter: MessageObject.MessageEventType | tuple[int, str],
 ) -> None:
     try:
         webhooks = Webhook.objects.filter(
@@ -509,7 +525,10 @@ def send_discord_webhook_message(
 
 
 def send_ifttt_webhook_message(
-    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+    match: Match,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
+    event_filter: MessageObject.MessageEventType | tuple[int, str],
 ) -> None:
     try:
         webhooks = Webhook.objects.filter(
@@ -529,7 +548,7 @@ def send_ifttt_webhook_message(
             try:
                 logger.info("[IFTTT] Sending Message to tweet!")
                 response = requests.post(url=wh.webhook_url, json={"message": message})
-                logger.info(f"[IFTTT] Status Code: {response.status_code} | [IFTTT] Response! {response.content}")
+                logger.info(f"[IFTTT] Status Code: {response.status_code} | [IFTTT] Response! {response.content!r}")
                 if response.status_code >= 300:
                     send_monitoring_message(
                         "*IFTTT message not sent!!*\n" + str(response.status_code) + "\n" + str(response.content),
@@ -554,9 +573,9 @@ def send_ifttt_webhook_message(
 
 def check_link_regex(
     msg_obj: MessageObject,
-    videogoal: VideoGoal,
-    videogoal_mirror: VideoGoalMirror,
-    event_filter: MessageObject.MessageEventType,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
+    event_filter: MessageObject.MessageEventType | tuple[int, str],
 ) -> bool:
     if msg_obj.link_regex is not None and len(msg_obj.link_regex) > 0:
         pattern = re.compile(msg_obj.link_regex)
@@ -577,9 +596,9 @@ def check_link_regex(
 
 def check_author(
     msg_obj: MessageObject,
-    videogoal: VideoGoal,
-    videogoal_mirror: VideoGoalMirror,
-    event_filter: MessageObject.MessageEventType,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
+    event_filter: MessageObject.MessageEventType | tuple[int, str],
 ) -> bool:
     if msg_obj.author_filter is not None and len(msg_obj.author_filter) > 0:
         if (
@@ -598,7 +617,10 @@ def check_author(
 
 
 def send_tweet(
-    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+    match: Match,
+    videogoal: VideoGoal | None,
+    videogoal_mirror: VideoGoalMirror | None,
+    event_filter: MessageObject.MessageEventType | tuple[int, str],
 ) -> None:
     try:
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
@@ -616,7 +638,7 @@ def send_tweet(
             message = format_event_message(match, videogoal, videogoal_mirror, tw.message)
             while not is_sent and attempts < 1:  # Just try one time for now
                 try:
-                    send_tweet_message(tw, message)
+                    tw.send_tweet_message(message)
                     is_sent = True
                 except Exception as ex:
                     last_exception_str = str(ex) + "\nMessage: " + message
@@ -659,7 +681,11 @@ def send_monitoring_message(message: str, is_alert: bool = False, disable_notifi
 
 
 def save_ner_log(
-    title: str, regex_home_team: str, regex_away_team: str, ner_home_team: str, ner_away_team: str
+    title: str,
+    regex_home_team: str | None,
+    regex_away_team: str | None,
+    ner_home_team: str | None,
+    ner_away_team: str | None,
 ) -> None:
     if not regex_home_team and not regex_away_team and not ner_home_team and not ner_away_team:
         return
@@ -675,8 +701,8 @@ def save_ner_log(
 
 
 def find_and_store_videogoal(
-    post: dict, title: str, max_match_date: datetime, lock: Lock, match_date: date | None = None
-) -> None:
+    post: dict, title: str, max_match_date: datetime.date, lock: Lock, match_date: datetime.datetime | None = None
+) -> bool:
     if match_date is None:
         match_date = datetime.datetime.utcnow()
     regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
@@ -719,13 +745,16 @@ def find_and_store_videogoal(
                 home_team = ner_home_team
                 away_team = ner_away_team
             _handle_not_found_match(home_team, away_team, post)
+            return False
         except Exception as ex:
             logger.error(f"Exception in monitoring: {ex}")
     else:
         PostMatch.objects.create(permalink=post["permalink"])
+        return False
+    return True
 
 
-def _save_found_match(matches_results: QuerySet, minute_str: str, post: dict, lock: Lock | None = None) -> None:
+def _save_found_match(matches_results: QuerySet, minute_str: str | None, post: dict, lock: Lock | None = None) -> None:
     match = matches_results.first()
     if match.videogoal_set.count() == 0:
         match.first_video_datetime = timezone.now()
@@ -736,7 +765,11 @@ def _save_found_match(matches_results: QuerySet, minute_str: str, post: dict, lo
     videogoal.url = post["url"]
     videogoal.title = (post["title"][:195] + "..") if len(post["title"]) > 195 else post["title"]
     if minute_str:
-        videogoal.minute = re.search(r"\d+", minute_str.strip()[:12]).group()
+        pattern = re.search(r"\d+", minute_str.strip()[:12])
+        if pattern:
+            videogoal.minute = pattern.group()
+        else:
+            videogoal.minute = None
     else:
         videogoal.minute = None
     videogoal.author = post["author"]
@@ -746,17 +779,29 @@ def _save_found_match(matches_results: QuerySet, minute_str: str, post: dict, lo
     find_mirrors(videogoal)
 
 
-def _handle_messages_to_send(match: Match, videogoal: VideoGoal = None, lock: Lock | None = None) -> None:
+def _handle_messages_to_send(match: Match, videogoal: VideoGoal | None = None, lock: Lock | None = None) -> None:
     if videogoal:
         if not videogoal.msg_sent and match.home_team.name_code is not None and match.away_team.name_code is not None:
-            send_messages(match, videogoal, None, MessageObject.MessageEventType.Video, lock)
+            send_messages(
+                match,
+                videogoal,
+                None,
+                MessageObject.MessageEventType(MessageObject.MessageEventType.Video),
+                lock,
+            )
         if (
             match.videogoal_set.count() > 0
             and not match.first_msg_sent
             and match.home_team.name_code is not None
             and match.away_team.name_code is not None
         ):
-            send_messages(match, None, None, MessageObject.MessageEventType.MatchFirstVideo, lock)
+            send_messages(
+                match,
+                None,
+                None,
+                MessageObject.MessageEventType(MessageObject.MessageEventType.MatchFirstVideo),
+                lock,
+            )
     else:
         if (
             match.videogoal_set.count() > 0
@@ -765,10 +810,16 @@ def _handle_messages_to_send(match: Match, videogoal: VideoGoal = None, lock: Lo
             and match.home_team.name_code is not None
             and match.away_team.name_code is not None
         ):
-            send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights, lock)
+            send_messages(
+                match,
+                None,
+                None,
+                MessageObject.MessageEventType(MessageObject.MessageEventType.MatchHighlights),
+                lock,
+            )
 
 
-def _handle_not_found_match(away_team: Team, home_team: Team, post: dict) -> None:
+def _handle_not_found_match(away_team: str | None, home_team: str | None, post: dict) -> None:
     post_match = PostMatch.objects.create(permalink=post["permalink"])
     home_team_obj = Team.objects.filter(
         Q(name__unaccent__trigram_similar=home_team) | Q(alias__alias__unaccent__trigram_similar=home_team)
@@ -811,7 +862,9 @@ def extract_names_from_title_regex(title: str) -> tuple[str | None, str | None, 
     return None, None, None
 
 
-def find_match(home_team: str, away_team: str, to_date: date, from_date: date | None = None) -> QuerySet:
+def find_match(home_team: str | None, away_team: str | None, to_date: date, from_date: date | None = None) -> QuerySet:
+    home_team = home_team or ""
+    away_team = away_team or ""
     if from_date is None:
         from_date = date.today()
     prefix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=True).values_list("term", flat=True)
@@ -853,10 +906,10 @@ def find_match(home_team: str, away_team: str, to_date: date, from_date: date | 
 
 def process_prefix_suffix_home(
     matches: QuerySet,
-    prefix_affiliate: str,
-    prefix_affiliate_regex: list[str],
-    suffix_affiliate: str,
-    suffix_affiliate_regex: list[str],
+    prefix_affiliate: list[str],
+    prefix_affiliate_regex: str,
+    suffix_affiliate: list[str],
+    suffix_affiliate_regex: str,
 ) -> QuerySet:
     if len(prefix_affiliate) > 0:
         matches = matches.filter(home_team__name__istartswith=prefix_affiliate[0])
@@ -871,10 +924,10 @@ def process_prefix_suffix_home(
 
 def process_prefix_suffix_away(
     matches: QuerySet,
-    prefix_affiliate: str,
-    prefix_affiliate_regex: list[str],
-    suffix_affiliate: str,
-    suffix_affiliate_regex: list[str],
+    prefix_affiliate: list[str],
+    prefix_affiliate_regex: str,
+    suffix_affiliate: list[str],
+    suffix_affiliate_regex: str,
 ) -> QuerySet:
     if len(prefix_affiliate) > 0:
         matches = matches.filter(away_team__name__istartswith=prefix_affiliate[0])
@@ -887,12 +940,12 @@ def process_prefix_suffix_away(
     return matches
 
 
-def _fetch_data_from_reddit_api(after: str, new_posts_to_fetch: int) -> requests.Response:
+def _fetch_data_from_reddit_api(after: str | None, new_posts_to_fetch: int) -> requests.Response:
     headers = RedditHeaders().get_headers()
-    response = requests.get(
-        f"https://oauth.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
-        headers=headers,
-    )
+    url = f"https://oauth.reddit.com/r/soccer/new?limit={new_posts_to_fetch}"
+    if after:
+        url += f"&after={after}"
+    response = requests.get(url, headers=headers)
     return response
 
 

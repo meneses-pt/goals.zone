@@ -37,6 +37,8 @@ ruff = "^0.4.0"
 scrapfly-sdk = {extras = ["all"], version = "^0.8.16"}
 asyncio = "^3.4.3"
 aiohttp = "^3.9.5"
+mypy = "^1.9.0"
+no-implicit-optional = "^1.4"
 
 
 [build-system]
@@ -57,3 +59,7 @@ lint.fixable = ["ANN", "C4", "I"]
 lint.ignore = [
     "ANN101"
 ]
+
+[tool.mypy]
+ignore_missing_imports = true
+exclude = ["venv", "django_logtail"]

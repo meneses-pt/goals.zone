@@ -25,14 +25,14 @@ def export_performance_monitor_events(self: admin.ModelAdmin, request: Request, 
     return response
 
 
-export_performance_monitor_events.short_description = "Export selected"
+export_performance_monitor_events.short_description = "Export selected"  # type: ignore
 
 
 def reset_background_task(self: admin.ModelAdmin, request: Request, queryset: QuerySet) -> None:
     queryset.update(attempts=0, run_at="2019-01-01 00:00:00.000000 +00:00")
 
 
-reset_background_task.short_description = "Reset Background Tasks"
+reset_background_task.short_description = "Reset Background Tasks"  # type: ignore
 
 
 class BackgroundTaskAdmin(admin.ModelAdmin):

@@ -1,6 +1,6 @@
 from datetime import date, datetime, timedelta
 from itertools import chain
-from typing import Dict, Unpack
+from typing import Any, Dict
 from urllib.request import Request
 
 from django.core.paginator import Paginator
@@ -40,7 +40,7 @@ class MatchesHistoryListView(generic.ListView):
             .order_by("datetime")
         )
 
-    def get_context_data(self, **kwargs: Unpack) -> Dict:
+    def get_context_data(self, **kwargs: dict) -> dict:
         context = super().get_context_data(**kwargs)
         try:
             query_date_str = self.request.GET.get("date")
@@ -121,7 +121,7 @@ class TeamsDetailView(generic.DetailView):
     paginate_by = 25
     model = Team
 
-    def get_context_data(self, **kwargs: Unpack) -> Dict:
+    def get_context_data(self, **kwargs: dict[str, Any]) -> Dict:
         context = super().get_context_data(**kwargs)
         home_matches = self.object.home_team.annotate(vg_count=Count("videogoal")).filter(vg_count__gt=0)
         away_matches = self.object.away_team.annotate(vg_count=Count("videogoal")).filter(vg_count__gt=0)

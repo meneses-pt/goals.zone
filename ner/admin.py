@@ -91,7 +91,7 @@ def make_reviewed(modeladmin: admin.ModelAdmin, request: Request, queryset: Quer
     queryset.update(reviewed=True)
 
 
-make_reviewed.short_description = "Mark selected logs as reviewed"
+make_reviewed.short_description = "Mark selected logs as reviewed"  # type: ignore
 
 
 def export_titles(self: admin.ModelAdmin, request: Request, queryset: QuerySet[Any]) -> HttpResponseBase:
@@ -103,7 +103,7 @@ def export_titles(self: admin.ModelAdmin, request: Request, queryset: QuerySet[A
     return response
 
 
-export_titles.short_description = "Export titles"
+export_titles.short_description = "Export titles"  # type: ignore
 
 
 class NerLogAdmin(admin.ModelAdmin):

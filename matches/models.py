@@ -5,7 +5,6 @@ import logging
 import os
 import re
 from io import BytesIO
-from typing import Unpack
 
 from django.contrib.postgres.indexes import GinIndex, OpClass
 from django.core.files import File
@@ -78,7 +77,7 @@ class Team(models.Model):
         return False
 
     # noinspection PyBroadException
-    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
+    def save(self, *args: dict, **kwargs: dict) -> None:
         self._check_slug()
         super().save(*args, **kwargs)
 
@@ -121,7 +120,7 @@ class Category(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
+    def save(self, *args: dict, **kwargs: dict) -> None:
         if not self.slug or self.slug == "to-replace":
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -153,7 +152,7 @@ class Tournament(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
+    def save(self, *args: dict, **kwargs: dict) -> None:
         if not self.slug or self.slug == "to-replace":
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -177,7 +176,7 @@ class Season(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
+    def save(self, *args: dict, **kwargs: dict) -> None:
         if not self.slug or self.slug == "to-replace":
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -240,7 +239,7 @@ class Match(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
+    def save(self, *args: dict, **kwargs: dict) -> None:
         if not self.slug:
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -258,7 +257,7 @@ class VideoGoal(models.Model):
     auto_moderator_comment_id = models.CharField(max_length=20, null=True)
 
     @property
-    def minute_int(self) -> int:
+    def minute_int(self) -> float | int:
         int_value = float("inf")
         if self.minute:
             try:

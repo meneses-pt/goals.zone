@@ -67,6 +67,8 @@ def get_proxies_freeproxycz() -> list[str]:
                 ip_script = i.xpath("./td[1]/script/text()")[0]
                 p = re.compile('"(.*)"')
                 res = p.search(ip_script)
+                if not res:
+                    return []
                 ip_base64 = res.group(1)
                 ip = base64.b64decode(ip_base64).decode("utf-8")
                 port = i.xpath("./td[2]/span/text()")[0]

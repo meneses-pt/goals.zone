@@ -10,6 +10,7 @@ import aiohttp
 import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
+from requests.structures import CaseInsensitiveDict
 from scrapfly import ScrapeConfig, ScrapflyClient
 
 from goals_zone import settings
@@ -41,7 +42,7 @@ class ProxyRequest:
         """
         if not ProxyRequest.__instance__:
             ProxyRequest()
-        return ProxyRequest.__instance__
+        return ProxyRequest.__instance__  # type: ignore
 
     @staticmethod
     def _send_proxy_response_heartbeat() -> None:
@@ -61,7 +62,7 @@ class ProxyRequest:
         max_attempts: int = 10,
         use_proxy: bool = True,
         use_unsafe: bool = False,
-    ) -> requests.Response:
+    ) -> requests.Response | None:
         if headers is None:
             headers = {}
         response = None
@@ -126,7 +127,7 @@ class ProxyRequest:
                     f"Exception making ProxyRequest"
                     f" ({attempts}/{max_attempts}): {str(ex)} | {url} | {json.dumps(headers)}",
                 )
-                headers = Headers(headers=True).generate()
+                headers = dict(Headers(headers=True).generate())
                 headers["Accept-Encoding"] = "gzip,deflate,br"
                 headers["Referer"] = "https://www.sofascore.com/"
                 pass
@@ -185,10 +186,10 @@ class ProxyRequest:
             ):
                 requests_response = requests.Response()
                 requests_response.status_code = response.status
-                requests_response.headers = response.headers
+                requests_response.headers = CaseInsensitiveDict(response.headers)
                 requests_response._content = await response.read()
                 requests_response.url = str(response.url)
-                requests_response.reason = response.reason
+                requests_response.reason = response.reason or ""
                 return requests_response
 
         loop = asyncio.get_event_loop()
