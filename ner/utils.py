@@ -1,8 +1,9 @@
 import spacy
 from django.conf import settings
+from spacy.tokens import Doc
 
 
-def get_doc_result(doc):
+def get_doc_result(doc: Doc) -> tuple[str | None, str | None, str | None, str | None]:
     teams = [d.text for d in doc.ents if d.label_ == "Team"]
     players = [d.text for d in doc.ents if d.label_ == "Player"]
     minutes = [d.text for d in doc.ents if d.label_ == "Minute"]
@@ -22,7 +23,7 @@ def get_doc_result(doc):
     return home_team, away_team, player, minute
 
 
-def extract_names_from_title_ner(title):
+def extract_names_from_title_ner(title: str) -> tuple[str | None, str | None, str | None, str | None]:
     nlp_model = spacy.load(settings.NER_MODEL_FOLDER)
     doc = nlp_model(title)
     return get_doc_result(doc)

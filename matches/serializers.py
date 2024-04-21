@@ -1,5 +1,6 @@
 from django.db.models import Count, Q
 from rest_framework import pagination, serializers
+from rest_framework.utils.serializer_helpers import ReturnDict
 
 from matches.models import Match, Team, VideoGoal, VideoGoalMirror
 
@@ -52,7 +53,7 @@ class TeamDetailSerializer(serializers.ModelSerializer):
         paginate_by = 25
         fields = ["name", "logo_file", "slug", "matches"]
 
-    def paginated_matches(self, obj):
+    def paginated_matches(self, obj: Team) -> ReturnDict:
         team_matches = (
             Match.objects.annotate(vg_count=Count("videogoal"))
             .filter(Q(home_team=obj) | Q(away_team=obj))

@@ -1,10 +1,12 @@
 import json
+from typing import Any, Tuple
+from urllib.request import Request
 
 from django import forms
 from django.contrib import admin
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db.models import F, Q
-from django.http import HttpResponse
+from django.db.models import F, Q, QuerySet
+from django.http import HttpResponse, HttpResponseBase
 from rangefilter.filters import DateRangeFilter
 
 from ner.models import NerLog
@@ -14,7 +16,7 @@ class TypeFilter(admin.SimpleListFilter):
     title = "type"
     parameter_name = "type"
 
-    def lookups(self, request, model_admin):
+    def lookups(self, request: Request, model_admin: admin.ModelAdmin) -> Tuple:
         return (
             ("Correct", "Correct"),
             ("Conflict", "Conflict"),
@@ -23,7 +25,7 @@ class TypeFilter(admin.SimpleListFilter):
             ("Not Identified", "Not Identified"),
         )
 
-    def queryset(self, request, queryset):
+    def queryset(self, request: Request, queryset: QuerySet) -> QuerySet[NerLog]:
         value = self.value()
         correct = queryset.filter(
             Q(regex_home_team=F("ner_home_team")) & Q(regex_away_team=F("ner_away_team")),
@@ -85,14 +87,14 @@ class NerLogAdminForm(forms.ModelForm):
         ]
 
 
-def make_reviewed(modeladmin, request, queryset):
+def make_reviewed(modeladmin: admin.ModelAdmin, request: Request, queryset: QuerySet) -> None:
     queryset.update(reviewed=True)
 
 
 make_reviewed.short_description = "Mark selected logs as reviewed"
 
 
-def export_titles(self, request, queryset):
+def export_titles(self: admin.ModelAdmin, request: Request, queryset: QuerySet[Any]) -> HttpResponseBase:
     titles = "\n".join(f"{item.title}" for item in queryset.all())
 
     response = HttpResponse(titles, content_type="text/plain")
@@ -119,7 +121,7 @@ class NerLogAdmin(admin.ModelAdmin):
     actions = [make_reviewed, export_titles]
     form = NerLogAdminForm
 
-    def changelist_view(self, request, extra_context=None):
+    def changelist_view(self, request: Request, extra_context: dict | None = None) -> HttpResponseBase:
         response = super().changelist_view(request, extra_context)
         extra_context = {}
         if hasattr(response, "context_data") and "cl" in response.context_data:

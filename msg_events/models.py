@@ -1,4 +1,5 @@
 import logging
+from typing import Unpack
 
 from discord_webhook import DiscordWebhook
 from django.db import models
@@ -56,7 +57,7 @@ class Tweet(MessageObject):
     message = models.CharField(max_length=2000)
     active = models.BooleanField(default=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
 
 
@@ -72,7 +73,7 @@ class Webhook(MessageObject):
     destination = models.IntegerField(choices=WebhookDestinations.choices, default=WebhookDestinations.Discord)
     active = models.BooleanField(default=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"[{self.get_destination_display()}] {self.title}"
 
 
@@ -84,12 +85,12 @@ class CustomMessage(models.Model):
     result = models.TextField(default=None, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.created_at)
 
 
 @receiver(m2m_changed, sender=CustomMessage.webhooks.through)
-def send_message_webhook(sender, instance, **kwargs):
+def send_message_webhook(sender: CustomMessage.webhooks.through, instance: CustomMessage, **kwargs: Unpack) -> None:
     if kwargs["action"] != "post_add":
         return
     result = instance.result or ""
@@ -118,7 +119,7 @@ def send_message_webhook(sender, instance, **kwargs):
 
 
 @receiver(m2m_changed, sender=CustomMessage.tweets.through)
-def send_message_twitter(sender, instance, **kwargs):
+def send_message_twitter(sender: CustomMessage.webhooks.through, instance: CustomMessage, **kwargs: Unpack) -> None:
     if kwargs["action"] != "post_add":
         return
     result = instance.result or ""

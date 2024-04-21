@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import concurrent.futures
 import datetime
 import json
@@ -21,7 +23,7 @@ from background_task.models import CompletedTask, Task
 from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
-from django.db.models import Q
+from django.db.models import Q, QuerySet
 from django.utils import timezone
 from retry import retry
 from slack_webhook import Slack
@@ -61,13 +63,13 @@ class RedditHeaders:
         "Accept-Encoding": "gzip,deflate,br",
     }
 
-    def __new__(cls):
+    def __new__(cls) -> RedditHeaders:
         if cls.__instance is None:
             cls.__instance = super().__new__(cls)
         return cls.__instance
 
     @retry(tries=10, delay=1)
-    def _get_reddit_token(self):
+    def _get_reddit_token(self) -> None:
         response = requests.post(
             "https://www.reddit.com/api/v1/access_token",
             data={"grant_type": "client_credentials"},
@@ -79,7 +81,7 @@ class RedditHeaders:
         # 60 seconds threshold for renewing token
         self._expires_at = timezone.now() + timedelta(seconds=response_json["expires_in"] - 60)
 
-    def get_headers(self):
+    def get_headers(self) -> dict:
         if self._expires_at is None or self._expires_at < timezone.now():
             logger.info(f"Fetching new reddit token! [expires_at: {self._expires_at}]")
             self._get_reddit_token()
@@ -87,14 +89,14 @@ class RedditHeaders:
 
 
 @background(schedule=60)
-def fetch_videogoals():
+def fetch_videogoals() -> None:
     current = Task.objects.filter(task_name="matches.goals_populator.fetch_videogoals").first()
     logger.info(f"Now: {datetime.datetime.now()} | Task: {current.id} | Fetching new goals...")
     _fetch_reddit_goals()
     send_heartbeat()
 
 
-def send_heartbeat():
+def send_heartbeat() -> None:
     try:
         monitoring_accounts = MonitoringAccount.objects.all()
         for ma in monitoring_accounts:
@@ -104,7 +106,7 @@ def send_heartbeat():
         logger.error(f"Error sending monitoring message: {ex}")
 
 
-def send_reddit_response_heartbeat():
+def send_reddit_response_heartbeat() -> None:
     try:
         monitoring_accounts = MonitoringAccount.objects.all()
         for ma in monitoring_accounts:
@@ -114,7 +116,7 @@ def send_reddit_response_heartbeat():
         logger.error(f"Error sending monitoring message: {ex}")
 
 
-def _should_process_post(post):
+def _should_process_post(post: dict) -> bool:
     return (
         post["url"] is not None
         and post["link_flair_text"] is not None
@@ -122,11 +124,11 @@ def _should_process_post(post):
     )
 
 
-def _is_unflaired_post(post):
+def _is_unflaired_post(post: dict) -> bool:
     return post["url"] is not None and post["link_flair_text"] is None
 
 
-def _fetch_reddit_goals():
+def _fetch_reddit_goals() -> None:
     i = 0
     after = None
     completed = CompletedTask.objects.filter(task_name="matches.goals_populator.fetch_videogoals").count()
@@ -201,7 +203,7 @@ def _fetch_reddit_goals():
     logger.info("Finished fetching goals")
 
 
-def calculate_next_mirrors_check(videogoal):
+def calculate_next_mirrors_check(videogoal: VideoGoal) -> None:
     now = timezone.now()
     created_how_long = now - videogoal.created_at
     intervals = [10, 30, 60, 120, 240]  # minutes
@@ -215,7 +217,7 @@ def calculate_next_mirrors_check(videogoal):
     videogoal.save()
 
 
-def get_auto_moderator_comment_id(main_comments_link):
+def get_auto_moderator_comment_id(main_comments_link: str) -> str:
     response = _make_reddit_api_request(main_comments_link)
     data = json.loads(response.content)
     auto_moderator_comments = [
@@ -230,7 +232,7 @@ def get_auto_moderator_comment_id(main_comments_link):
     return auto_moderator_comment["data"]["id"]
 
 
-def find_mirrors(videogoal):
+def find_mirrors(videogoal: VideoGoal) -> bool:
     try:
         calculate_next_mirrors_check(videogoal)
         main_comments_link = "https://oauth.reddit.com" + videogoal.post_match.permalink
@@ -267,7 +269,7 @@ def find_mirrors(videogoal):
     return True
 
 
-def _parse_reply_for_mirrors(reply, videogoal):
+def _parse_reply_for_mirrors(reply: dict, videogoal: VideoGoal) -> None:
     body = reply["data"]["body"]
     author = reply["data"]["author"]
     stripped_body = os.linesep.join([s for s in body.splitlines() if s])
@@ -288,7 +290,7 @@ def _parse_reply_for_mirrors(reply, videogoal):
         _extract_urls_from_comment(author, body, videogoal)
 
 
-def _extract_urls_from_comment(author, body, videogoal):
+def _extract_urls_from_comment(author: str, body: str, videogoal: VideoGoal) -> None:
     for line in body.splitlines():
         urls = re.findall(
             r"https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|%[0-9a-fA-F][0-9a-fA-F])+",
@@ -310,7 +312,7 @@ def _extract_urls_from_comment(author, body, videogoal):
                     pass
 
 
-def _extract_links_from_comment(author, links, videogoal):
+def _extract_links_from_comment(author: str, links: list, videogoal: VideoGoal) -> None:
     for link in links:
         val = URLValidator()
         try:
@@ -323,7 +325,7 @@ def _extract_links_from_comment(author, links, videogoal):
             pass
 
 
-def _insert_or_update_mirror(videogoal, text, url, author):
+def _insert_or_update_mirror(videogoal: VideoGoal, text: str, url: str, author: str) -> None:
     if text and text.lower().startswith(("^", "contact us", "redditvideodl", "source code")):
         return
     try:
@@ -348,7 +350,13 @@ def _insert_or_update_mirror(videogoal, text, url, author):
         send_messages(mirror.videogoal.match, None, mirror, MessageObject.MessageEventType.Mirror)
 
 
-def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
+def send_messages(
+    match: Match,
+    videogoal: VideoGoal,
+    videogoal_mirror: VideoGoalMirror,
+    event_filter: MessageObject.MessageEventType,
+    lock: Lock = None,
+) -> None:
     logger.info(f"SEND MESSAGES => {event_filter.label}")
     with lock if lock is not None else nullcontext():
         logger.info(f"SEND MESSAGE LOG: Using Lock [{lock}]")
@@ -405,12 +413,12 @@ def send_messages(match, videogoal, videogoal_mirror, event_filter, lock=None):
             match.save()
 
 
-def format_event_message(match, videogoal, videogoal_mirror, message):
+def format_event_message(match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, message: str) -> str:
     message = message.format(m=match, vg=videogoal, vgm=videogoal_mirror)
     return message
 
 
-def check_conditions(match, msg_obj):
+def check_conditions(match: Match, msg_obj: MessageObject) -> bool:
     if msg_obj.include_categories.all().count() > 0 and (
         match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()
     ):
@@ -444,7 +452,9 @@ def check_conditions(match, msg_obj):
     return True
 
 
-def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter):
+def send_slack_webhook_message(
+    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+) -> None:
     try:
         webhooks = Webhook.objects.filter(
             destination__exact=Webhook.WebhookDestinations.Slack,
@@ -470,7 +480,9 @@ def send_slack_webhook_message(match, videogoal, videogoal_mirror, event_filter)
         logger.error(f"Error sending webhook messages: {ex}")
 
 
-def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filter):
+def send_discord_webhook_message(
+    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+) -> None:
     try:
         webhooks = Webhook.objects.filter(
             destination__exact=Webhook.WebhookDestinations.Discord,
@@ -496,7 +508,9 @@ def send_discord_webhook_message(match, videogoal, videogoal_mirror, event_filte
         logger.error(f"Error sending webhook messages: {ex}")
 
 
-def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter):
+def send_ifttt_webhook_message(
+    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+) -> None:
     try:
         webhooks = Webhook.objects.filter(
             destination__exact=Webhook.WebhookDestinations.IFTTT,
@@ -538,7 +552,12 @@ def send_ifttt_webhook_message(match, videogoal, videogoal_mirror, event_filter)
         )
 
 
-def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):
+def check_link_regex(
+    msg_obj: MessageObject,
+    videogoal: VideoGoal,
+    videogoal_mirror: VideoGoalMirror,
+    event_filter: MessageObject.MessageEventType,
+) -> bool:
     if msg_obj.link_regex is not None and len(msg_obj.link_regex) > 0:
         pattern = re.compile(msg_obj.link_regex)
         if (
@@ -556,7 +575,12 @@ def check_link_regex(msg_obj, videogoal, videogoal_mirror, event_filter):
     return True
 
 
-def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
+def check_author(
+    msg_obj: MessageObject,
+    videogoal: VideoGoal,
+    videogoal_mirror: VideoGoalMirror,
+    event_filter: MessageObject.MessageEventType,
+) -> bool:
     if msg_obj.author_filter is not None and len(msg_obj.author_filter) > 0:
         if (
             MessageObject.MessageEventType.Video == event_filter
@@ -573,7 +597,9 @@ def check_author(msg_obj, videogoal, videogoal_mirror, event_filter):
     return True
 
 
-def send_tweet(match, videogoal, videogoal_mirror, event_filter):
+def send_tweet(
+    match: Match, videogoal: VideoGoal, videogoal_mirror: VideoGoalMirror, event_filter: MessageObject.MessageEventType
+) -> None:
     try:
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
@@ -607,7 +633,7 @@ def send_tweet(match, videogoal, videogoal_mirror, event_filter):
         logger.error(f"Error sending twitter messages: {ex}")
 
 
-def send_telegram_message(bot_key, user_id, message, disable_notification=False):
+def send_telegram_message(bot_key: str, user_id: str, message: str, disable_notification: bool = False) -> None:
     try:
         url = f"https://api.telegram.org/bot{bot_key}/sendMessage"
         msg_obj = {
@@ -622,7 +648,7 @@ def send_telegram_message(bot_key, user_id, message, disable_notification=False)
         logger.error(f"Error sending monitoring message: {ex}")
 
 
-def send_monitoring_message(message, is_alert=False, disable_notification=False):
+def send_monitoring_message(message: str, is_alert: bool = False, disable_notification: bool = False) -> None:
     try:
         monitoring_accounts = MonitoringAccount.objects.all()
         for ma in monitoring_accounts:
@@ -632,7 +658,9 @@ def send_monitoring_message(message, is_alert=False, disable_notification=False)
         logger.error(f"Error sending monitoring message: {ex}")
 
 
-def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_away_team):
+def save_ner_log(
+    title: str, regex_home_team: str, regex_away_team: str, ner_home_team: str, ner_away_team: str
+) -> None:
     if not regex_home_team and not regex_away_team and not ner_home_team and not ner_away_team:
         return
     if NerLog.objects.filter(title=title).exists():
@@ -646,7 +674,9 @@ def save_ner_log(title, regex_home_team, regex_away_team, ner_home_team, ner_awa
     log.save()
 
 
-def find_and_store_videogoal(post, title, max_match_date: datetime, lock: Lock, match_date=None):
+def find_and_store_videogoal(
+    post: dict, title: str, max_match_date: datetime, lock: Lock, match_date: date | None = None
+) -> None:
     if match_date is None:
         match_date = datetime.datetime.utcnow()
     regex_home_team, regex_away_team, regex_minute = extract_names_from_title_regex(title)
@@ -695,7 +725,7 @@ def find_and_store_videogoal(post, title, max_match_date: datetime, lock: Lock, 
         PostMatch.objects.create(permalink=post["permalink"])
 
 
-def _save_found_match(matches_results, minute_str, post, lock=None):
+def _save_found_match(matches_results: QuerySet, minute_str: str, post: dict, lock: Lock | None = None) -> None:
     match = matches_results.first()
     if match.videogoal_set.count() == 0:
         match.first_video_datetime = timezone.now()
@@ -716,7 +746,7 @@ def _save_found_match(matches_results, minute_str, post, lock=None):
     find_mirrors(videogoal)
 
 
-def _handle_messages_to_send(match, videogoal=None, lock=None):
+def _handle_messages_to_send(match: Match, videogoal: VideoGoal = None, lock: Lock | None = None) -> None:
     if videogoal:
         if not videogoal.msg_sent and match.home_team.name_code is not None and match.away_team.name_code is not None:
             send_messages(match, videogoal, None, MessageObject.MessageEventType.Video, lock)
@@ -738,7 +768,7 @@ def _handle_messages_to_send(match, videogoal=None, lock=None):
             send_messages(match, None, None, MessageObject.MessageEventType.MatchHighlights, lock)
 
 
-def _handle_not_found_match(away_team, home_team, post):
+def _handle_not_found_match(away_team: Team, home_team: Team, post: dict) -> None:
     post_match = PostMatch.objects.create(permalink=post["permalink"])
     home_team_obj = Team.objects.filter(
         Q(name__unaccent__trigram_similar=home_team) | Q(alias__alias__unaccent__trigram_similar=home_team)
@@ -759,7 +789,7 @@ def _handle_not_found_match(away_team, home_team, post):
         )
 
 
-def extract_names_from_title_regex(title):
+def extract_names_from_title_regex(title: str) -> tuple[str | None, str | None, str | None]:
     # Maybe later we should consider the format
     # HOME_TEAM - AWAY_TEAM HOME_SCORE-AWAY_SCORE
     home = re.findall(r"\[?]?\s?((\w|\s|\.|-)+)((\d|\[\d])([-x]| [-x] | [-x]|[-x] ))(\d|\[\d])", title)
@@ -781,7 +811,7 @@ def extract_names_from_title_regex(title):
     return None, None, None
 
 
-def find_match(home_team, away_team, to_date, from_date=None):
+def find_match(home_team: str, away_team: str, to_date: date, from_date: date | None = None) -> QuerySet:
     if from_date is None:
         from_date = date.today()
     prefix_affiliate_terms = AffiliateTerm.objects.filter(is_prefix=True).values_list("term", flat=True)
@@ -822,12 +852,12 @@ def find_match(home_team, away_team, to_date, from_date=None):
 
 
 def process_prefix_suffix_home(
-    matches,
-    prefix_affiliate,
-    prefix_affiliate_regex,
-    suffix_affiliate,
-    suffix_affiliate_regex,
-):
+    matches: QuerySet,
+    prefix_affiliate: str,
+    prefix_affiliate_regex: list[str],
+    suffix_affiliate: str,
+    suffix_affiliate_regex: list[str],
+) -> QuerySet:
     if len(prefix_affiliate) > 0:
         matches = matches.filter(home_team__name__istartswith=prefix_affiliate[0])
     else:
@@ -840,12 +870,12 @@ def process_prefix_suffix_home(
 
 
 def process_prefix_suffix_away(
-    matches,
-    prefix_affiliate,
-    prefix_affiliate_regex,
-    suffix_affiliate,
-    suffix_affiliate_regex,
-):
+    matches: QuerySet,
+    prefix_affiliate: str,
+    prefix_affiliate_regex: list[str],
+    suffix_affiliate: str,
+    suffix_affiliate_regex: list[str],
+) -> QuerySet:
     if len(prefix_affiliate) > 0:
         matches = matches.filter(away_team__name__istartswith=prefix_affiliate[0])
     else:
@@ -857,7 +887,7 @@ def process_prefix_suffix_away(
     return matches
 
 
-def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
+def _fetch_data_from_reddit_api(after: str, new_posts_to_fetch: int) -> requests.Response:
     headers = RedditHeaders().get_headers()
     response = requests.get(
         f"https://oauth.reddit.com/r/soccer/new?limit={new_posts_to_fetch}&after={after}",
@@ -866,13 +896,13 @@ def _fetch_data_from_reddit_api(after, new_posts_to_fetch):
     return response
 
 
-def _make_reddit_api_request(link):
+def _make_reddit_api_request(link: str) -> requests.Response:
     headers = RedditHeaders().get_headers()
     response = requests.get(link, headers=headers, timeout=5)
     return response
 
 
-def _fetch_historic_data_from_reddit_api(from_date):
+def _fetch_historic_data_from_reddit_api(from_date: date) -> requests.Response:
     headers = RedditHeaders().get_headers()
     after = int(time.mktime(from_date.timetuple()))
     before = int(after + 86400)  # a day
@@ -885,7 +915,7 @@ def _fetch_historic_data_from_reddit_api(from_date):
     return response
 
 
-def _fix_title(title):
+def _fix_title(title: str) -> str:
     if title:
         title = title.replace("&amp;", "&")
     return title

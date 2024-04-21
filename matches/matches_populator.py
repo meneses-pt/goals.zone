@@ -11,6 +11,7 @@ from django.db.models import Count
 from fake_headers import Headers
 
 from monitoring.models import MonitoringAccount
+from msg_events.models import MessageObject
 
 from .goals_populator import _handle_messages_to_send, send_monitoring_message
 from .models import Category, Match, Season, Team, Tournament
@@ -20,14 +21,14 @@ logger = logging.getLogger(__name__)
 
 
 @background(schedule=60 * 5)
-def fetch_new_matches():
+def fetch_new_matches() -> None:
     current = Task.objects.filter(task_name="matches.matches_populator.fetch_new_matches").first()
     logger.info(f"Now: {datetime.now()} | Task: {current.id} | Fetching new matches...")
     fetch_matches_from_sofascore()
     send_heartbeat()
 
 
-def send_heartbeat():
+def send_heartbeat() -> None:
     try:
         monitoring_accounts = MonitoringAccount.objects.all()
         for ma in monitoring_accounts:
@@ -37,7 +38,7 @@ def send_heartbeat():
         logger.error(f"Error sending monitoring message: {ex}")
 
 
-def try_load_json_content(content):
+def try_load_json_content(content: str) -> dict:
     try:
         data = json.loads(content)
     except JSONDecodeError as e:
@@ -46,7 +47,7 @@ def try_load_json_content(content):
     return data
 
 
-def fetch_full_days(days_ago, days_amount, inverse=True):
+def fetch_full_days(days_ago: int, days_amount: int, inverse: bool = True) -> list:
     logger.info(f"Fetching full days events! Inverse?: {inverse}")
     events = []
     start_date = date.today() - timedelta(days=days_ago)
@@ -84,7 +85,7 @@ def fetch_full_days(days_ago, days_amount, inverse=True):
     return events
 
 
-def fetch_live():
+def fetch_live() -> list:
     logger.info("Fetching LIVE events!")
     url, headers = _fetch_live_url()
     response = _fetch_data_from_sofascore_api(url, headers)
@@ -101,7 +102,7 @@ def fetch_live():
 # To fetch just today: days_ago=0, days_amount=1
 # To fetch yesterday and today: days_ago=1, days_amount=2
 # To fetch today and tomorrow: days_ago=0, days_amount=2
-def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
+def fetch_matches_from_sofascore(days_ago: int = 0, days_amount: int = 1) -> None:
     start = timeit.default_timer()
     completed = CompletedTask.objects.filter(task_name="matches.matches_populator.fetch_new_matches").count()
     # 12 is every hour if task is every 5 minutes
@@ -179,7 +180,7 @@ def fetch_matches_from_sofascore(days_ago=0, days_amount=1):
     logger.info("Finished processing matches")
 
 
-def process_match(fixture, raise_exception=False):
+def process_match(fixture: dict, raise_exception: bool = False) -> bool:
     home_team = None
     away_team = None
     try:
@@ -224,7 +225,7 @@ def process_match(fixture, raise_exception=False):
     return True
 
 
-def _get_or_create_team(team):
+def _get_or_create_team(team: dict) -> Team:
     team_id = team["id"]
     short_name = team.get("shortName", "name")
     db_team, db_team_created = Team.objects.get_or_create(
@@ -249,15 +250,15 @@ def _get_or_create_team(team):
     return db_team
 
 
-def _update_property(db_team, db_property_name, team, property_name):
-    team_property = team.get(property_name, None)
+def _update_property(db_team: Team, db_property_name: str, team: dict, property_name: str) -> bool:
+    team_property = team.get(property_name)
     if team_property and getattr(db_team, db_property_name) != team_property:
         setattr(db_team, db_property_name, team_property)
         return True
     return False
 
 
-def _get_or_create_tournament_sofascore(tournament, category):
+def _get_or_create_tournament_sofascore(tournament: dict, category: dict) -> Tournament | None:
     try:
         tid = tournament["id"]
         name = "(no name)"
@@ -277,7 +278,7 @@ def _get_or_create_tournament_sofascore(tournament, category):
         return None
 
 
-def _get_or_create_category_sofascore(category):
+def _get_or_create_category_sofascore(category: dict) -> Category | None:
     try:
         cid = category["id"]
         name = "(no name)"
@@ -296,7 +297,7 @@ def _get_or_create_category_sofascore(category):
         return None
 
 
-def _get_or_create_season_sofascore(season):
+def _get_or_create_season_sofascore(season: dict) -> Season | None:
     try:
         sid = season["id"]
         name = "(no name)"
@@ -313,7 +314,7 @@ def _get_or_create_season_sofascore(season):
         return None
 
 
-def _fetch_full_scan_url(single_date, inverse=False):
+def _fetch_full_scan_url(single_date: date, inverse: bool = False) -> tuple[str, dict]:
     today_str = single_date.strftime("%Y-%m-%d")
     url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}"
     if inverse:
@@ -322,14 +323,14 @@ def _fetch_full_scan_url(single_date, inverse=False):
     return url, headers
 
 
-def _fetch_live_url():
+def _fetch_live_url() -> tuple[str, dict]:
     url = "https://api.sofascore.com/api/v1/sport/football/events/live"
     headers = get_sofascore_headers()
     return url, headers
 
 
 # noinspection PyBroadException
-def _fetch_data_from_sofascore_api(url, headers, max_attempts=50):
+def _fetch_data_from_sofascore_api(url: str, headers: dict, max_attempts: int = 50) -> requests.Response:
     r"""
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
@@ -340,14 +341,14 @@ def _fetch_data_from_sofascore_api(url, headers, max_attempts=50):
     return response
 
 
-def get_sofascore_headers():
+def get_sofascore_headers() -> dict:
     headers = Headers(headers=True).generate()
     headers["Accept-Encoding"] = "gzip,deflate,br"
     headers["Referer"] = "https://www.sofascore.com/"
     return headers
 
 
-def _fetch_sofascore_match_details(event_id):
+def _fetch_sofascore_match_details(event_id: str) -> requests.Response:
     headers = get_sofascore_headers()
     return ProxyRequest.get_instance().make_request(
         url=f"https://api.sofascore.com/mobile/v4/event/{event_id}/details",
@@ -355,7 +356,7 @@ def _fetch_sofascore_match_details(event_id):
     )
 
 
-def matches_filter_conditions(match_filter, match):
+def matches_filter_conditions(match_filter: MessageObject, match: Match) -> bool:
     if match_filter.include_categories.all().count() > 0 and (
         match.category is None or not match_filter.include_categories.filter(id=match.category.id).exists()
     ):
@@ -375,7 +376,7 @@ def matches_filter_conditions(match_filter, match):
     return True
 
 
-def _save_or_update_match(match):
+def _save_or_update_match(match: Match) -> None:
     matches = Match.objects.filter(
         home_team=match.home_team,
         away_team=match.away_team,
@@ -403,7 +404,7 @@ def _save_or_update_match(match):
         _handle_messages_to_send(match)
 
 
-def _get_datetime_string(datetime_str):
+def _get_datetime_string(datetime_str: str) -> str:
     last_pos = datetime_str.rfind(":")
     datetime_str = datetime_str[:last_pos] + datetime_str[last_pos + 1 :]
     return datetime_str

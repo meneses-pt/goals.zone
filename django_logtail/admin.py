@@ -2,7 +2,7 @@ import json
 from os.path import getsize, isfile
 
 from django.contrib import admin
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.template.response import TemplateResponse
 from django.urls import re_path
 
@@ -22,14 +22,14 @@ class LogAdmin(admin.ModelAdmin):
         )
         css = {"all": ("logtail/css/logtail.css",)}
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request: HttpRequest) -> bool:
         return False
 
-    def log_view(self, request, logfile="", seek_to="0"):
+    def log_view(self, request: HttpRequest, logfile: str = "", seek_to: str = "0") -> HttpResponse:
         context = self.log_context(logfile, seek_to)
         return HttpResponse(self.iter_json(context), content_type="application/json")
 
-    def log_context(self, logfile, seek_to):
+    def log_context(self, logfile: str, seek_to: str) -> None:
         context = {}
         seek_to = int(seek_to)
         try:
@@ -54,7 +54,7 @@ class LogAdmin(admin.ModelAdmin):
 
         return context
 
-    def iter_json(self, context):
+    def iter_json(self, context: dict) -> str:
         yield '{"starts": "%d","data": "' % context["starts"]
 
         while True:
@@ -66,7 +66,7 @@ class LogAdmin(admin.ModelAdmin):
                 context["log"].close()
                 return
 
-    def changelist_view(self, request, extra_context=None):
+    def changelist_view(self, request: HttpRequest, extra_context: dict = None) -> TemplateResponse:
         context = {
             "title": "Logtail",
             "app_label": self.model._meta.app_label,
@@ -83,7 +83,7 @@ class LogAdmin(admin.ModelAdmin):
             context,
         )
 
-    def get_urls(self):
+    def get_urls(self) -> list:
         urls = super().get_urls()
         urls.insert(
             0,

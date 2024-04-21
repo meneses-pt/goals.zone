@@ -12,7 +12,7 @@ class NerLog(models.Model):
     reviewed = models.BooleanField(default=False)
 
     @property
-    def type(self):
+    def type(self) -> str:
         if (
             self.regex_home_team
             and self.regex_away_team
@@ -53,5 +53,5 @@ class NerLog(models.Model):
             **{"type": self.type},
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.title)

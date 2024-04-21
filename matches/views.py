@@ -1,8 +1,10 @@
 from datetime import date, datetime, timedelta
 from itertools import chain
+from typing import Dict, Unpack
+from urllib.request import Request
 
 from django.core.paginator import Paginator
-from django.db.models import Count, Q
+from django.db.models import Count, Q, QuerySet
 from django.http import JsonResponse
 from django.utils.timezone import now
 from django.views import generic
@@ -21,7 +23,7 @@ from .utils import localize_date
 class MatchesHistoryListView(generic.ListView):
     template_name = "matches/match_history_list.html"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         try:
             query_date_str = self.request.GET.get("date")
             query_date_obj = datetime.strptime(query_date_str, "%Y-%m-%d")
@@ -38,7 +40,7 @@ class MatchesHistoryListView(generic.ListView):
             .order_by("datetime")
         )
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Unpack) -> Dict:
         context = super().get_context_data(**kwargs)
         try:
             query_date_str = self.request.GET.get("date")
@@ -58,7 +60,7 @@ class MatchesListView(generic.ListView):
     context_object_name = "match_list"
     paginate_by = 50
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Match.objects.filter(videogoal__isnull=False).distinct().order_by("-datetime")
 
 
@@ -70,7 +72,7 @@ class MatchDetailView(generic.DetailView):
 class MatchesApiListView(generics.ListAPIView):
     serializer_class = MatchSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Match.objects.filter(videogoal__isnull=False).distinct().order_by("-datetime")
 
 
@@ -83,7 +85,7 @@ class MatchesApiDetailView(generics.RetrieveAPIView):
 class MatchWeekSearchView(generics.ListAPIView):
     serializer_class = MatchSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         filter_q = self.request.query_params.get("filter", None)
         start_date = datetime.combine(datetime.today(), datetime.min.time()) - timedelta(days=7)
         start_date = localize_date(start_date)
@@ -101,7 +103,7 @@ class TeamsListView(generic.ListView):
     template_name = "matches/team_list.html"
     paginate_by = 25
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         return Team.objects.raw(
             """
             select t.id, t.name, t.logo_url, t.logo_file, t.name_code, count(m.id) as matches_count
@@ -119,7 +121,7 @@ class TeamsDetailView(generic.DetailView):
     paginate_by = 25
     model = Team
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Unpack) -> Dict:
         context = super().get_context_data(**kwargs)
         home_matches = self.object.home_team.annotate(vg_count=Count("videogoal")).filter(vg_count__gt=0)
         away_matches = self.object.away_team.annotate(vg_count=Count("videogoal")).filter(vg_count__gt=0)
@@ -138,7 +140,7 @@ class TeamsDetailView(generic.DetailView):
 class TeamSearchView(generics.ListAPIView):
     serializer_class = TeamSerializer
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet:
         filter_q = self.request.query_params.get("filter", None)
         query_string = (
             """
@@ -169,7 +171,7 @@ class TeamApiDetailView(generics.RetrieveAPIView):
     lookup_field = "slug"
 
 
-def videogoals_per_day(request):
+def videogoals_per_day(request: Request) -> JsonResponse:
     # Calculate the date range for the last week
     today = now().date()
     last_week = today - timedelta(days=7)

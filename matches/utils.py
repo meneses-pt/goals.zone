@@ -4,6 +4,7 @@ import logging
 import random
 import re
 import string
+from datetime import datetime
 
 import requests
 from django.utils import timezone
@@ -13,12 +14,12 @@ from lxml.html import fromstring
 logger = logging.getLogger(__name__)
 
 
-def random_string(length):
+def random_string(length: int) -> str:
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for _ in range(length))
 
 
-def localize_date(date):
+def localize_date(date: datetime) -> datetime:
     try:
         current_timezone = timezone.get_current_timezone()
         date = current_timezone.localize(date)
@@ -27,7 +28,7 @@ def localize_date(date):
     return date
 
 
-def get_proxies_sslproxies():
+def get_proxies_sslproxies() -> list[str]:
     url = "https://sslproxies.org/"
     try:
         response = requests.get(url)
@@ -48,7 +49,7 @@ def get_proxies_sslproxies():
     return proxies
 
 
-def get_proxies_freeproxycz():
+def get_proxies_freeproxycz() -> list[str]:
     headers_list = Headers(headers=True).generate()
     headers_list["Accept-Encoding"] = "gzip,deflate,br"
     url = "http://free-proxy.cz/en/proxylist/country/all/https/ping/level1"
@@ -77,7 +78,7 @@ def get_proxies_freeproxycz():
     return proxies
 
 
-def get_proxies_proxyscrape():
+def get_proxies_proxyscrape() -> list[str]:
     headers_list = Headers(headers=True).generate()
     headers_list["Accept-Encoding"] = "gzip,deflate,br"
     url = (
@@ -97,7 +98,7 @@ def get_proxies_proxyscrape():
     return proxies
 
 
-def get_proxies_proxylist():
+def get_proxies_proxylist() -> list[str]:
     url = "https://www.proxy-list.download/api/v0/get?l=en&t=https"
     try:
         response = requests.get(url)
@@ -115,7 +116,7 @@ def get_proxies_proxylist():
     return proxies[:20]
 
 
-def get_proxies_proxynova():
+def get_proxies_proxynova() -> list[str]:
     url = "https://www.proxynova.com/proxy-server-list/elite-proxies/"
     try:
         response = requests.get(url)
@@ -145,7 +146,7 @@ def get_proxies_proxynova():
     return proxies
 
 
-def get_all_proxies():
+def get_all_proxies() -> list[str]:
     proxies = []
     proxies += get_proxies_sslproxies()
     proxies += get_proxies_freeproxycz()

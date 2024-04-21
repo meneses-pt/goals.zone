@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio
 import json
 import logging
@@ -22,7 +24,7 @@ class ProxyRequest:
     current_proxy = None
     scraper = None
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Constructor.
         """
@@ -33,7 +35,7 @@ class ProxyRequest:
         self.scrapfly = ScrapflyClient(key=SCRAPFLY_API_KEY)
 
     @staticmethod
-    def get_instance():
+    def get_instance() -> ProxyRequest:
         """
         Static method to fetch the current instance.
         """
@@ -42,7 +44,7 @@ class ProxyRequest:
         return ProxyRequest.__instance__
 
     @staticmethod
-    def _send_proxy_response_heartbeat():
+    def _send_proxy_response_heartbeat() -> None:
         try:
             monitoring_accounts = MonitoringAccount.objects.all()
             for ma in monitoring_accounts:
@@ -53,12 +55,12 @@ class ProxyRequest:
 
     def make_request(
         self,
-        url,
-        headers=None,
-        timeout=10,
-        max_attempts=10,
-        use_proxy=True,
-        use_unsafe=False,
+        url: str,
+        headers: dict | None = None,
+        timeout: int = 10,
+        max_attempts: int = 10,
+        use_proxy: bool = True,
+        use_unsafe: bool = False,
     ) -> requests.Response:
         if headers is None:
             headers = {}
@@ -135,7 +137,7 @@ class ProxyRequest:
             )
         return response
 
-    def make_scrapfly_request(self, url, headers):
+    def make_scrapfly_request(self, url: str, headers: dict) -> requests.Response:
         api_response = self.scrapfly.scrape(scrape_config=ScrapeConfig(url=url, headers=headers, asp=True))
         upstream_response = api_response.upstream_result_into_response()
         if not upstream_response:
@@ -170,8 +172,8 @@ class ProxyRequest:
             )
         return upstream_response
 
-    def make_aiohttp_request(self, url, headers, timeout=10) -> requests.Response:
-        async def fetch_data():
+    def make_aiohttp_request(self, url: str, headers: dict, timeout: int = 10) -> requests.Response:
+        async def fetch_data() -> requests.Response:
             async with (
                 aiohttp.ClientSession() as session,
                 session.get(
@@ -195,7 +197,7 @@ class ProxyRequest:
 
     # Use if scrapfly sdk is not working properly
     @staticmethod
-    def make_scrapfly_request_raw(url, headers, timeout):
+    def make_scrapfly_request_raw(url: str, headers: dict, timeout: int) -> requests.Response:
         original_url = quote(url, safe="")
         headers_str = ""
         for headers_key in headers:

@@ -1,8 +1,11 @@
+from __future__ import annotations
+
 import datetime
 import logging
 import os
 import re
 from io import BytesIO
+from typing import Unpack
 
 from django.contrib.postgres.indexes import GinIndex, OpClass
 from django.core.files import File
@@ -40,13 +43,13 @@ class Team(models.Model):
             ),
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("match-detail", kwargs={"slug": self.slug})
 
-    def _check_slug(self):
+    def _check_slug(self) -> None:
         slug = self.slug or slugify(self.name)
         unique_slug = slug
         num = 1
@@ -55,7 +58,7 @@ class Team(models.Model):
             num += 1
         self.slug = unique_slug
 
-    def check_update_logo(self):
+    def check_update_logo(self) -> bool:
         if (self.logo_url and not self.logo_file) or datetime.datetime.now().replace(
             tzinfo=None
         ) - self.logo_updated_at.replace(tzinfo=None) > datetime.timedelta(days=90):
@@ -75,7 +78,7 @@ class Team(models.Model):
         return False
 
     # noinspection PyBroadException
-    def save(self, *args, **kwargs):
+    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
         self._check_slug()
         super().save(*args, **kwargs)
 
@@ -95,7 +98,7 @@ class TeamAlias(models.Model):
             )
         ]
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.alias) + " - Original: " + str(self.team.name)
 
 
@@ -106,10 +109,10 @@ class Category(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     flag = models.CharField(max_length=256, default=None, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
-    def _get_unique_slug(self):
+    def _get_unique_slug(self) -> str:
         slug = slugify(self.name)
         unique_slug = slug
         num = 1
@@ -118,7 +121,7 @@ class Category(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
         if not self.slug or self.slug == "to-replace":
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -132,13 +135,13 @@ class Tournament(models.Model):
     unique_name = models.CharField(max_length=256, default=None, null=True)
     category = models.ForeignKey(Category, related_name="category", null=True, on_delete=models.SET_NULL)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(
             (self.name if self.name is not None else "(no name)")
             + ((" - " + self.category.name) if self.category is not None else "")
         )
 
-    def _get_unique_slug(self):
+    def _get_unique_slug(self) -> str:
         slug = slugify(
             (self.name if self.name is not None else random_string(5))
             + ((" - " + self.category.name) if self.category is not None else "")
@@ -150,7 +153,7 @@ class Tournament(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
         if not self.slug or self.slug == "to-replace":
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -162,10 +165,10 @@ class Season(models.Model):
     slug = models.SlugField(max_length=200, unique=True)
     year = models.CharField(max_length=256, default=None, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.name)
 
-    def _get_unique_slug(self):
+    def _get_unique_slug(self) -> str:
         slug = slugify(self.name)
         unique_slug = slug
         num = 1
@@ -174,7 +177,7 @@ class Season(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
         if not self.slug or self.slug == "to-replace":
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -203,7 +206,7 @@ class Match(models.Model):
         ]
 
     @property
-    def home_team_score(self):
+    def home_team_score(self) -> str | None:
         if self.score is None:
             return None
         else:
@@ -211,7 +214,7 @@ class Match(models.Model):
             return splitted[0]
 
     @property
-    def away_team_score(self):
+    def away_team_score(self) -> str | None:
         if self.score is None:
             return None
         else:
@@ -219,16 +222,16 @@ class Match(models.Model):
             return splitted[1]
 
     @property
-    def simple_title(self):
+    def simple_title(self) -> str:
         return str(self.home_team.name) + " - " + str(self.away_team.name)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.home_team.name) + " " + (self.score if self.score else ":") + " " + str(self.away_team.name)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("match-detail", kwargs={"slug": self.slug})
 
-    def _get_unique_slug(self):
+    def _get_unique_slug(self) -> str:
         slug = slugify(f'{self.home_team.name}-{self.away_team.name}-{self.datetime.strftime("%Y%m%d")}')
         unique_slug = slug
         num = 1
@@ -237,7 +240,7 @@ class Match(models.Model):
             num += 1
         return unique_slug
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Unpack, **kwargs: Unpack) -> None:
         if not self.slug:
             self.slug = self._get_unique_slug()
         super().save(*args, **kwargs)
@@ -255,7 +258,7 @@ class VideoGoal(models.Model):
     auto_moderator_comment_id = models.CharField(max_length=20, null=True)
 
     @property
-    def minute_int(self):
+    def minute_int(self) -> int:
         int_value = float("inf")
         if self.minute:
             try:
@@ -265,25 +268,25 @@ class VideoGoal(models.Model):
         return int_value
 
     @property
-    def simple_permalink(self):
+    def simple_permalink(self) -> str | None:
         result = re.search(r"[^/]+(?=/[^/]+/?$)", self.post_match.permalink)
         return result[0] if result else None
 
     @property
-    def calculated_mirrors(self):
+    def calculated_mirrors(self) -> list[VideoGoalMirror]:
         first_mirror = VideoGoalMirror(title="Original Link", url=self.url)
         mirrors = list(self.mirrors.all())
         mirrors.insert(0, first_mirror)
         return mirrors
 
     @property
-    def reddit_link(self):
+    def reddit_link(self) -> str:
         return f"https://reddit.com{self.post_match.permalink}"
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.title)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self) -> str:
         return reverse("match-detail", kwargs={"slug": self.match.slug}) + f"?v={self.simple_permalink}"
 
 
@@ -294,7 +297,7 @@ class VideoGoalMirror(models.Model):
     msg_sent = models.BooleanField(default=False)
     author = models.CharField(max_length=200, null=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.title)
 
 
@@ -302,7 +305,7 @@ class AffiliateTerm(models.Model):
     term = models.CharField(max_length=25, unique=True)
     is_prefix = models.BooleanField(default=False)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return str(self.term)
 
 
