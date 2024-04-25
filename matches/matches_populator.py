@@ -52,16 +52,24 @@ def fetch_full_days(days_ago: int, days_amount: int, inverse: bool = True) -> li
     events = []
     start_date = date.today() - timedelta(days=days_ago)
     for single_date in (start_date + timedelta(n) for n in range(days_ago + days_amount)):
-        logger.info(f"Fetching day {single_date}")
-        url, headers = _fetch_full_scan_url(single_date)
-        response = _fetch_data_from_sofascore_api(url, headers)
-        if response is None or response.content is None:
-            logger.warning("No response retrieved")
-            continue
-        content = response.content
-        data = try_load_json_content(content.decode("utf-8"))
-        events += data["events"]
-        logger.info(f'Fetched {len(data["events"])} events!')
+        try:
+            logger.info(f"Fetching day {single_date}")
+            url, headers = _fetch_full_scan_url(single_date)
+            response = _fetch_data_from_sofascore_api(url, headers)
+            if response is None or response.content is None:
+                logger.warning("No response retrieved")
+                continue
+            content = response.content
+            data = try_load_json_content(content.decode("utf-8"))
+            events += data["events"]
+            logger.info(f'Fetched {len(data["events"])} events!')
+        except Exception as ex:
+            logger.error(f"Error fetching inverse events: {ex}")
+            send_monitoring_message(
+                "*Error fetching full day events!!*\n" + str(ex),
+                is_alert=True,
+                disable_notification=True,
+            )
         if inverse:
             try:
                 url, headers = _fetch_full_scan_url(single_date, inverse=True)
@@ -87,15 +95,24 @@ def fetch_full_days(days_ago: int, days_amount: int, inverse: bool = True) -> li
 
 def fetch_live() -> list:
     logger.info("Fetching LIVE events!")
-    url, headers = _fetch_live_url()
-    response = _fetch_data_from_sofascore_api(url, headers)
-    if response is None or response.content is None:
-        logger.warning("No response retrieved")
-        return []
-    content = response.content
-    data = try_load_json_content(content.decode("utf-8"))
-    events = data["events"]
-    logger.info(f"Fetched {len(events)} LIVE events!")
+    events = []
+    try:
+        url, headers = _fetch_live_url()
+        response = _fetch_data_from_sofascore_api(url, headers)
+        if response is None or response.content is None:
+            logger.warning("No response retrieved")
+            return []
+        content = response.content
+        data = try_load_json_content(content.decode("utf-8"))
+        events = data["events"]
+        logger.info(f"Fetched {len(events)} LIVE events!")
+    except Exception as ex:
+        logger.error(f"Error fetching inverse events: {ex}")
+        send_monitoring_message(
+            "*Error fetching live events!!*\n" + str(ex),
+            is_alert=True,
+            disable_notification=True,
+        )
     return events
 
 
@@ -329,7 +346,6 @@ def _fetch_live_url() -> tuple[str, dict]:
     return url, headers
 
 
-# noinspection PyBroadException
 def _fetch_data_from_sofascore_api(url: str, headers: dict, max_attempts: int = 50) -> requests.Response | None:
     r"""
     :return: :class:`Response <Response>` object

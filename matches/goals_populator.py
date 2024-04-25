@@ -250,7 +250,8 @@ def find_mirrors(videogoal: VideoGoal) -> bool:
             try:
                 children = json.loads(children_response.content)
                 if (
-                    len(children[1]["data"]["children"]) > 0
+                    len(children) > 1
+                    and len(children[1]["data"]["children"]) > 0
                     and "replies" in children[1]["data"]["children"][0]["data"]
                     and isinstance(children[1]["data"]["children"][0]["data"]["replies"], dict)
                 ):
