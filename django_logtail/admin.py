@@ -1,5 +1,6 @@
 import json
 from os.path import getsize, isfile
+from typing import Optional
 
 from django.contrib import admin
 from django.http import Http404, HttpRequest, HttpResponse
@@ -8,7 +9,6 @@ from django.urls import re_path
 
 from django_logtail import app_settings
 from django_logtail.models import Log
-from typing import Optional
 
 
 class HttpUnauthorized(HttpResponse):
