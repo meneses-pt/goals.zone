@@ -70,7 +70,7 @@ class RedditHeaders:
     @retry(tries=10, delay=1)
     def _get_reddit_token(self) -> None:
         if not REDDIT_CLIENT_ID or not REDDIT_CLIENT_SECRET:
-            logger.warning(f"No Reddit Client ID or Secret! {REDDIT_CLIENT_ID} | {REDDIT_CLIENT_SECRET}")
+            logger.warning("No Reddit Client ID or Secret!")
             return
         response = requests.post(
             "https://www.reddit.com/api/v1/access_token",
@@ -299,7 +299,7 @@ def _parse_reply_for_mirrors(reply: dict, videogoal: VideoGoal) -> None:
 def _extract_urls_from_comment(author: str, body: str, videogoal: VideoGoal) -> None:
     for line in body.splitlines():
         urls = re.findall(
-            r"https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*(),]|%[0-9a-fA-F][0-9a-fA-F])+",
+            r"https?://(?:[a-zA-Z0-9%=.,-_]|[!*(),]|%[0-9a-fA-F][0-9a-fA-F])+",
             line,
         )
         if len(urls) > 0:
