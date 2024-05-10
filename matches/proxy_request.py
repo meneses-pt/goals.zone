@@ -227,7 +227,6 @@ class ProxyRequest:
         c.setopt(pycurl.HEADERFUNCTION, lambda header_line: collect_headers(header_line, headers_dict))
         c.setopt(pycurl.TIMEOUT, timeout)
         c.perform()
-        c.close()
 
         requests_response = requests.Response()
         requests_response.status_code = c.getinfo(pycurl.HTTP_CODE)
@@ -235,6 +234,9 @@ class ProxyRequest:
         requests_response._content = buffer.getvalue()
         requests_response.url = str(c.getinfo(pycurl.EFFECTIVE_URL))
         requests_response.reason = ""
+
+        c.close()
+
         return requests_response
 
     # Use if scrapfly sdk is not working properly
