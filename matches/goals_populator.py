@@ -667,6 +667,8 @@ def send_telegram_message(bot_key: str, user_id: str, message: str, disable_noti
         }
         resp = requests.post(url, data=msg_obj)
         logger.info(resp)
+        if resp.status_code >= 300:
+            logger.error(f"Error sending monitoring message: {resp.content!r}")
     except Exception as ex:
         logger.error(f"Error sending monitoring message: {ex}")
 
