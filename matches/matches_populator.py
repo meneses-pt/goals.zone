@@ -47,8 +47,8 @@ def try_load_json_content(content: str) -> dict:
     return data
 
 
-def fetch_full_day(inverse: bool = True, browse_scraping: bool = True) -> list:
-    logger.info(f"Fetching full days events! Inverse?: {inverse}")
+def fetch_full_day(inverse: bool = True, browse_scraping: bool = False) -> list:
+    logger.info(f"Fetching full days events! Inverse?: {inverse} | Browse scraping?: {browse_scraping}")
     events: list = []
     todays_date = date.today()
     try:
@@ -63,7 +63,7 @@ def fetch_full_day(inverse: bool = True, browse_scraping: bool = True) -> list:
         events += data["events"]
         logger.info(f'Fetched {len(data["events"])} events!')
     except Exception as ex:
-        logger.error(f"Error fetching inverse events: {ex}")
+        logger.error(f"Error fetching full day events: {ex}")
         send_monitoring_message(
             "*Error fetching full day events!!*\n" + str(ex),
             is_alert=True,
@@ -92,8 +92,8 @@ def fetch_full_day(inverse: bool = True, browse_scraping: bool = True) -> list:
     return events
 
 
-def fetch_live(browse_scraping: bool = True) -> list:
-    logger.info("Fetching LIVE events!")
+def fetch_live(browse_scraping: bool = False) -> list:
+    logger.info(f"Fetching LIVE events! Browse scraping?: {browse_scraping}")
     events = []
     try:
         url, headers = _fetch_live_url()
