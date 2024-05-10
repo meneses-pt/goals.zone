@@ -47,58 +47,57 @@ def try_load_json_content(content: str) -> dict:
     return data
 
 
-def fetch_full_days(days_ago: int, days_amount: int, inverse: bool = True) -> list:
+def fetch_full_day(inverse: bool = True, browse_scraping: bool = True) -> list:
     logger.info(f"Fetching full days events! Inverse?: {inverse}")
-    events = []
-    start_date = date.today() - timedelta(days=days_ago)
-    for single_date in (start_date + timedelta(n) for n in range(days_ago + days_amount)):
+    events: list = []
+    todays_date = date.today()
+    try:
+        logger.info(f"Fetching day {todays_date}")
+        url, headers = _fetch_full_scan_url(todays_date)
+        response = _fetch_data_from_sofascore_api(url, headers, browse_scraping)
+        if response is None or response.content is None:
+            logger.warning("No response retrieved")
+            return events
+        content = response.content
+        data = try_load_json_content(content.decode("utf-8"))
+        events += data["events"]
+        logger.info(f'Fetched {len(data["events"])} events!')
+    except Exception as ex:
+        logger.error(f"Error fetching inverse events: {ex}")
+        send_monitoring_message(
+            "*Error fetching full day events!!*\n" + str(ex),
+            is_alert=True,
+            disable_notification=True,
+        )
+    if inverse:
         try:
-            logger.info(f"Fetching day {single_date}")
-            url, headers = _fetch_full_scan_url(single_date)
-            response = _fetch_data_from_sofascore_api(url, headers)
-            if response is None or response.content is None:
-                logger.warning("No response retrieved")
-                continue
-            content = response.content
-            data = try_load_json_content(content.decode("utf-8"))
-            events += data["events"]
-            logger.info(f'Fetched {len(data["events"])} events!')
+            url, headers = _fetch_full_scan_url(todays_date, inverse=True)
+            inverse_response = _fetch_data_from_sofascore_api(url, headers, max_attempts=10)
+            if inverse_response is None or inverse_response.content is None:
+                logger.warning("No response retrieved from inverse")
+            else:
+                inverse_content = inverse_response.content
+                inverse_data = json.loads(inverse_content)
+                logger.info(f'Fetched {len(inverse_data["events"])} inverse events!')
+                events += inverse_data["events"]
+            logger.info(f"Finished fetching day {todays_date}")
         except Exception as ex:
             logger.error(f"Error fetching inverse events: {ex}")
             send_monitoring_message(
-                "*Error fetching full day events!!*\n" + str(ex),
+                "*Error fetching inverse events!!*\n" + str(ex),
                 is_alert=True,
                 disable_notification=True,
             )
-        if inverse:
-            try:
-                url, headers = _fetch_full_scan_url(single_date, inverse=True)
-                inverse_response = _fetch_data_from_sofascore_api(url, headers, max_attempts=10)
-                if inverse_response is None or inverse_response.content is None:
-                    logger.warning("No response retrieved from inverse")
-                else:
-                    inverse_content = inverse_response.content
-                    inverse_data = json.loads(inverse_content)
-                    logger.info(f'Fetched {len(inverse_data["events"])} inverse events!')
-                    events += inverse_data["events"]
-                logger.info(f"Finished fetching day {single_date}")
-            except Exception as ex:
-                logger.error(f"Error fetching inverse events: {ex}")
-                send_monitoring_message(
-                    "*Error fetching inverse events!!*\n" + str(ex),
-                    is_alert=True,
-                    disable_notification=True,
-                )
     logger.info(f"Fetched {len(events)} total events! Inverse?: {inverse}")
     return events
 
 
-def fetch_live() -> list:
+def fetch_live(browse_scraping: bool = True) -> list:
     logger.info("Fetching LIVE events!")
     events = []
     try:
         url, headers = _fetch_live_url()
-        response = _fetch_data_from_sofascore_api(url, headers)
+        response = _fetch_data_from_sofascore_api(url, headers, browse_scraping)
         if response is None or response.content is None:
             logger.warning("No response retrieved")
             return []
@@ -116,25 +115,9 @@ def fetch_live() -> list:
     return events
 
 
-# To fetch just today: days_ago=0, days_amount=1
-# To fetch yesterday and today: days_ago=1, days_amount=2
-# To fetch today and tomorrow: days_ago=0, days_amount=2
-def fetch_matches_from_sofascore(days_ago: int = 0, days_amount: int = 1) -> None:
-    start = timeit.default_timer()
-    completed = CompletedTask.objects.filter(task_name="matches.matches_populator.fetch_new_matches").count()
-    # 12 is every hour if task is every 5 minutes
-    if completed % 12 == 0:
-        events = fetch_full_days(days_ago, days_amount, inverse=True)
-    elif completed % 2 == 0:
-        events = fetch_full_days(days_ago, days_amount, inverse=False)
-    else:
-        events = fetch_live()
-    end = timeit.default_timer()
-    logger.info(f"{(end - start):.2f} elapsed fetching events")
-    start = timeit.default_timer()
-    failed_matches = []
-
-    # Check if this is wrong data
+def is_true_data(
+    events: list, warning_threshold: float = 0.2, error_threshold: float = 0.4, is_fallback: bool = False
+) -> bool:
     total_scores = 0
     wrong_scores = 0
     for match in events:
@@ -153,29 +136,84 @@ def fetch_matches_from_sofascore(days_ago: int = 0, days_amount: int = 1) -> Non
 
     if wrong_scores > 0:
         wrong_scores_ratio = wrong_scores / total_scores
-        if wrong_scores_ratio > 0.4:
+        if wrong_scores_ratio > error_threshold:
             send_monitoring_message(
                 f"*HIGH* __Wrong scores detected__\n"
                 f"*Wrong scores {wrong_scores}*\n"
                 f"*Total scores {total_scores}*\n"
-                f"Percentage: {(wrong_scores/total_scores):.0%}\n",
+                f"Percentage: {(wrong_scores / total_scores):.0%}\n"
+                f"*Is fallback: {is_fallback}*\n",
                 is_alert=True,
                 disable_notification=False,
             )
             logger.info("HIGH number of wrong data. Discarding.")
-            logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
-            logger.info("Finished processing matches")
-            return
-        elif wrong_scores_ratio > 0.2:
+            return False
+        elif wrong_scores_ratio > warning_threshold:
             send_monitoring_message(
                 f"*LOW* __Wrong scores detected__\n"
                 f"*Wrong scores {wrong_scores}*\n"
                 f"*Total scores {total_scores}*\n"
-                f"Percentage: {(wrong_scores/total_scores):.0%}\n",
+                f"Percentage: {(wrong_scores / total_scores):.0%}\n"
+                f"*Is fallback: {is_fallback}*\n",
                 is_alert=True,
                 disable_notification=True,
             )
+        elif is_fallback:
+            send_monitoring_message(
+                f"*Good Fallback on Wrong Scores*\n"
+                f"*Wrong scores {wrong_scores}*\n"
+                f"*Total scores {total_scores}*\n"
+                f"Percentage: {(wrong_scores / total_scores):.0%}\n",
+                is_alert=True,
+                disable_notification=False,
+            )
 
+    return True
+
+
+def fetch_data(completed: int, browse_scraping: bool = False) -> list:
+    start = timeit.default_timer()
+    # 12 is every hour if task is every 5 minutes
+    if completed % 12 == 0:
+        events = fetch_full_day(inverse=True, browse_scraping=browse_scraping)
+    elif completed % 2 == 0:
+        events = fetch_full_day(inverse=False, browse_scraping=browse_scraping)
+    else:
+        events = fetch_live(browse_scraping=browse_scraping)
+    end = timeit.default_timer()
+    logger.info(f"{(end - start):.2f} elapsed fetching events")
+    return events
+
+
+# To fetch just today: days_ago=0, days_amount=1
+# To fetch yesterday and today: days_ago=1, days_amount=2
+# To fetch today and tomorrow: days_ago=0, days_amount=2
+def fetch_matches_from_sofascore() -> None:
+    completed = CompletedTask.objects.filter(task_name="matches.matches_populator.fetch_new_matches").count()
+
+    events = fetch_data(completed)
+    true_data = is_true_data(events)
+    if not true_data:
+        logger.info("Going to try with browse scraping...")
+        events = fetch_data(completed, browse_scraping=True)
+        true_data = is_true_data(events, is_fallback=True)
+
+    if true_data:
+        process_events(events)
+
+    logger.info("Going to delete old matches without videos")
+    delete = (
+        Match.objects.annotate(videos_count=Count("videogoal"))
+        .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7))
+        .delete()
+    )
+    logger.info(f"Deleted {delete} old matches without videos")
+    logger.info("Finished processing matches")
+
+
+def process_events(events: list) -> None:
+    start = timeit.default_timer()
+    failed_matches = []
     for match in events:
         success = process_match(match)
         if not success:
@@ -187,14 +225,6 @@ def fetch_matches_from_sofascore(days_ago: int = 0, days_amount: int = 1) -> Non
         logger.info(f"Finished processing {len(failed_matches)} failed matches!")
     end = timeit.default_timer()
     logger.info(f"{(end - start):.2f} elapsed processing {len(events)} events")
-    logger.info("Going to delete old matches without videos")
-    delete = (
-        Match.objects.annotate(videos_count=Count("videogoal"))
-        .filter(videos_count=0, datetime__lt=datetime.now() - timedelta(days=7))
-        .delete()
-    )
-    logger.info(f"Deleted {delete} old matches without videos")
-    logger.info("Finished processing matches")
 
 
 def process_match(fixture: dict, raise_exception: bool = False) -> bool:
@@ -259,7 +289,7 @@ def _get_or_create_team(team: dict) -> Team:
         data_updated = True
 
     if db_team_created:
-        db_team.logo_url = f"https://api.sofascore.app/api/v1/team/{team_id}/image"
+        db_team.logo_url = f"https://www.sofascore.com/api/v1/team/{team_id}/image"
     else:
         data_updated |= db_team.check_update_logo()
     if data_updated or db_team_created:
@@ -333,28 +363,32 @@ def _get_or_create_season_sofascore(season: dict) -> Season | None:
 
 def _fetch_full_scan_url(single_date: date, inverse: bool = False) -> tuple[str, dict]:
     today_str = single_date.strftime("%Y-%m-%d")
-    url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}"
+    url = f"https://www.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}"
     if inverse:
-        url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse"
+        url = f"https://www.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse"
     headers = get_sofascore_headers()
     headers["Referer"] = f"https://www.sofascore.com/football/{today_str}"
     return url, headers
 
 
 def _fetch_live_url() -> tuple[str, dict]:
-    url = "https://api.sofascore.com/api/v1/sport/football/events/live"
+    url = "https://www.sofascore.com/api/v1/sport/football/events/live"
     headers = get_sofascore_headers()
     headers["Referer"] = "https://www.sofascore.com/football"
     return url, headers
 
 
-def _fetch_data_from_sofascore_api(url: str, headers: dict, max_attempts: int = 50) -> requests.Response | None:
+def _fetch_data_from_sofascore_api(
+    url: str, headers: dict, max_attempts: int = 50, browse_scraping: bool = False
+) -> requests.Response | None:
     r"""
     :return: :class:`Response <Response>` object
     :rtype: requests.Response
     """
-    response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=max_attempts)
-    if not response:
+    response = ProxyRequest.get_instance().make_request(
+        url=url, headers=headers, max_attempts=max_attempts, browse_scraping=browse_scraping
+    )
+    if not response and not browse_scraping:
         response = ProxyRequest.get_instance().make_request(url=url, headers=headers, max_attempts=1, use_proxy=False)
     return response
 

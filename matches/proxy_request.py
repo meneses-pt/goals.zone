@@ -10,7 +10,6 @@ from urllib.parse import quote
 import aiohttp
 import pycurl
 import requests
-from fake_headers import Headers
 from fp.fp import FreeProxy
 from requests.structures import CaseInsensitiveDict
 from scrapfly import ScrapeConfig, ScrapflyClient
@@ -64,6 +63,7 @@ class ProxyRequest:
         max_attempts: int = 10,
         use_proxy: bool = True,
         use_unsafe: bool = False,
+        browse_scraping: bool = False,
     ) -> requests.Response | None:
         if headers is None:
             headers = {}
@@ -71,81 +71,137 @@ class ProxyRequest:
         attempts = 0
         scrapfly_attempts = 0
         exception_messages = ""
-        while (response is None or response.status_code != 200) and attempts < max_attempts:
-            # Make one third of the attempts with each strategy
-            if use_proxy:
-                if (
-                    attempts < (max_attempts / 3)
-                    and settings.PREMIUM_PROXY
-                    and settings.PREMIUM_PROXY != ""
-                    and (use_unsafe or not settings.REQUESTS_SAFE_MODE)
-                ):
-                    # This might be unsafe for data requests because of
-                    # fingerprinting of the client libs (They are returning random data)
-                    # Requests will come here if they are non-data requests (like images), which can `user_unsafe`
-                    # or if the `REQUESTS_SAFE_MODE` is disabled,
-                    # which means the current client is not fingerprinted yet
-
-                    # NOTE: In an emergency, use `REQUESTS_SAFE_MODE = True` in settings
-
-                    ports_list = [12322, 12323, 22323]
-                    # Ports from 11200 to 11250
-                    for i in range(11200, 11251):
-                        ports_list.append(i)
-                    proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
-                    self.current_proxy = proxy
-                elif attempts < (max_attempts * 2 / 3) and scrapfly_attempts < 3:
-                    # Use Scrapfly. Scrpfly does various attempts that can take almost
-                    # 3 minutes each, so we will only allow 3 scrapfly attempts
-                    self.current_proxy = None  # Scrapfly
-                    scrapfly_attempts += 1
-                else:
-                    self.current_proxy = FreeProxy(rand=True).get()
-            try:
-                logger.info(
-                    f"Proxy {'Scrapfly' if self.current_proxy is None else self.current_proxy} | "
-                    f"Attempt {attempts + 1}",
-                )
-                attempts += 1
+        if browse_scraping or (settings.REQUESTS_SAFE_MODE and not use_unsafe):
+            # This requires extreme measures that will ignore some of the parameters of the function call
+            # It will only make a single attempt with a premium proxy
+            response = self.make_scrapfly_scrape_request(url, headers)
+            self._send_proxy_response_heartbeat()
+        else:
+            while (response is None or response.status_code != 200) and attempts < max_attempts:
+                # Make one third of the attempts with each strategy
                 if use_proxy:
-                    if self.current_proxy is None:  # Scrapfly
-                        response = self.make_scrapfly_request(url, headers)
+                    if (
+                        attempts < (max_attempts / 3)
+                        and settings.PREMIUM_PROXY
+                        and settings.PREMIUM_PROXY != ""
+                        and (use_unsafe or not settings.REQUESTS_SAFE_MODE)
+                    ):
+                        # This might be unsafe for data requests because of
+                        # fingerprinting of the client libs (They are returning random data)
+                        # Requests will come here if they are non-data requests (like images), which can `user_unsafe`
+                        # or if the `REQUESTS_SAFE_MODE` is disabled,
+                        # which means the current client is not fingerprinted yet
+
+                        # NOTE: In an emergency, use `REQUESTS_SAFE_MODE = True` in settings
+
+                        ports_list = [12322, 12323, 22323]
+                        # Ports from 11200 to 11250
+                        for i in range(11200, 11251):
+                            ports_list.append(i)
+                        proxy = settings.PREMIUM_PROXY[:-5] + str(random.choice(ports_list))
+                        self.current_proxy = proxy
+                    elif attempts < (max_attempts * 2 / 3) and scrapfly_attempts < 3:
+                        # Use Scrapfly. Scrpfly does various attempts that can take almost
+                        # 3 minutes each, so we will only allow 3 scrapfly attempts
+                        self.current_proxy = None  # Scrapfly
+                        scrapfly_attempts += 1
                     else:
-                        # INFO: requests
-                        # response = requests.get(
-                        #     url,
-                        #     proxies={"https": f"http://{self.current_proxy}"},
-                        #     headers=headers,
-                        #     timeout=timeout,
-                        # )
+                        self.current_proxy = FreeProxy(rand=True).get()
+                try:
+                    logger.info(
+                        f"Proxy {'Scrapfly' if self.current_proxy is None else self.current_proxy} | "
+                        f"Attempt {attempts + 1}",
+                    )
+                    attempts += 1
+                    if use_proxy:
+                        if self.current_proxy is None:  # Scrapfly
+                            response = self.make_scrapfly_request(url, headers)
+                        else:
+                            # INFO: requests
+                            # response = requests.get(
+                            #     url,
+                            #     proxies={"https": f"http://{self.current_proxy}"},
+                            #     headers=headers,
+                            #     timeout=timeout,
+                            # )
 
-                        # INFO: aiohttp
-                        # response = self.make_aiohttp_request(url, headers, timeout)
+                            # INFO: aiohttp
+                            # response = self.make_aiohttp_request(url, headers, timeout)
 
-                        # INFO: pycurl
-                        response = self.make_pycurl_request(url, headers, timeout)
+                            # INFO: pycurl
+                            response = self.make_pycurl_request(url, headers, timeout)
 
-                        self._send_proxy_response_heartbeat()
-                else:
-                    response = requests.get(url, headers=headers, timeout=timeout)
-                if response.status_code != 200:
-                    raise Exception("Wrong Status Code: " + str(response.status_code) + "|" + str(response.content))
-            except Exception as ex:
-                exception_messages += str(ex) + "\n"
-                logger.warning(
-                    f"Exception making ProxyRequest"
-                    f" ({attempts}/{max_attempts}): {str(ex)} | {url} | {json.dumps(headers)}",
+                            self._send_proxy_response_heartbeat()
+                    else:
+                        response = requests.get(url, headers=headers, timeout=timeout)
+                    if response.status_code != 200:
+                        raise Exception("Wrong Status Code: " + str(response.status_code) + "|" + str(response.content))
+                except Exception as ex:
+                    exception_messages += str(ex) + "\n"
+                    logger.warning(
+                        f"Exception making ProxyRequest"
+                        f" ({attempts}/{max_attempts}): {str(ex)} | {url} | {json.dumps(headers)}",
+                    )
+                    pass
+            if attempts == max_attempts:
+                logger.info(f"Number of attempts exceeded trying to make request: {url}")
+                raise Exception(
+                    "Number of attempts exceeded trying to make request: " + str(url) + "\n" + exception_messages
                 )
-                headers = dict(Headers(headers=True).generate())
-                headers["Accept-Encoding"] = "gzip,deflate,br"
-                headers["Referer"] = "https://www.sofascore.com/"
-                pass
-        if attempts == max_attempts:
-            logger.info(f"Number of attempts exceeded trying to make request: {url}")
-            raise Exception(
-                "Number of attempts exceeded trying to make request: " + str(url) + "\n" + exception_messages
-            )
         return response
+
+    def make_scrapfly_scrape_request(self, url: str, headers: dict) -> requests.Response | None:
+
+        from matches.goals_populator import send_monitoring_message
+
+        upstream_response = None
+        js_to_execute = None
+        if "inverse" in url:
+            js_to_execute = (
+                "document.querySelectorAll('button').forEach("
+                "btn => { if (btn.textContent.toLowerCase().includes('show all matches')) btn.click(); });"
+            )
+        elif "live" in url:
+            js_to_execute = (
+                "document.querySelectorAll('button').forEach("
+                "btn => { if (btn.textContent.toLowerCase().includes('live')) btn.click(); });"
+            )
+        actual_url = headers["Referer"]
+        try:
+            api_response = self.scrapfly.scrape(
+                scrape_config=ScrapeConfig(
+                    url=actual_url, headers=headers, asp=True, render_js=True, auto_scroll=True, js=js_to_execute
+                )
+            )
+            xhr_calls = api_response.result["result"]["browser_data"]["xhr_call"]
+            valid_xhr_calls = [xhr_call for xhr_call in xhr_calls if xhr_call["url"] == url]
+            if len(valid_xhr_calls) == 0 and js_to_execute is not None:
+                valid_xhr_calls = [xhr_call for xhr_call in xhr_calls if "scheduled-events" in xhr_call["url"]]
+                send_monitoring_message(
+                    message=f"JS Execution failed on Scrapfly Browser Scrape Request: {url}",
+                    is_alert=False,
+                    disable_notification=True,
+                )
+
+            if len(valid_xhr_calls) > 0:
+                xhr_call = valid_xhr_calls[0]
+                xhr_response = xhr_call["response"]
+                upstream_response = requests.Response()
+                upstream_response.status_code = xhr_response["status"]
+                upstream_response.headers = CaseInsensitiveDict(xhr_response["headers"])
+                upstream_response._content = xhr_response["body"].encode("utf-8")
+                upstream_response.url = xhr_call["url"]
+                upstream_response.reason = ""
+
+        except Exception as ex:
+            send_monitoring_message(
+                message=f"Exception making Scrapfly Browser Scrape Request: {ex}",
+                is_alert=True,
+                disable_notification=False,
+            )
+            raise Exception(f"Exception making Scrapfly Browser Scrape Request: {ex}") from ex
+
+        return upstream_response
 
     def make_scrapfly_request(self, url: str, headers: dict) -> requests.Response:
         api_response = self.scrapfly.scrape(scrape_config=ScrapeConfig(url=url, headers=headers, asp=True))
