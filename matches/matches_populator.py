@@ -337,12 +337,14 @@ def _fetch_full_scan_url(single_date: date, inverse: bool = False) -> tuple[str,
     if inverse:
         url = f"https://api.sofascore.com/api/v1/sport/football/scheduled-events/{today_str}/inverse"
     headers = get_sofascore_headers()
+    headers["Referer"] = f"https://www.sofascore.com/football/{today_str}"
     return url, headers
 
 
 def _fetch_live_url() -> tuple[str, dict]:
     url = "https://api.sofascore.com/api/v1/sport/football/events/live"
     headers = get_sofascore_headers()
+    headers["Referer"] = "https://www.sofascore.com/football"
     return url, headers
 
 
@@ -360,16 +362,7 @@ def _fetch_data_from_sofascore_api(url: str, headers: dict, max_attempts: int = 
 def get_sofascore_headers() -> dict:
     headers = Headers(headers=True).generate()
     headers["Accept-Encoding"] = "gzip,deflate,br"
-    headers["Referer"] = "https://www.sofascore.com/"
     return headers
-
-
-def _fetch_sofascore_match_details(event_id: str) -> requests.Response | None:
-    headers = get_sofascore_headers()
-    return ProxyRequest.get_instance().make_request(
-        url=f"https://api.sofascore.com/mobile/v4/event/{event_id}/details",
-        headers=headers,
-    )
 
 
 def matches_filter_conditions(match_filter: MessageObject, match: Match) -> bool:
