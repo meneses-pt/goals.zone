@@ -54,7 +54,7 @@ def fetch_full_day(inverse: bool = True, browse_scraping: bool = False) -> list:
     try:
         logger.info(f"Fetching day {todays_date}")
         url, headers = _fetch_full_scan_url(todays_date)
-        response = _fetch_data_from_sofascore_api(url, headers, browse_scraping)
+        response = _fetch_data_from_sofascore_api(url=url, headers=headers, browse_scraping=browse_scraping)
         if response is None or response.content is None:
             logger.warning("No response retrieved")
             return events
@@ -72,7 +72,7 @@ def fetch_full_day(inverse: bool = True, browse_scraping: bool = False) -> list:
     if inverse:
         try:
             url, headers = _fetch_full_scan_url(todays_date, inverse=True)
-            inverse_response = _fetch_data_from_sofascore_api(url, headers, max_attempts=10)
+            inverse_response = _fetch_data_from_sofascore_api(url=url, headers=headers, max_attempts=10)
             if inverse_response is None or inverse_response.content is None:
                 logger.warning("No response retrieved from inverse")
             else:
@@ -97,7 +97,7 @@ def fetch_live(browse_scraping: bool = False) -> list:
     events = []
     try:
         url, headers = _fetch_live_url()
-        response = _fetch_data_from_sofascore_api(url, headers, browse_scraping)
+        response = _fetch_data_from_sofascore_api(url=url, headers=headers, browse_scraping=browse_scraping)
         if response is None or response.content is None:
             logger.warning("No response retrieved")
             return []
@@ -106,7 +106,7 @@ def fetch_live(browse_scraping: bool = False) -> list:
         events = data["events"]
         logger.info(f"Fetched {len(events)} LIVE events!")
     except Exception as ex:
-        logger.error(f"Error fetching inverse events: {ex}")
+        logger.error(f"Error fetching live events: {ex}")
         send_monitoring_message(
             "*Error fetching live events!!*\n" + str(ex),
             is_alert=True,
