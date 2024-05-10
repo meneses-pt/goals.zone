@@ -39,6 +39,7 @@ asyncio = "^3.4.3"
 aiohttp = "^3.9.5"
 mypy = "^1.10.0"
 no-implicit-optional = "^1.4"
+pycurl = "^7.45.3"
 
 
 [build-system]

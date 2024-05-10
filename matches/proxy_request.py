@@ -4,9 +4,11 @@ import asyncio
 import json
 import logging
 import random
+from io import BytesIO
 from urllib.parse import quote
 
 import aiohttp
+import pycurl
 import requests
 from fake_headers import Headers
 from fp.fp import FreeProxy
@@ -109,13 +111,20 @@ class ProxyRequest:
                     if self.current_proxy is None:  # Scrapfly
                         response = self.make_scrapfly_request(url, headers)
                     else:
+                        # INFO: requests
                         # response = requests.get(
                         #     url,
                         #     proxies={"https": f"http://{self.current_proxy}"},
                         #     headers=headers,
                         #     timeout=timeout,
                         # )
-                        response = self.make_aiohttp_request(url, headers, timeout)
+
+                        # INFO: aiohttp
+                        # response = self.make_aiohttp_request(url, headers, timeout)
+
+                        # INFO: pycurl
+                        response = self.make_pycurl_request(url, headers, timeout)
+
                         self._send_proxy_response_heartbeat()
                 else:
                     response = requests.get(url, headers=headers, timeout=timeout)
@@ -195,6 +204,38 @@ class ProxyRequest:
         loop = asyncio.get_event_loop()
         data = loop.run_until_complete(fetch_data())
         return data
+
+    def make_pycurl_request(self, url: str, headers: dict, timeout: int = 10) -> requests.Response:
+        def collect_headers(_header_line: bytes, _headers_dict: dict) -> None:
+            # Decode and split the header line into key and value
+            header_line = _header_line.decode("iso-8859-1").strip()
+            if ":" in header_line:
+                key, value = header_line.split(":", 1)
+                _headers_dict[key.strip()] = value.strip()
+
+        headers_dict: dict = {}
+
+        buffer = BytesIO()
+        c = pycurl.Curl()
+        c.setopt(pycurl.URL, url)
+        if self.current_proxy is not None:
+            proxy_sep = self.current_proxy.split("@")
+            c.setopt(pycurl.PROXY, proxy_sep[1])
+            c.setopt(pycurl.PROXYUSERPWD, proxy_sep[0])
+        c.setopt(pycurl.HTTPHEADER, list(headers))
+        c.setopt(pycurl.WRITEDATA, buffer)
+        c.setopt(pycurl.HEADERFUNCTION, lambda header_line: collect_headers(header_line, headers_dict))
+        c.setopt(pycurl.TIMEOUT, timeout)
+        c.perform()
+        c.close()
+
+        requests_response = requests.Response()
+        requests_response.status_code = c.getinfo(pycurl.HTTP_CODE)
+        requests_response.headers = CaseInsensitiveDict(headers_dict)
+        requests_response._content = buffer.getvalue()
+        requests_response.url = str(c.getinfo(pycurl.EFFECTIVE_URL))
+        requests_response.reason = ""
+        return requests_response
 
     # Use if scrapfly sdk is not working properly
     @staticmethod
