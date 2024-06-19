@@ -189,9 +189,18 @@ class ProxyRequest:
                 upstream_response = requests.Response()
                 upstream_response.status_code = xhr_response["status"]
                 upstream_response.headers = CaseInsensitiveDict(xhr_response["headers"])
-                upstream_response._content = xhr_response["body"].encode("utf-8")
                 upstream_response.url = xhr_call["url"]
                 upstream_response.reason = ""
+
+                if "body" not in xhr_response or xhr_response["body"] is None:
+                    send_monitoring_message(
+                        message=f"Body is none on Scrapfly Browser Scrape Request: {url}",
+                        is_alert=True,
+                        disable_notification=False,
+                    )
+                    upstream_response._content = b""
+                else:
+                    upstream_response._content = xhr_response["body"].encode("utf-8")
 
         except Exception as ex:
             send_monitoring_message(
