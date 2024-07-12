@@ -135,6 +135,7 @@ def _is_unflaired_post(post: dict) -> bool:
 
 def _fetch_reddit_videos() -> None:
     completed = CompletedTask.objects.filter(task_name="matches.goals_populator.fetch_videogoals").count()
+    logger.info(f"_fetch_reddit_videos completed: {completed}")
     soccer_full_scan = False
     footballhighlights_full_scan = False
     if completed % 60 == 0:
