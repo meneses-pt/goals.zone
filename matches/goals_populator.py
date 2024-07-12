@@ -138,11 +138,11 @@ def _fetch_reddit_videos() -> None:
     soccer_full_scan = False
     if completed % 60 == 0:
         soccer_full_scan = True
-    _fetch_reddit_soccer_videos(full_scan=soccer_full_scan)
+    #_fetch_reddit_soccer_videos(full_scan=soccer_full_scan)
     if completed % 120 == 0:
         footballhighlights_full_scan = True
     if completed % 15 == 0:
-        _fetch_reddit_footballhighlights_videos(full_scan=footballhighlights_full_scan)
+        #_fetch_reddit_footballhighlights_videos(full_scan=footballhighlights_full_scan)
 
 
 def _fetch_reddit_footballhighlights_videos(full_scan: bool = False) -> None:
