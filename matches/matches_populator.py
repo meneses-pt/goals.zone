@@ -416,6 +416,7 @@ def matches_filter_conditions(match_filter: MessageObject, match: Match) -> bool
         match.tournament is None or match_filter.exclude_tournaments.filter(id=match.tournament.id).exists()
     ):
         return False
+    logger.debug("Matches filter condition true...")
     return True
 
 

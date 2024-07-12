@@ -248,11 +248,12 @@ class Match(models.Model):
 class VideoGoal(models.Model):
     class RedditSource(models.IntegerChoices):
         Soccer = 1, "soccer"
-        Footballhighlights = 2, "footballhighlights"
+        FootballHighlights = 2, "footballhighlights"
 
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     url = models.CharField(max_length=1024, null=True)
     title = models.CharField(max_length=200, null=True)
+    link_title = models.CharField(max_length=200, null=True)
     minute = models.CharField(max_length=12, null=True)
     msg_sent = models.BooleanField(default=False)
     author = models.CharField(max_length=200, null=True)
@@ -278,7 +279,8 @@ class VideoGoal(models.Model):
 
     @property
     def calculated_mirrors(self) -> list[VideoGoalMirror]:
-        first_mirror = VideoGoalMirror(title="Original Link", url=self.url)
+        first_mirror_title = self.link_title if self.link_title else "Original Link"
+        first_mirror = VideoGoalMirror(title=first_mirror_title, url=self.url)
         mirrors = list(self.mirrors.all())
         mirrors.insert(0, first_mirror)
         return mirrors

@@ -40,6 +40,7 @@ aiohttp = "^3.9.5"
 mypy = "^1.10.1"
 no-implicit-optional = "^1.4"
 pycurl = "^7.45.3"
+beautifulsoup4 = "^4.12.3"
 
 
 [build-system]

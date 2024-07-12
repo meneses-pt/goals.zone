@@ -13,6 +13,7 @@ from concurrent.futures import ThreadPoolExecutor
 from contextlib import nullcontext
 from datetime import date, timedelta
 from difflib import SequenceMatcher
+from html import unescape
 from threading import Lock
 from xml.etree import ElementTree as ETree
 
@@ -20,9 +21,11 @@ import markdown as markdown
 import requests
 from background_task import background
 from background_task.models import CompletedTask, Task
+from bs4 import BeautifulSoup
 from discord_webhook import DiscordWebhook
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
+from django.db import models
 from django.db.models import Q, QuerySet
 from django.utils import timezone
 from retry import retry
@@ -94,7 +97,7 @@ class RedditHeaders:
 def fetch_videogoals() -> None:
     current = Task.objects.filter(task_name="matches.goals_populator.fetch_videogoals").first()
     logger.info(f"Now: {datetime.datetime.now()} | Task: {current.id} | Fetching new goals...")
-    _fetch_reddit_goals()
+    _fetch_reddit_videos()
     send_heartbeat()
 
 
@@ -130,21 +133,124 @@ def _is_unflaired_post(post: dict) -> bool:
     return post["url"] is not None and post["link_flair_text"] is None
 
 
-def _fetch_reddit_goals() -> None:
+def _fetch_reddit_videos() -> None:
+    completed = CompletedTask.objects.filter(task_name="matches.goals_populator.fetch_videogoals").count()
+    soccer_full_scan = False
+    if completed % 60 == 0:
+        soccer_full_scan = True
+    _fetch_reddit_soccer_videos(full_scan=soccer_full_scan)
+    if completed % 120 == 0:
+        footballhighlights_full_scan = True
+    if completed % 15 == 0:
+        _fetch_reddit_footballhighlights_videos(full_scan=footballhighlights_full_scan)
+
+
+def _fetch_reddit_footballhighlights_videos(full_scan: bool = False) -> None:
     i = 0
     after = None
-    completed = CompletedTask.objects.filter(task_name="matches.goals_populator.fetch_videogoals").count()
+    iterations = 1
+    new_posts_to_fetch = 10
+    if full_scan:
+        iterations = 10
+        new_posts_to_fetch = 50
+    new_posts_count = 0
+    while i < iterations or new_posts_count >= new_posts_to_fetch:
+        futures: list = []
+        try:
+            start = timeit.default_timer()
+            logger.info(
+                f"Fetching Reddit r/footballhighlights Videos {i + 1}/{iterations} | "
+                f"New Posts to fetch {new_posts_to_fetch}"
+            )
+            response = _fetch_data_from_reddit_api(after, "footballhighlights", new_posts_to_fetch)
+            if response is None or response.content is None:
+                logger.info("No response retrieved")
+                continue
+            if response.status_code >= 300:
+                logger.error("####### ERROR from reddit.com! #######")
+                logger.error(f"Status Code: {response.status_code}")
+                logger.error(f"{response.content!r}")
+                logger.error("ERROR: Finished fetching goals")
+                return
+            try:
+                data = json.loads(response.content)
+            except Exception as ex:
+                tb = traceback.format_exc()
+                logger.error(f"Status Code: {response.status_code}")
+                logger.error(f"{tb}")
+                logger.error(f"{ex}")
+                logger.error(f"{response.content!r}")
+                raise ex
+            if "data" not in data:
+                logger.error(f"No data in response: {response.content!r}")
+                logger.error("Finished fetching goals")
+                return
+            results = data["data"]["dist"]
+            ### send_reddit_response_heartbeat()
+            logger.info(f"{results} posts fetched...")
+            lock = Lock()
+            old_posts_to_check_count = 0
+            for post in data["data"]["children"]:
+                post = post["data"]
+                # This if is to evaluate remove filter to flairs
+                html = post["selftext_html"]
+                unescaped_html = unescape(html)
+                soup = BeautifulSoup(unescaped_html, "html.parser")
+                links_and_texts = [{"url": a["href"], "text": a.get_text()} for a in soup.find_all("a", href=True)]
+                post["links"] = links_and_texts
+                if len(links_and_texts) > 0:
+                    try:
+                        post_match = PostMatch.objects.get(permalink=post["permalink"])
+                        if post_match.videogoal and post_match.videogoal.next_mirrors_check < timezone.now():
+                            old_posts_to_check_count += 1
+                            future = executor.submit(find_footballhighlights_mirrors, post_match.videogoal)
+                            futures.append(future)
+                    except PostMatch.DoesNotExist:
+                        new_posts_count += 1
+                        title = post["title"]
+                        title = _fix_title(title)
+                        post_created_date = datetime.datetime.fromtimestamp(post["created_utc"])
+                        future = executor.submit(
+                            find_and_store_videogoal,
+                            post,
+                            title,
+                            post_created_date,
+                            lock,
+                            VideoGoal.RedditSource.FootballHighlights,
+                            None,
+                        )
+                        futures.append(future)
+        except Exception as ex:
+            logger.error(f"Error fetching Reddit Football Highlights: {ex}")
+            send_monitoring_message(
+                "*_fetch_reddit_footballhighlights_videos exception*\n" + str(ex),
+                is_alert=True,
+                disable_notification=True,
+            )
+        concurrent.futures.wait(futures)
+        end = timeit.default_timer()
+        logger.info(f"{results} posts processed")
+        logger.info(f"{new_posts_count} are new posts")
+        logger.info(f"{old_posts_to_check_count}/{results - new_posts_count} are old posts with mirror search")
+        logger.info(f"{(end - start):.2f} elapsed")
+        after = data["data"]["after"]
+        i += 1
+    logger.info("Finished fetching r/footballhighlights videos")
+
+
+def _fetch_reddit_soccer_videos(full_scan: bool = False) -> None:
+    i = 0
+    after = None
     iterations = 1
     new_posts_to_fetch = 25
-    if completed % 60 == 0:
-        # Full Scan
+    if full_scan:
         iterations = 10
         new_posts_to_fetch = 100
     new_posts_count = 0
     while i < iterations or new_posts_count >= new_posts_to_fetch:
         start = timeit.default_timer()
-        logger.info(f"Fetching Reddit Goals {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}")
-        response = _fetch_data_from_reddit_api(after, new_posts_to_fetch)
+        logger.info(f"Fetching Reddit r/soccer Videos {i + 1}/{iterations} | New Posts to fetch {new_posts_to_fetch}")
+        response = _fetch_data_from_reddit_api(after, "soccer", new_posts_to_fetch)
         if response is None or response.content is None:
             logger.info("No response retrieved")
             continue
@@ -185,14 +291,22 @@ def _fetch_reddit_goals() -> None:
                     post_match = PostMatch.objects.get(permalink=post["permalink"])
                     if post_match.videogoal and post_match.videogoal.next_mirrors_check < timezone.now():
                         old_posts_to_check_count += 1
-                        future = executor.submit(find_mirrors, post_match.videogoal)
+                        future = executor.submit(find_soccer_mirrors, post_match.videogoal)
                         futures.append(future)
                 except PostMatch.DoesNotExist:
                     new_posts_count += 1
                     title = post["title"]
                     title = _fix_title(title)
                     post_created_date = datetime.datetime.fromtimestamp(post["created_utc"])
-                    future = executor.submit(find_and_store_videogoal, post, title, post_created_date, lock, None)
+                    future = executor.submit(
+                        find_and_store_videogoal,
+                        post,
+                        title,
+                        post_created_date,
+                        lock,
+                        VideoGoal.RedditSource.Soccer,
+                        None,
+                    )
                     futures.append(future)
         concurrent.futures.wait(futures)
         end = timeit.default_timer()
@@ -202,7 +316,7 @@ def _fetch_reddit_goals() -> None:
         logger.info(f"{(end - start):.2f} elapsed")
         after = data["data"]["after"]
         i += 1
-    logger.info("Finished fetching goals")
+    logger.info("Finished fetching r/soccer videos")
 
 
 def calculate_next_mirrors_check(videogoal: VideoGoal) -> None:
@@ -237,7 +351,7 @@ def get_auto_moderator_comment_id(main_comments_link: str) -> str:
     return auto_moderator_comment["data"]["id"]
 
 
-def find_mirrors(videogoal: VideoGoal) -> bool:
+def find_soccer_mirrors(videogoal: VideoGoal) -> bool:
     try:
         calculate_next_mirrors_check(videogoal)
         main_comments_link = "https://oauth.reddit.com" + videogoal.post_match.permalink
@@ -273,6 +387,52 @@ def find_mirrors(videogoal: VideoGoal) -> bool:
         logger.error(f"An exception as occurred trying to find mirrors. {ex}")
         return True
     return True
+
+
+def find_footballhighlights_mirrors(videogoal: VideoGoal) -> bool:
+    try:
+        calculate_next_mirrors_check(videogoal)
+        main_comments_link = "https://oauth.reddit.com" + videogoal.post_match.permalink
+        response = _make_reddit_api_request(main_comments_link)
+        data = json.loads(response.content)
+        comments = data[1]["data"]["children"]
+        for comment in comments:
+            _parse_comment_for_mirrors(comment, videogoal)
+    except Exception as ex:
+        logger.error(f"An exception as occurred trying to find mirrors. {ex}")
+        send_monitoring_message(
+            "*find_footballhighlights_mirrors exception*\n" + str(ex),
+            is_alert=True,
+            disable_notification=True,
+        )
+        return True
+    return True
+
+
+def _parse_comment_for_mirrors(comment: dict, videogoal: VideoGoal) -> None:
+    try:
+        comment_data = comment["data"]
+        html = comment_data["body_html"]
+        unescaped_html = unescape(html)
+        soup = BeautifulSoup(unescaped_html, "html.parser")
+        links_and_texts = [{"url": a["href"], "text": a.get_text()} for a in soup.find_all("a", href=True)]
+        for link in links_and_texts:
+            _insert_or_update_mirror(videogoal, link["text"], link["url"], comment_data["author"])
+        if (
+            "replies" in comment_data
+            and "data" in comment_data["replies"]
+            and "children" in comment_data["replies"]["data"]
+        ):
+            replies = comment_data["replies"]["data"]["children"]
+            for reply in replies:
+                _parse_comment_for_mirrors(reply, videogoal)
+    except Exception as ex:
+        logger.error(f"An exception as occurred parsing comment for mirrors. {ex}")
+        send_monitoring_message(
+            "*_parse_comment_for_mirrors exception*\n" + str(ex),
+            is_alert=True,
+            disable_notification=True,
+        )
 
 
 def _parse_reply_for_mirrors(reply: dict, videogoal: VideoGoal) -> None:
@@ -429,7 +589,9 @@ def format_event_message(
     return message
 
 
-def check_conditions(match: Match, videogoal: VideoGoal | None, msg_obj: MessageObject) -> bool:
+def check_conditions(
+    match: Match, videogoal: VideoGoal | None, videogoal_mirror: VideoGoalMirror | None, msg_obj: MessageObject
+) -> bool:
     if msg_obj.include_categories.all().count() > 0 and (
         match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()
     ):
@@ -462,7 +624,9 @@ def check_conditions(match: Match, videogoal: VideoGoal | None, msg_obj: Message
         return False
     if videogoal is not None and videogoal.source != msg_obj.source:
         return False
-    logger.debug("Will send message...")
+    if videogoal_mirror is not None and videogoal_mirror.videogoal.source != msg_obj.source:
+        return False
+    logger.debug("Conditions check true...")
     return True
 
 
@@ -480,7 +644,7 @@ def send_slack_webhook_message(
         )
         for wh in webhooks:
             to_send = (
-                check_conditions(match, videogoal, wh)
+                check_conditions(match, videogoal, videogoal_mirror, wh)
                 and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
                 and check_author(wh, videogoal, videogoal_mirror, event_filter)
             )
@@ -511,7 +675,7 @@ def send_discord_webhook_message(
         )
         for wh in webhooks:
             to_send = (
-                check_conditions(match, videogoal, wh)
+                check_conditions(match, videogoal, videogoal_mirror, wh)
                 and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
                 and check_author(wh, videogoal, videogoal_mirror, event_filter)
             )
@@ -542,7 +706,7 @@ def send_ifttt_webhook_message(
         )
         for wh in webhooks:
             to_send = (
-                check_conditions(match, videogoal, wh)
+                check_conditions(match, videogoal, videogoal_mirror, wh)
                 and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
                 and check_author(wh, videogoal, videogoal_mirror, event_filter)
             )
@@ -630,7 +794,7 @@ def send_tweet(
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
             to_send = (
-                check_conditions(match, videogoal, tw)
+                check_conditions(match, videogoal, videogoal_mirror, tw)
                 and check_link_regex(tw, videogoal, videogoal_mirror, event_filter)
                 and check_author(tw, videogoal, videogoal_mirror, event_filter)
             )
@@ -707,7 +871,12 @@ def save_ner_log(
 
 
 def find_and_store_videogoal(
-    post: dict, title: str, max_match_date: datetime.date, lock: Lock, match_date: datetime.datetime | None = None
+    post: dict,
+    title: str,
+    max_match_date: datetime.date,
+    lock: Lock,
+    source: models.IntegerChoices,
+    match_date: datetime.datetime | None = None,
 ) -> bool:
     if match_date is None:
         match_date = datetime.datetime.utcnow()
@@ -742,7 +911,10 @@ def find_and_store_videogoal(
                 from_date=match_date,
             )
     if matches_results and matches_results.exists():
-        _save_found_match(matches_results, minute_str, post, lock)
+        if source == VideoGoal.RedditSource.Soccer:
+            _save_found_soccer_match(matches_results, minute_str, post, lock)
+        elif source == VideoGoal.RedditSource.FootballHighlights:
+            _save_found_footballhighlights_match(matches_results, minute_str, post, lock)
     elif (regex_home_team and regex_away_team) or (ner_home_team and ner_away_team):
         try:
             home_team = regex_home_team
@@ -760,7 +932,9 @@ def find_and_store_videogoal(
     return True
 
 
-def _save_found_match(matches_results: QuerySet, minute_str: str | None, post: dict, lock: Lock | None = None) -> None:
+def _save_found_soccer_match(
+    matches_results: QuerySet, minute_str: str | None, post: dict, lock: Lock | None = None
+) -> None:
     match = matches_results.first()
     if match.videogoal_set.count() == 0:
         match.first_video_datetime = timezone.now()
@@ -782,7 +956,37 @@ def _save_found_match(matches_results: QuerySet, minute_str: str | None, post: d
     videogoal.save()
     PostMatch.objects.create(permalink=post["permalink"], videogoal=videogoal)
     _handle_messages_to_send(match, videogoal, lock)
-    find_mirrors(videogoal)
+    find_soccer_mirrors(videogoal)
+
+
+def _save_found_footballhighlights_match(
+    matches_results: QuerySet, minute_str: str | None, post: dict, lock: Lock | None = None
+) -> None:
+    try:
+        match = matches_results.first()
+        if match.videogoal_set.count() == 0:
+            match.first_video_datetime = timezone.now()
+            match.save()
+        videogoal = VideoGoal()
+        videogoal.next_mirrors_check = timezone.now()
+        videogoal.match = match
+        videogoal.url = post["links"][0]["url"]
+        videogoal.title = (post["title"][:195] + "..") if len(post["title"]) > 195 else post["title"]
+        videogoal.link_title = post["links"][0]["text"]
+        videogoal.minute = None
+        videogoal.author = post["author"]
+        videogoal.source = VideoGoal.RedditSource.FootballHighlights
+        videogoal.save()
+        PostMatch.objects.create(permalink=post["permalink"], videogoal=videogoal)
+        _handle_messages_to_send(match, videogoal, lock)
+        find_footballhighlights_mirrors(videogoal)
+    except Exception as ex:
+        # After a while, this try except might leave here
+        send_monitoring_message(
+            "*_save_found_footballhighlights_match exception*\n" + str(ex),
+            is_alert=True,
+            disable_notification=True,
+        )
 
 
 def _handle_messages_to_send(match: Match, videogoal: VideoGoal | None = None, lock: Lock | None = None) -> None:
@@ -946,9 +1150,9 @@ def process_prefix_suffix_away(
     return matches
 
 
-def _fetch_data_from_reddit_api(after: str | None, new_posts_to_fetch: int) -> requests.Response:
+def _fetch_data_from_reddit_api(after: str | None, subreddit: str, new_posts_to_fetch: int) -> requests.Response:
     headers = RedditHeaders().get_headers()
-    url = f"https://oauth.reddit.com/r/soccer/new?limit={new_posts_to_fetch}"
+    url = f"https://oauth.reddit.com/r/{subreddit}/new?limit={new_posts_to_fetch}"
     if after:
         url += f"&after={after}"
     response = requests.get(url, headers=headers)
