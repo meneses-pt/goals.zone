@@ -11,6 +11,7 @@ class WebhookAdminForm(forms.ModelForm):
             "title",
             "destination",
             "event_type",
+            "source",
             "webhook_url",
             "message",
             "link_regex",
@@ -63,6 +64,7 @@ class TweetAdminForm(forms.ModelForm):
         fields = [
             "title",
             "event_type",
+            "source",
             "consumer_key",
             "consumer_secret",
             "access_token_key",
