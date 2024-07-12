@@ -246,6 +246,10 @@ class Match(models.Model):
 
 
 class VideoGoal(models.Model):
+    class RedditSource(models.IntegerChoices):
+        Soccer = 1, "soccer"
+        Footballhighlights = 2, "footballhighlights"
+
     match = models.ForeignKey(Match, on_delete=models.CASCADE)
     url = models.CharField(max_length=1024, null=True)
     title = models.CharField(max_length=200, null=True)
@@ -255,6 +259,7 @@ class VideoGoal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     next_mirrors_check = models.DateTimeField(default=datetime.datetime.now)
     auto_moderator_comment_id = models.CharField(max_length=20, null=True)
+    source = models.IntegerField(choices=RedditSource.choices, default=RedditSource.Soccer)
 
     @property
     def minute_int(self) -> float | int:

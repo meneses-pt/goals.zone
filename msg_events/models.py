@@ -8,7 +8,7 @@ from django.db.models.signals import m2m_changed
 from django.dispatch import receiver
 from slack_webhook import Slack
 
-from matches.models import Category, Team, Tournament
+from matches.models import Category, Team, Tournament, VideoGoal
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +41,7 @@ class MessageObject(models.Model):
     )
     exclude_teams = models.ManyToManyField(Category, related_name="%(class)s_exclude_teams", default=None, blank=True)
     event_type = models.IntegerField(choices=MessageEventType.choices, default=MessageEventType.MatchFirstVideo)
+    source = models.IntegerField(choices=VideoGoal.RedditSource.choices, default=VideoGoal.RedditSource.Soccer)
     link_regex = models.CharField(max_length=2000, default=None, null=True, blank=True)
     author_filter = models.CharField(max_length=200, default=None, null=True, blank=True)
 

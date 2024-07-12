@@ -429,7 +429,7 @@ def format_event_message(
     return message
 
 
-def check_conditions(match: Match, msg_obj: MessageObject) -> bool:
+def check_conditions(match: Match, videogoal: VideoGoal | None, msg_obj: MessageObject) -> bool:
     if msg_obj.include_categories.all().count() > 0 and (
         match.category is None or not msg_obj.include_categories.filter(id=match.category.id).exists()
     ):
@@ -460,6 +460,9 @@ def check_conditions(match: Match, msg_obj: MessageObject) -> bool:
         or msg_obj.exclude_teams.filter(id=match.away_team.id).exists()
     ):
         return False
+    if videogoal is not None and videogoal.source != msg_obj.source:
+        return False
+    logger.debug("Will send message...")
     return True
 
 
@@ -477,7 +480,7 @@ def send_slack_webhook_message(
         )
         for wh in webhooks:
             to_send = (
-                check_conditions(match, wh)
+                check_conditions(match, videogoal, wh)
                 and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
                 and check_author(wh, videogoal, videogoal_mirror, event_filter)
             )
@@ -508,7 +511,7 @@ def send_discord_webhook_message(
         )
         for wh in webhooks:
             to_send = (
-                check_conditions(match, wh)
+                check_conditions(match, videogoal, wh)
                 and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
                 and check_author(wh, videogoal, videogoal_mirror, event_filter)
             )
@@ -539,7 +542,7 @@ def send_ifttt_webhook_message(
         )
         for wh in webhooks:
             to_send = (
-                check_conditions(match, wh)
+                check_conditions(match, videogoal, wh)
                 and check_link_regex(wh, videogoal, videogoal_mirror, event_filter)
                 and check_author(wh, videogoal, videogoal_mirror, event_filter)
             )
@@ -627,7 +630,7 @@ def send_tweet(
         tweets = Tweet.objects.filter(event_type=event_filter, active=True)
         for tw in tweets:
             to_send = (
-                check_conditions(match, tw)
+                check_conditions(match, videogoal, tw)
                 and check_link_regex(tw, videogoal, videogoal_mirror, event_filter)
                 and check_author(tw, videogoal, videogoal_mirror, event_filter)
             )
