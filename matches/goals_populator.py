@@ -991,7 +991,9 @@ def _save_found_footballhighlights_match(
         videogoal.next_mirrors_check = timezone.now()
         videogoal.match = match
         videogoal.url = post["links"][0]["url"]
-        videogoal.title = "[Highlights] " + (post["title"][:180] + "..") if len(post["title"]) > 180 else post["title"]
+        videogoal.title = "[Highlights] " + (
+            (post["title"][:180] + "..") if len(post["title"]) > 180 else post["title"]
+        )
         videogoal.link_title = post["links"][0]["text"]
         videogoal.minute = None
         videogoal.author = post["author"]
