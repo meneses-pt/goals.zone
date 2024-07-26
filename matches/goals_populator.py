@@ -122,15 +122,7 @@ def send_reddit_response_heartbeat() -> None:
 
 
 def _should_process_post(post: dict) -> bool:
-    return (
-        post["url"] is not None
-        and post["link_flair_text"] is not None
-        and (post["link_flair_text"].lower() in ["media", "mirror", "great goal"])
-    )
-
-
-def _is_unflaired_post(post: dict) -> bool:
-    return post["url"] is not None and post["link_flair_text"] is None
+    return post["url"] is not None
 
 
 def _fetch_reddit_videos() -> None:
@@ -292,11 +284,6 @@ def _fetch_reddit_soccer_videos(full_scan: bool = False) -> None:
         local_new_posts_count = 0
         for post in data["data"]["children"]:
             post = post["data"]
-            # This if is to evaluate remove filter to flairs
-            if _is_unflaired_post(post):
-                logger.info("URL WITH NO FLAIR")
-                logger.info(f"Title: {post['title']}")
-                logger.info(f"URL: {post['url']}")
             if _should_process_post(post):
                 try:
                     post_match = PostMatch.objects.get(permalink=post["permalink"])
