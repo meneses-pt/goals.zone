@@ -127,12 +127,6 @@ def _should_process_post(post: dict) -> bool:
         and post["link_flair_text"] is not None
         and (post["link_flair_text"].lower() in ["media", "mirror", "great goal"])
     )
-    if post["url"] is not None and not should_process_post:
-        send_monitoring_message(
-            "*Flair not allowed*\n" + post["link_flair_text"].lower(),
-            is_alert=False,
-            disable_notification=True,
-        )
     return should_process_post
 
 
