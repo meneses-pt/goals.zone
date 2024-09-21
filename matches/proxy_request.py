@@ -10,6 +10,7 @@ from urllib.parse import quote
 import aiohttp
 import pycurl
 import requests
+from aiohttp import ClientTimeout
 from fp.fp import FreeProxy
 from requests.structures import CaseInsensitiveDict
 from scrapfly import ScrapeConfig, ScrapflyClient
@@ -255,7 +256,7 @@ class ProxyRequest:
                     url,
                     proxy=f"http://{self.current_proxy}",
                     headers=headers,
-                    timeout=timeout,
+                    timeout=ClientTimeout(timeout),
                 ) as response,
             ):
                 requests_response = requests.Response()
