@@ -85,7 +85,7 @@ def fetch_full_day(inverse: bool = True, browse_scraping: bool = False) -> list:
             logger.error(f"Error fetching inverse events: {ex}")
             send_monitoring_message(
                 "*Error fetching inverse events!!*\n" + str(ex),
-                is_alert=True,
+                is_alert=False,
                 disable_notification=True,
             )
     logger.info(f"Fetched {len(events)} total events! Inverse?: {inverse}")
