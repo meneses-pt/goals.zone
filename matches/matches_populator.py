@@ -20,7 +20,7 @@ from .proxy_request import ProxyRequest
 logger = logging.getLogger(__name__)
 
 
-@background(schedule=60 * 5)
+@background(schedule=60 * 10)
 def fetch_new_matches() -> None:
     current = Task.objects.filter(task_name="matches.matches_populator.fetch_new_matches").first()
     logger.info(f"Now: {datetime.now()} | Task: {current.id} | Fetching new matches...")
@@ -173,10 +173,12 @@ def is_true_data(
 
 def fetch_data(completed: int, browse_scraping: bool = False) -> list:
     start = timeit.default_timer()
-    # 12 is every hour if task is every 5 minutes
-    if completed % 12 == 0:
+    # The task is now every 10 minutes
+    if completed % 36 == 0:
+        # Every 6 hours (360 minutes)
         events = fetch_full_day(inverse=True, browse_scraping=browse_scraping)
-    elif completed % 2 == 0:
+    elif completed % 6 == 0:
+        # Every hour (60 minutes)
         events = fetch_full_day(inverse=False, browse_scraping=browse_scraping)
     else:
         events = fetch_live(browse_scraping=browse_scraping)
