@@ -825,8 +825,8 @@ def send_tweet(
                     logger.error(f"Error sending twitter single message: {ex}")
                     time.sleep(1)
                 attempts += 1
-            if not is_sent:
-                send_monitoring_message(
+            if not is_sent and "429" not in last_exception_str:
+                send_monitoring_message(  # Send monitoring message only if it's not a rate limit exception
                     "*Twitter message not sent!!*\n" + str(last_exception_str),
                     is_alert=True,
                     disable_notification=True,
